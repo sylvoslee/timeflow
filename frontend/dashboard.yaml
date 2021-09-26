@@ -5,3 +5,41 @@ type: PageSiderMenu
 properties:
   logo:
     src: http://localhost:3000/public/logo_web.svg
+requests:
+  - id: get_timelogs
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/timelogs
+events:
+  onEnter:
+    - id: fetch_countries
+      type: Request
+      params: get_timelogs
+    - id: set_timelogs
+      type: SetState
+      params:
+        timelog_list:
+          _request: get_timelogs.data
+        testlist:
+          - test1
+          - test2
+areas:
+  content:
+    blocks:
+      - id: test_tile
+        type: Title
+        properties:
+          content:
+            _state: test_list.0
+      - id: timelog_list #needs to be the same as the key state
+        type: List
+        layout:
+          contentGutter: 16
+        blocks:
+          - id: timelog_list.$.id
+            type: Title
+            properties:
+              level: 4
+              content: 
+                _state: timelog_list.$.message

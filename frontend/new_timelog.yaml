@@ -6,6 +6,14 @@ requests:
     connectionId: app_api
     properties:
       url: /api/epics
+  - id: post_timelog
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/timelog
+      method: post
+      data:
+        _state: timelog_data
 events:
   onEnter:
     - id: fetch_countries
@@ -110,6 +118,19 @@ areas:
               type: SetState
               params:
                 is_validated: "it is validated"
+            - id: set_timelog
+              type: SetState
+              params:
+                timelog_data:
+                  epic_id:
+                    _state: select_epic
+                  start_time: 
+                    _state: start_time
+                  end_time: 
+                    _state: end_time
+            - id: post_timelog
+              type: Request
+              params: post_timelog
       - id: is_validated_output
         type: Markdown
         properties:
