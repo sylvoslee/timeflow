@@ -1,0 +1,7 @@
+
+#Layout
+id: dashboard
+type: PageSiderMenu
+properties:
+  logo:
+    src: http://localhost:3000/public/logo_web.svg

@@ -1,0 +1,117 @@
+lowdefy: 3.21.2
+
+requests:
+  - id: get_epics
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/epics
+events:
+  onEnter:
+    - id: fetch_countries
+      type: Request
+      params: get_epics
+    - id: set_is_submit_visible
+      type: SetState
+      params:
+        is_submit_visible: false
+    - id: set_is_validated
+      type: SetState
+      params:
+        is_validated: "not validated"
+#Layout
+id: new_timelog
+type: PageSiderMenu
+properties:
+  logo:
+    src: http://localhost:3000/public/logo_web.svg
+areas:
+  content:
+    gutter: 20
+    blocks:
+      - id: select_epic
+        type: Selector
+        layout:
+          span: 8
+        required: true
+        properties:
+          label:
+            disabled: true
+          options:
+            _request: get_epics.data
+      - id: start_time
+        type: DateTimeSelector
+        required: true
+        layout:
+          span: 5
+          offset: 1
+        properties:
+          label:
+            disabled: true
+          placeholder: Start Time
+          disabledDates:
+            dates: []
+            ranges: []
+      - id: end_time
+        type: DateTimeSelector
+        required: true
+        layout:
+          span: 5
+          offset: 1
+        properties:
+          label:
+            disabled: true
+          placeholder: End Time
+          disabledDates:
+            dates: []
+            ranges: []
+      - id: block_id
+        type: Button
+        layout:
+          span: 3
+          offset: 1
+        properties:
+          title: Review
+        events:
+          onClick:
+            - id: update_review
+              type: SetState
+              params:
+                review_text: 
+                  _nunjucks: |
+                        ### You are **logging time** for Epic {{select_epic}} 
+                        * from {{start_time}} 
+                        * to {{end_time}}
+            - id: set_is_submit_visible
+              type: SetState
+              params:
+                is_submit_visible: true
+      - id: review_output
+        type: Markdown
+        properties:
+          content:
+            _state: review_text
+      - id: submit_log
+        type: Button
+        visible: 
+          _state: is_submit_visible
+        properties:
+          color: red
+          title: Confirm
+        events:
+          onClick:
+            - id: validate_inputs
+              type: Validate
+              params:
+                - select_epic
+                - start_time
+                - end_time
+            - id: after_validations
+              type: SetState
+              params:
+                is_validated: "it is validated"
+      - id: is_validated_output
+        type: Markdown
+        properties:
+          content:
+            _state: is_validated

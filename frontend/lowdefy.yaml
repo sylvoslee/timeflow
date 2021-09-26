@@ -1,0 +1,29 @@
+lowdefy: 3.21.2
+name: Lowdefy starter
+connections:
+  - id: app_api
+    type: AxiosHttp
+    properties:
+      baseURL:  http://127.0.0.1:8000
+  - id: uk_carbon
+    type: AxiosHttp
+    properties:
+      baseURL: https://api.carbonintensity.org.uk
+menus:
+  - id: default
+    links:
+      - id: new_timelog # Define the menu link that directs to the brands page.
+        type: MenuLink
+        pageId: new_timelog # Id of the brands page.
+        properties:
+          title: New Timelog
+          icon: PlusOutlined
+      - id: dashboard # Define the menu link that directs to the brands page.
+        type: MenuLink
+        pageId: dashboard # Id of the brands page.
+        properties:
+          title: Dashboard
+          icon: DashboardOutlined
+pages:
+  - _ref: new_timelog.yaml
+  - _ref: dashboard.yaml
