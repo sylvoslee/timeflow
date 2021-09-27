@@ -1,9 +1,8 @@
 from typing import Optional
 from sqlmodel import Field, SQLModel, Field, create_engine
 
-sqlite_file_name = "database_.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
-engine = create_engine(sqlite_url, echo=True)
+con_str = f"sqlite:///database.sqlite"
+engine = create_engine(con_str, echo=True)
 
 
 class Epic(SQLModel, table=True):
@@ -22,8 +21,3 @@ class TimeLog(SQLModel, table=True):
 
 def create_db():
     SQLModel.metadata.create_all(engine)
-
-
-if __name__ == "__main__":
-    # create_db()
-    pass

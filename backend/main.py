@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from sqlmodel import Session, select
-from models import Epic, TimeLog, engine
+from sqlmodel import Session, select, SQLModel
+from sqlalchemy.exc import OperationalError
+from models import Epic, TimeLog, engine, create_db
 import datetime
 
 # strftime("%m/%d/%Y, %H:%M:%S")
@@ -8,7 +9,16 @@ import datetime
 app = FastAPI()
 session = Session(engine)
 
-# example of url value to python function value
+
+@app.on_event("startup")
+def on_startup():
+    try:
+        statement = select(TimeLog)
+        results = session.exec(statement)
+    except OperationalError:
+        create_db()
+
+
 @app.get("/hello/{name}")
 async def hello_name(name):
     return {"message": f"Hello {name}"}
@@ -34,9 +44,14 @@ async def get_timelogs():
             result.start_time,
             "%Y-%m-%dT%H:%M:%S.%fz",
         )
+        end_time = datetime.datetime.strptime(
+            # 2021-09-26T17:25:00.000Z
+            result.end_time,
+            "%Y-%m-%dT%H:%M:%S.%fz",
+        )
         msg = f"""epic_id is {result.epic_id}
                 , start date {start_time.strftime("%m/%d/%Y, %H:%M:%S")} 
-                and end date {result.end_time}
+                and end date {end_time.strftime("%m/%d/%Y, %H:%M:%S")}
                 """
         d = result.dict()
         d["message"] = msg
@@ -47,3 +62,4 @@ async def get_timelogs():
 @app.post("/api/timelog/")
 async def timelog(timelog: TimeLog):
     session.add(timelog)
+    session.commit()
