@@ -1,0 +1,143 @@
+# User admin menu
+id: new_user
+type: PageSiderMenu
+properties:
+  logo:
+    src: http://localhost:3000/public/logo_web.svg
+requests:
+  - id: post_user
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/user/
+      method: post
+      data:
+        _state: new_user_data
+events:
+  onEnter:
+    - id: set_is_submit_visible
+      type: SetState
+      params:
+        is_submit_visible: false
+areas:
+  content:
+    blocks:
+      - id: user_id
+        type: TextInput
+        layout:
+            span: 2
+        properties:
+          placeholder: User id (initials)
+          label:
+            disabled: true
+        required: True
+      - id: user_name
+        type: TextInput
+        layout:
+            span: 2
+        properties:
+          placeholder: User name
+          label:
+            disabled: true
+        required: True
+      - id: user_surname
+        type: TextInput
+        layout:
+            span: 2
+        properties:
+          placeholder: User surname
+          label:
+            disabled: true
+        required: True
+      - id: user_email
+        type: TextInput
+        layout:
+            span: 2
+        properties:
+          placeholder: User email adress
+          label:
+            disabled: true
+        required: True
+      - id: check_button
+        type: Button
+        layout:
+          span: 2
+        properties:
+          title: Check User
+          color: '#595959'
+          type: primary
+        events:
+          onClick:
+            - id: check_user
+              type: SetState
+              params:
+                check_text: 
+                  _nunjucks: |
+                        #### You are adding user:
+                        |     id     |     name     |     surname     |     email     |
+                        |:----------:|:------------:|:---------------:|:-------------:|
+                        | {{user_id}}| {{user_name}}| {{user_surname}}| {{user_email}}|
+            - id: set_submit_visible
+              type: SetState
+              params:
+                is_submit_visible: true
+      - id: reset_button
+        type: Button
+        layout:
+          span: 2
+        properties:
+          title: Reset
+          block: true
+          type: default
+          icon: ClearOutlined
+        events:
+          onClick:
+            - id: reset
+              type: Reset
+            - id: set_submit_to_false
+              type: SetState
+              params:
+                is_submit_visible: false
+      - id: show_user
+        type: Markdown
+        properties:
+          content:
+            _state: check_text
+      - id: submit_user
+        type: Button
+        properties:
+          title: Add User
+          icon: UserAddOutlined
+        layout:
+          span: 3
+          color: '#595959'
+        visible:
+          _state: is_submit_visible
+        
+        events:
+          onClick:
+            - id: validate_inputs
+              type: Validate
+              params:
+                - user_id
+                - user_name
+                - user_surname
+                - user_email
+            - id: set_new_user
+              type: SetState
+              params:
+                new_user_data:
+                  user_id:
+                    _state: user_id
+                  user_name:
+                    _state: user_name
+                  user_surname: 
+                    _state: user_surname
+                  user_email: 
+                    _state: user_email
+            - id: post_user
+              type: Request
+              params: post_user
+            # - id: send
+            #   type: SetState
+              

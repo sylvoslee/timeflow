@@ -1,0 +1,37 @@
+lowdefy: 3.21.2
+
+id: search
+type: PageSiderMenu
+properties:
+  logo:
+    src: http://localhost:3000/public/logo_web.svg
+areas:
+  content:
+    gutter: 20
+    blocks:
+    - id: person
+      type: TextInput
+        valueType: number
+      layout:
+          span: 4
+      properties:
+        title: Name
+      required: True
+    - id: submit_button
+      type: Button
+      layout:
+        span: 4
+      properties:
+        title: Submit
+        block: true
+        type: primary # Make the button a primary button with color
+        icon: SaveOutlined
+      events:
+        onClick:
+          - id: validate
+            type: Validate
+          - id: save_data # Make a request to Google Sheets
+            type: Request
+            params: save_data
+          - id: reset # Reset the form once data has been submitted
+            type: Reset

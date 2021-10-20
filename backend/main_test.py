@@ -9,7 +9,9 @@ app = FastAPI()
 session = Session(engine)
 
 def string_to_datetime(date_string):
-    date = datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+    date = datetime.datetime.strptime(
+    date_string, "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
     return date
 
 def datetime_to_string(date_date):
@@ -20,8 +22,8 @@ def get_user_worktime_by_epic(user_id, epic_name, start_time, end_time):
     statement = select(TimeLog)\
         .where(TimeLog.user_id == user_id)\
         .where(TimeLog.epic_name == epic_name)\
-        .where(TimeLog.start_time) >= start_time_dt)\
-        .where(string_to_datetime(TimeLog.end_time) <= end_time_dt)
+        .where(TimeLog.start_time == start_time)\
+        .where(TimeLog.end_time == end_time)
     results = session.exec(statement).all()
     by_user = []
     for result in results:
@@ -32,7 +34,7 @@ def get_user_worktime_by_epic(user_id, epic_name, start_time, end_time):
     l_sum = sum(by_user, datetime.timedelta())
     work_time_sum = str(l_sum)
     msg = f"""total work time spent by user {user_id} from {start_time} to {end_time} on epic {epic_name} is {work_time_sum}
-            """    
+        """    
     return msg
 
 @app.on_event("startup")
@@ -100,7 +102,7 @@ async def get_epic_id(epic_id):
 
 #For Work Time page 
     #Get TimeLog by user_id, epic_name and time period   
-@app.get("/api/timelogs/{user_id},{epic_name},{start_time},{end_time}") 
+@app.get("/api/timelogs/{user_id},{epic_name},{start_time}, {end_time}") 
 async def get_user_by_epic_name(user_id, epic_name, start_time, end_time):
     get_user = get_user_worktime_by_epic(user_id, epic_name, start_time, end_time)
     return get_user

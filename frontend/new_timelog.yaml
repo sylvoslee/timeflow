@@ -1,11 +1,17 @@
-lowdefy: 3.21.2
-
 requests:
+  
+  - id: get_user_id
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/users
+  
   - id: get_epics
     type: AxiosHttp
     connectionId: app_api
     properties:
       url: /api/epics
+  
   - id: post_timelog
     type: AxiosHttp
     connectionId: app_api
@@ -16,17 +22,18 @@ requests:
         _state: timelog_data
 events:
   onEnter:
+    - id: fetch_users
+      type: Request
+      params: get_user_id
+    
     - id: fetch_countries
       type: Request
       params: get_epics
+    
     - id: set_is_submit_visible
       type: SetState
       params:
         is_submit_visible: false
-    - id: set_is_validated
-      type: SetState
-      params:
-        is_validated: "not validated"
 #Layout
 id: new_timelog
 type: PageSiderMenu
@@ -37,21 +44,35 @@ areas:
   content:
     gutter: 20
     blocks:
+      
+      - id: user_id
+        type: Selector
+        layout:
+          span: 4
+        required: true
+        properties:
+          placeholder: User id
+          label:
+            disabled: true
+          options:
+            _request: get_user_id.data
+      
       - id: select_epic
         type: Selector
         layout:
-          span: 8
+          span: 4
         required: true
         properties:
           label:
             disabled: true
           options:
             _request: get_epics.data
+      
       - id: start_time
         type: DateTimeSelector
         required: true
         layout:
-          span: 5
+          span: 4
           offset: 1
         properties:
           label:
@@ -60,11 +81,12 @@ areas:
           disabledDates:
             dates: []
             ranges: []
+      
       - id: end_time
         type: DateTimeSelector
         required: true
         layout:
-          span: 5
+          span: 4
           offset: 1
         properties:
           label:
@@ -73,6 +95,7 @@ areas:
           disabledDates:
             dates: []
             ranges: []
+      
       - id: block_id
         type: Button
         layout:
@@ -94,11 +117,35 @@ areas:
               type: SetState
               params:
                 is_submit_visible: true
+            - id: set_is_validated
+              type: SetState
+              params:
+                is_validated: "Click Confirm to submit a timelog"
+      
+      - id: reset_button
+        type: Button
+        layout:
+          span: 2
+        properties:
+          title: Reset
+          block: true
+          type: default
+          icon: ClearOutlined
+        events:
+          onClick:
+            - id: reset
+              type: Reset
+            - id: set_submit_to_false
+              type: SetState
+              params:
+                is_submit_visible: false
+      
       - id: review_output
         type: Markdown
         properties:
           content:
             _state: review_text
+      
       - id: submit_log
         type: Button
         visible: 
@@ -111,18 +158,17 @@ areas:
             - id: validate_inputs
               type: Validate
               params:
+                - user_id
                 - select_epic
                 - start_time
                 - end_time
-            - id: after_validations
-              type: SetState
-              params:
-                is_validated: "it is validated"
             - id: set_timelog
               type: SetState
               params:
                 timelog_data:
-                  epic_id:
+                  user_id:
+                    _state: user_id
+                  epic_name:
                     _state: select_epic
                   start_time: 
                     _state: start_time
@@ -131,6 +177,16 @@ areas:
             - id: post_timelog
               type: Request
               params: post_timelog
+            - id: hide_confirm
+              type: Reset
+            - id: set_submit_to_false
+              type: SetState
+              params:
+                is_submit_visible: false
+            - id: after_validations
+              type: SetState
+              params:
+                is_validated: "Timelog was submitted"
       - id: is_validated_output
         type: Markdown
         properties:
