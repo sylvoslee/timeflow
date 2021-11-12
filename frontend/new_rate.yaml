@@ -1,18 +1,18 @@
-# User admin menu
-id: new_user
+# New rate menu
+id: new_rate
 type: PageSiderMenu
 properties:
   logo:
     src: http://localhost:3000/public/logo_web.svg
 requests:
-  - id: post_user
+  - id: post_rate
     type: AxiosHttp
     connectionId: app_api
     properties:
-      url: /api/user/
+      url: /api/rate/
       method: post
       data:
-        _state: new_user_data
+        _state: new_rate_data
 events:
   onEnter:
     - id: set_is_submit_visible
@@ -23,60 +23,64 @@ areas:
   content:
     blocks:
       - id: user_initials
-        type: TextInput
+        type: Selector
         layout:
-            span: 2
+            span: 5
         properties:
-          placeholder: User initials
+          placeholder: user initials
           label:
             disabled: true
         required: True
-      - id: user_name
-        type: TextInput
+
+      - id: client_name
+        type: Selector
         layout:
-            span: 2
+            span: 5
         properties:
-          placeholder: User name
+          placeholder: client name
           label:
             disabled: true
         required: True
-      - id: user_surname
+
+      - id: currency
         type: TextInput
         layout:
-            span: 2
+            span: 5
         properties:
-          placeholder: User surname
+          placeholder: Currency
           label:
             disabled: true
         required: True
-      - id: user_email
+
+      - id: client_rate
         type: TextInput
         layout:
-            span: 2
+            span: 5
         properties:
-          placeholder: User email adress
+          placeholder: New Client rate
           label:
             disabled: true
         required: True
+
       - id: check_button
         type: Button
         layout:
           span: 2
         properties:
-          title: Check User
+          title: Check rate
           color: '#595959'
           type: primary
         events:
           onClick:
-            - id: check_user
+            - id: check_rate
               type: SetState
               params:
                 check_text: 
                   _nunjucks: |
-                        #### You are adding user:
-                        |     initials     |     name     |     surname     |     email     |
-                        |:----------:|:------------:|:---------------:|:-------------:|
-                        | {{user_initials}}| {{user_name}}| {{user_surname}}| {{user_email}}|
+                        #### You are logging time for:
+                        |        user      |      client     |    currency    |    client rate   |
+                        |:-----------------|:---------------:|:--------------:|:----------------:|
+                        |{{user_initials}} | {{client_name}} |  {{currency}}  |{{client_rate}}|
             - id: set_submit_visible
               type: SetState
               params:
@@ -89,7 +93,6 @@ areas:
           title: Reset
           block: true
           type: default
-          icon: ClearOutlined
         events:
           onClick:
             - id: reset
@@ -98,16 +101,16 @@ areas:
               type: SetState
               params:
                 is_submit_visible: false
-      - id: show_user
+      - id: show_rate
         type: Markdown
         properties:
           content:
             _state: check_text
-      - id: submit_user
+      - id: submit_rate
         type: Button
         properties:
-          title: Add User
-          icon: UserAddOutlined
+          title: Add rate
+          # icon: Sa
         layout:
           span: 3
           color: '#595959'
@@ -119,25 +122,14 @@ areas:
             - id: validate_inputs
               type: Validate
               params:
-                - user_initials
-                - user_name
-                - user_surname
-                - user_email
-            - id: set_new_user
+                - client_rate
+            - id: set_new_rate
               type: SetState
               params:
-                new_user_data:
-                  user_initials:
-                    _state: user_initials
-                  user_name:
-                    _state: user_name
-                  user_surname: 
-                    _state: user_surname
-                  user_email: 
-                    _state: user_email
-            - id: post_user
+                new_rate_data:
+                  rate:
+                    _state: rate
+            - id: post_rate
               type: Request
-              params: post_user
-            # - id: send
-            #   type: SetState
+              params: post_rate
               

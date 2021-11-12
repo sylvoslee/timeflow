@@ -11,7 +11,13 @@ requests:
     connectionId: app_api
     properties:
       url: /api/epics
-  
+
+  - id: get_clients
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/clients
+    
   - id: post_timelog
     type: AxiosHttp
     connectionId: app_api
@@ -25,6 +31,10 @@ events:
     - id: fetch_users
       type: Request
       params: get_user_id
+
+    - id: fetch_clients
+      type: Request
+      params: get_clients
     
     - id: fetch_countries
       type: Request
@@ -45,18 +55,30 @@ areas:
     gutter: 20
     blocks:
       
-      - id: user_id
+      - id: user_initials
+        type: Selector
+        layout:
+          span: 2
+        required: true
+        properties:
+          placeholder: User
+          label:
+            disabled: true
+          options:
+            _request: get_user_id.data
+
+      - id: select_client
         type: Selector
         layout:
           span: 4
         required: true
         properties:
-          placeholder: User id
           label:
             disabled: true
+          placeholder: Select Client
           options:
-            _request: get_user_id.data
-      
+            _request: get_clients.data
+
       - id: select_epic
         type: Selector
         layout:
@@ -65,6 +87,7 @@ areas:
         properties:
           label:
             disabled: true
+          placeholder: Select Epic
           options:
             _request: get_epics.data
       
@@ -73,7 +96,6 @@ areas:
         required: true
         layout:
           span: 4
-          offset: 1
         properties:
           label:
             disabled: true
@@ -87,7 +109,6 @@ areas:
         required: true
         layout:
           span: 4
-          offset: 1
         properties:
           label:
             disabled: true
@@ -99,8 +120,7 @@ areas:
       - id: block_id
         type: Button
         layout:
-          span: 3
-          offset: 1
+          span: 2
         properties:
           title: Review
         events:
@@ -109,10 +129,13 @@ areas:
               type: SetState
               params:
                 review_text: 
-                  _nunjucks: |
-                        ### You are **logging time** for Epic {{select_epic}} 
-                        * from {{start_time}} 
-                        * to {{end_time}}
+                  _nunjucks: 
+                    |
+                        #### You are logging time for:
+                        |     User     |      Client     |      Epic      |  Start Time    |   End Time   |
+                        |:----------:|:-----------------|:--------------:|:--------------:|:------------:|
+                        | {{user_initials}}|{{select_client}}| {{select_epic}}| {{start_time}} | {{end_time}} |
+
             - id: set_is_submit_visible
               type: SetState
               params:
@@ -125,7 +148,7 @@ areas:
       - id: reset_button
         type: Button
         layout:
-          span: 2
+          span: 3
         properties:
           title: Reset
           block: true
@@ -158,22 +181,27 @@ areas:
             - id: validate_inputs
               type: Validate
               params:
-                - user_id
+                - user_initials
+                - select_company
                 - select_epic
                 - start_time
                 - end_time
+
             - id: set_timelog
               type: SetState
               params:
                 timelog_data:
-                  user_id:
-                    _state: user_id
+                  user_initials:
+                    _state: user_initials
+                  client_name:
+                    _state: select_client
                   epic_name:
                     _state: select_epic
                   start_time: 
                     _state: start_time
                   end_time: 
                     _state: end_time
+
             - id: post_timelog
               type: Request
               params: post_timelog

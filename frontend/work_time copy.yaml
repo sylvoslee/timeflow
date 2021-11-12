@@ -10,7 +10,7 @@ requests:
     connectionId: app_api
     properties:
       url: 
-        _nunjucks: /api/timelogs/{{user_id}},{{epic_name}},{{start_time}},{{end_time}}
+        _nunjucks: /api/timelogs/{{user_id}},{{epic_name}}
   - id: get_user_id
     type: AxiosHttp
     connectionId: app_api
@@ -21,7 +21,6 @@ requests:
     connectionId: app_api
     properties:
       url: /api/epics
-
 
 events:
   onEnter:
@@ -34,9 +33,8 @@ events:
 areas:
   content:
     blocks:
-      
       - id: user_id
-        type: AutoComplete
+        type: Selector
         layout:
             span: 3
         properties:
@@ -46,9 +44,8 @@ areas:
           options:
             _request: get_user_id.data
         required: True
-      
       - id: epic_name
-        type: AutoComplete
+        type: Selector
         layout:
             span: 3
         properties:
@@ -58,35 +55,6 @@ areas:
           options:
             _request: get_epic_name.data
         required: True
-      
-      - id: start_time
-        type: DateTimeSelector
-        required: true
-        layout:
-          span: 4
-          offset: 1
-        properties:
-          label:
-            disabled: true
-          placeholder: Start Time
-          disabledDates:
-            dates: []
-            ranges: []
-      
-      - id: end_time
-        type: DateTimeSelector
-        required: true
-        layout:
-          span: 4
-          offset: 1
-        properties:
-          label:
-            disabled: true
-          placeholder: End Time
-          disabledDates:
-            dates: []
-            ranges: []
-          
       - id: submit_button
         type: Button
         layout:
@@ -104,20 +72,17 @@ areas:
               type: Validate
               params:
                 - user_id
-                - epic_name
-                - ending_time
-                - starting_time          
+                - epic_name          
             - id: get_timelogs_data
               type: Request
               params: get_timelogs
             - id: set_timelogs
               type: SetState
               params:
-                timelogs_msg:
+                timelogs_list:
                   _request: get_timelogs.data
-      
       - id: timelogs_list #needs to be the same as the key state
         type: Markdown
         properties:
           content:
-            _state: timelogs_msg
+            _state: timelogs_list

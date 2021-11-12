@@ -16,6 +16,8 @@ pages:
   - _ref: work_time.yaml
   - _ref: new_user.yaml
   - _ref: new_epic.yaml
+  - _ref: new_client.yaml
+  - _ref: new_rate.yaml
 
 menus:
   - id: default
@@ -38,6 +40,7 @@ menus:
         properties:
           title: Work Time
           icon: LaptopOutlined 
+      
       - id: admin
         properties:
           title: Admin
@@ -50,9 +53,21 @@ menus:
             properties:
               title: Users
               icon: UserOutlined
+          - id: new_client
+            type: MenuLink
+            pageId: new_client
+            properties:
+              title: Clients
+              icon: ProfileOutlined
           - id: new_epic
             type: MenuLink
             pageId: new_epic
             properties:
               title: Epics
+              icon: ProfileOutlined
+          - id: new_rate
+            type: MenuLink
+            pageId: new_rate
+            properties:
+              title: Rates
               icon: ProfileOutlined

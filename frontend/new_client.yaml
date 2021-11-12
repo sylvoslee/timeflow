@@ -1,0 +1,104 @@
+# Epic admin menu
+id: new_client
+type: PageSiderMenu
+properties:
+  logo:
+    src: http://localhost:3000/public/logo_web.svg
+requests:
+  - id: post_client
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/client/
+      method: post
+      data:
+        _state: new_client_data
+events:
+  onEnter:
+    - id: set_is_submit_visible
+      type: SetState
+      params:
+        is_submit_visible: false
+areas:
+  content:
+    blocks:
+      - id: client_name
+        type: TextInput
+        layout:
+            span: 5
+        properties:
+          placeholder: New Client name
+          label:
+            disabled: true
+        required: True
+      - id: check_button
+        type: Button
+        layout:
+          span: 2
+        properties:
+          title: Check Client
+          color: '#595959'
+          type: primary
+        events:
+          onClick:
+            - id: check_client
+              type: SetState
+              params:
+                check_text: 
+                  _nunjucks: |
+                        #### You are adding epic:
+                        |     client name     |
+                        |:-----------------:|
+                        |    {{client_name}}  |
+            - id: set_submit_visible
+              type: SetState
+              params:
+                is_submit_visible: true
+      - id: reset_button
+        type: Button
+        layout:
+          span: 2
+        properties:
+          title: Reset
+          block: true
+          type: default
+        events:
+          onClick:
+            - id: reset
+              type: Reset
+            - id: set_submit_to_false
+              type: SetState
+              params:
+                is_submit_visible: false
+      - id: show_client
+        type: Markdown
+        properties:
+          content:
+            _state: check_text
+      - id: submit_client
+        type: Button
+        properties:
+          title: Add Client
+          # icon: Sa
+        layout:
+          span: 3
+          color: '#595959'
+        visible:
+          _state: is_submit_visible
+        
+        events:
+          onClick:
+            - id: validate_inputs
+              type: Validate
+              params:
+                - client_name
+            - id: set_new_client
+              type: SetState
+              params:
+                new_client_data:
+                  client_name:
+                    _state: client_name
+            - id: post_client
+              type: Request
+              params: post_client
+              
