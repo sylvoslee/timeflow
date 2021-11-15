@@ -167,11 +167,11 @@ async def timelog(timelog: TimeLog):
     )
     surname = session.exec(statement).first()
 
-    strt_to_dt = string_to_datetime(timelog.start_time)
+    startt_to_dt = string_to_datetime(timelog.start_time)
     # Timelog.month
-    month_from_dt = strt_to_dt.month
+    month_from_dt = startt_to_dt.month
     # Timelog.year
-    year_from_dt = strt_to_dt.year
+    year_from_dt = startt_to_dt.year
     # Timelog.work_hours
     work_delta = string_to_datetime(timelog.end_time) - string_to_datetime(
         timelog.start_time
