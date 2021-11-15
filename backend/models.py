@@ -18,18 +18,6 @@ class TimeLog(SQLModel, table=True):
     month: Optional[int]
     year: Optional[int]
 
-    # @validator('month', always=True, pre=True)
-    # def set_month(cls, v, values):
-    #     start_time_value = string_to_datetime(values["start_time"])
-    #     v = start_time_value.month
-    #     return v
-
-    # @validator('year', always=True, pre=True)
-    # def set_year(cls, v, values):
-    #     start_time_value = string_to_datetime(values["start_time"])
-    #     v = start_time_value.year
-    #     return v
-
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)

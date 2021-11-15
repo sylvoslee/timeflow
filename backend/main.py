@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
 from models import Epic, TimeLog, User, engine, create_db, Client
-from utils import string_to_datetime, initials
+from utils import string_to_datetime
 import datetime
 
 # strftime("%m/%d/%Y, %H:%M:%S")
@@ -33,7 +33,7 @@ def time_period(time_of_start, time_of_end):
     return working_time
 
 
-def get_user_worktime_by_epic(user_initials, epic_name, start_time, end_time):
+def get_user_worktime_random(user_initials, epic_name, start_time, end_time):
     start_time_cut = start_time[:33]
     end_time_cut = end_time[:33]
     start_time_dt = string_to_datetime_GMT(start_time_cut)
@@ -114,7 +114,7 @@ async def get_timelogs():
 # Get TimeLog by user_id, epic_name and time period
 @app.get("/api/timelogs/{user_id},{epic_name},{start_time},{end_time}")
 async def get_user_by_epic_name(user_id, epic_name, start_time, end_time):
-    get_user = get_user_worktime_by_epic(user_id, epic_name, start_time, end_time)
+    get_user = get_user_worktime_random(user_id, epic_name, start_time, end_time)
     return get_user
 
 
@@ -142,24 +142,28 @@ async def epics():
     return results
 
 
+# Post user
 @app.post("/api/user/")
 async def user(user: User):
     session.add(user)
     session.commit()
 
 
+# Post client
 @app.post("/api/client/")
 async def client(client: Client):
     session.add(client)
     session.commit()
 
 
+# Post epic
 @app.post("/api/epic/")
 async def epic(epic: Epic):
     session.add(epic)
     session.commit()
 
 
+# Post timelog
 @app.post("/api/timelog/")
 async def timelog(timelog: TimeLog):
     statement = select(User.user_surname).where(
