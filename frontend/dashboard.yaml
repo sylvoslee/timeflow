@@ -35,11 +35,11 @@ areas:
       - id: timelog_list #needs to be the same as the key state
         type: List
         layout:
-          contentGutter: 16
+          contentGutter: 3
         blocks:
           - id: timelog_list.$.id
-            type: Title
+            type: Markdown
             properties:
-              level: 4
+              level: 3
               content: 
                 _state: timelog_list.$.message

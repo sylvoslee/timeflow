@@ -1,14 +1,24 @@
-lowdefy: 3.21.2
+lowdefy: 3.22.0
 name: Lowdefy starter
 connections:
   - id: app_api
     type: AxiosHttp
     properties:
       baseURL:  http://127.0.0.1:8000
-  - id: uk_carbon
-    type: AxiosHttp
-    properties:
-      baseURL: https://api.carbonintensity.org.uk
+  # - id: uk_carbon
+  #   type: AxiosHttp
+  #   properties:
+  #     baseURL: https://api.carbonintensity.org.uk
+
+pages:
+  - _ref: new_timelog.yaml
+  - _ref: dashboard.yaml
+  - _ref: work_time.yaml
+  - _ref: new_user.yaml
+  - _ref: new_epic.yaml
+  - _ref: new_client.yaml
+  - _ref: new_rate.yaml
+
 menus:
   - id: default
     links:
@@ -24,6 +34,40 @@ menus:
         properties:
           title: Dashboard
           icon: DashboardOutlined
-pages:
-  - _ref: new_timelog.yaml
-  - _ref: dashboard.yaml
+      - id: work_time # Define the menu link that directs to the brands page.
+        type: MenuLink
+        pageId: work_time # Id of the brands page.
+        properties:
+          title: Work Time
+          icon: LaptopOutlined 
+      
+      - id: admin
+        properties:
+          title: Admin
+          icon: LockOutlined
+        type: MenuGroup
+        links:
+          - id: new_user
+            type: MenuLink
+            pageId: new_user
+            properties:
+              title: Users
+              icon: UserOutlined
+          - id: new_client
+            type: MenuLink
+            pageId: new_client
+            properties:
+              title: Clients
+              icon: ProfileOutlined
+          - id: new_epic
+            type: MenuLink
+            pageId: new_epic
+            properties:
+              title: Epics
+              icon: ProfileOutlined
+          - id: new_rate
+            type: MenuLink
+            pageId: new_rate
+            properties:
+              title: Rates
+              icon: ProfileOutlined
