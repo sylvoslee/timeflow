@@ -33,7 +33,9 @@ def time_period(time_of_start, time_of_end):
     return working_time
 
 
-def get_user_worktime_random(user_initials, epic_name, start_time, end_time):
+def get_user_worktime_selected(
+    user_initials: str, epic_name: str, start_time: str, end_time: str
+) -> str:
     start_time_cut = start_time[:33]
     end_time_cut = end_time[:33]
     start_time_dt = string_to_datetime_GMT(start_time_cut)
@@ -109,6 +111,23 @@ async def get_timelogs():
         out.append(d)
     return out
 
+
+# For Developer Dashboard page
+
+# Select month
+@app.get("/api/months")
+async def get_months():
+    months_choices = []
+    for i in range(1, 13):
+        months_choices.append(i)
+    return months_choices
+
+
+# for i in range(1, 13):
+#     months_choices[i] = datetime.date(2008, i, 1).strftime("%B")
+# for i in range(1,13):
+#     months_choices[i] = datetime.date(2008, i, 1).strftime('%B')
+# months_choices.append((i, datetime.date(2008, i, 1).strftime("%B")))
 
 # For Work Time page
 # Get TimeLog by user_id, epic_name and time period

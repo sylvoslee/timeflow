@@ -132,3 +132,6 @@ dmypy.json
 .lowdefy
 
 trashcode
+
+# database
+database.sqlite
