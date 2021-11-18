@@ -1,136 +1,116 @@
-
 id: dashboard_developer
 type: PageSiderMenu
 properties:
   logo:
     src: http://localhost:3000/public/logo_web.svg
 requests:
-  - id: get_timelogs
-    type: AxiosHttp
-    connectionId: app_api
-    properties:
-      url: 
-        _nunjucks: /api/timelogs/{{user_id}},{{epic_name}},{{start_time}},{{end_time}}
-  - id: get_user_id
+  - id: get_user_initials
     type: AxiosHttp
     connectionId: app_api
     properties:
       url: /api/users
-  - id: get_months_dict
+  
+  - id: get_epics_list
     type: AxiosHttp
     connectionId: app_api
     properties:
-      url: /api/months
+      url: /api/epics
+
+  # - id: get_work_days
+  #   type: AxiosHttp
+  #   connectionId: app_api
+  #   properties:
+  #     url: 
+  #       _nunjucks: /api/ddashboard/work_days/{select_initials},{select_month},{select_epic}
 
 events:
   onEnter:
     - id: fetch_users
       type: Request
-      params: get_user_id
-    - id: fetch_months
+      params: get_user_initials
+    
+    - id: fetch_epics
       type: Request
-      params: get_months_dict
+      params: get_epics_list
 
-    - id: months_to_state
-      type: SetState
-      params:
-        months_dict:
-          _request: get_months_list.data
+    # - id: fetch_work_days
+    #   type: Request
+    #   params: get_work_days
 
-    - id: months_dict #needs to be the same as the key state
-      type: Markdown
-      properties:
-        content:
-          _state: months_dict.data
-
+    # - id: set_epics
+    #   type: SetState
+    #   params:
+    #     _request: 
+    #       epic_list_state: get_epics_list.data
 
 areas:
   content:
     blocks:
       
-      - id: user_id
+      - id: select_initials
         type: AutoComplete
         layout:
             span: 3
         properties:
-          placeholder: User id
+          placeholder: User initials
           label:
             disabled: true
           options:
-            _request: get_user_id.data
+            _request: get_user_initials.data
         required: True
       
       - id: select_month
-        type: AutoComplete
+        type: MonthSelector
         layout:
-            span: 3
+          span: 3
         properties:
           placeholder: Month
           label:
-            disabled: true
-          options:
-            _request: get_months_dict.data
-        required: True
-      
-      - id: start_time
-        type: DateTimeSelector
-        required: true
-        layout:
-          span: 4
-          offset: 1
-        properties:
-          label:
-            disabled: true
-          placeholder: Start Time
+              disabled: true
           disabledDates:
             dates: []
             ranges: []
-      
-      - id: end_time
-        type: DateTimeSelector
-        required: true
-        layout:
-          span: 4
-          offset: 1
-        properties:
-          label:
-            disabled: true
-          placeholder: End Time
-          disabledDates:
-            dates: []
-            ranges: []
-          
-      - id: submit_button
-        type: Button
+
+      - id: select_epic
+        type: MultipleSelector
         layout:
           span: 8
         properties:
+          placeholder: Select epics
+          label:
+            disabled: true
+          options:
+            _request: get_epics_list.data
+
+      - id: dashboard_search
+        type: Button
+        layout:
+          span: 2
+        properties:
           title: Search
-          icon: SearchOutlined
-          color: '#bfbfbf'
-          ghost: true
-          lock: true
-          type: primary # Make the button a primary button with color
         events:
           onClick:
-            - id: validate_my_input
-              type: Validate
-              params:
-                - user_id
-                - epic_name
-                - ending_time
-                - starting_time          
-            - id: get_timelogs_data
-              type: Request
-              params: get_timelogs
-            - id: set_timelogs
+            - id: set_dashboard_table
               type: SetState
               params:
-                timelogs_msg:
-                  _request: get_timelogs.data
-      
-      - id: timelogs_list #needs to be the same as the key state
+                dashboard_table: 
+                  _nunjucks: |
+                        #### Your search:
+                        |     User     |      Month     |      Epic      |  Days worked    |   Forecast  |  Deviation   |
+                        |:----------:|:-----------------|:--------------:|:--------------:|:------------:|:------------:|
+                        | {{select_initials}}| {{select_month}} | {{select_epic}}|   |    |    |
+                    # on:
+                    #   epic_list_state:
+                    #     _request: get_epics_list.data
+                    #   work_days:
+                    #     _request: get_work_days.data
+                      
+
+      - id: show_dashboard
         type: Markdown
         properties:
           content:
-            _state: timelogs_msg
+            _state: dashboard_table
+
+
+# 

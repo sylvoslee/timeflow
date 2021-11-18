@@ -113,21 +113,31 @@ async def get_timelogs():
 
 
 # For Developer Dashboard page
+# Get work hours for developer dashboard (ddashboard)
+@app.get("/api/ddashboard/work_days/{select_initials},{select_month},{select_epic}")
+async def get_ddashboard_work_days(
+    select_initials: str, select_month: str, select_epic: str
+) -> str:
 
-# Select month
-@app.get("/api/months")
-async def get_months():
-    months_choices = []
-    for i in range(1, 13):
-        months_choices.append(i)
-    return months_choices
+    select_month_cut = select_month[:33]
+    monthstr_to_dt = string_to_datetime_GMT(select_month_cut)
+    month_from_dt = monthstr_to_dt.month
 
+    statement = (
+        select(TimeLog.work_hours)
+        .where(TimeLog.user_initials == select_initials)
+        .where(TimeLog.month == month_from_dt)
+        .where(TimeLog.epic_name == select_epic)
+    )
+    work_hours_list = []
+    results = session.exec(statement).all()
+    for result in results:
+        work_hours_list.append(result)
 
-# for i in range(1, 13):
-#     months_choices[i] = datetime.date(2008, i, 1).strftime("%B")
-# for i in range(1,13):
-#     months_choices[i] = datetime.date(2008, i, 1).strftime('%B')
-# months_choices.append((i, datetime.date(2008, i, 1).strftime("%B")))
+    work_days = sum(work_hours_list) / 8
+    work_days_str = str(work_days)
+    return work_days_str
+
 
 # For Work Time page
 # Get TimeLog by user_id, epic_name and time period
