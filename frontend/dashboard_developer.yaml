@@ -3,6 +3,8 @@ type: PageSiderMenu
 properties:
   logo:
     src: http://localhost:3000/public/logo_web.svg
+
+
 requests:
   - id: get_user_initials
     type: AxiosHttp
@@ -16,13 +18,20 @@ requests:
     properties:
       url: /api/epics
 
-  # - id: get_work_days
-  #   type: AxiosHttp
-  #   connectionId: app_api
-  #   properties:
-  #     url: 
-  #       _nunjucks: /api/ddashboard/work_days/{select_initials},{select_month},{select_epic}
+  - id: get_months_list
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: /api/months
 
+  - id: get_ddashboard_table
+    type: AxiosHttp
+    connectionId: app_api
+    properties:
+      url: 
+        _nunjucks: /api/ddashboard/table/{{user_initials}},{{month}},{{epic_name}}
+
+        
 events:
   onEnter:
     - id: fetch_users
@@ -33,21 +42,16 @@ events:
       type: Request
       params: get_epics_list
 
-    # - id: fetch_work_days
-    #   type: Request
-    #   params: get_work_days
-
-    # - id: set_epics
-    #   type: SetState
-    #   params:
-    #     _request: 
-    #       epic_list_state: get_epics_list.data
-
+    - id: fetch_months
+      type: Request
+      params: get_months_list
+ 
+      
 areas:
   content:
     blocks:
-      
-      - id: select_initials
+
+      - id: user_initials
         type: AutoComplete
         layout:
             span: 3
@@ -59,19 +63,18 @@ areas:
             _request: get_user_initials.data
         required: True
       
-      - id: select_month
-        type: MonthSelector
+      - id: month
+        type: AutoComplete
         layout:
           span: 3
         properties:
-          placeholder: Month
+          placeholder: Select month
           label:
               disabled: true
-          disabledDates:
-            dates: []
-            ranges: []
+          options: 
+            _request: get_months_list.data
 
-      - id: select_epic
+      - id: epic_name
         type: MultipleSelector
         layout:
           span: 8
@@ -90,27 +93,14 @@ areas:
           title: Search
         events:
           onClick:
-            - id: set_dashboard_table
-              type: SetState
-              params:
-                dashboard_table: 
-                  _nunjucks: |
-                        #### Your search:
-                        |     User     |      Month     |      Epic      |  Days worked    |   Forecast  |  Deviation   |
-                        |:----------:|:-----------------|:--------------:|:--------------:|:------------:|:------------:|
-                        | {{select_initials}}| {{select_month}} | {{select_epic}}|   |    |    |
-                    # on:
-                    #   epic_list_state:
-                    #     _request: get_epics_list.data
-                    #   work_days:
-                    #     _request: get_work_days.data
-                      
 
-      - id: show_dashboard
-        type: Markdown
+            - id: fetch_table
+              type: Request
+              params: get_ddashboard_table
+
+      - id: block_id
+        type: Html
         properties:
-          content:
-            _state: dashboard_table
-
-
-# 
+          html:
+            _request: get_ddashboard_table.data
+ 
