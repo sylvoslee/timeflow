@@ -131,8 +131,7 @@ dmypy.json
 # Frontend
 .lowdefy
 
-# 
 trashcode
 
-# database
+# databases
 database.sqlite
