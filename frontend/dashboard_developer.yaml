@@ -24,12 +24,16 @@ requests:
     properties:
       url: /api/months
 
-  - id: get_ddashboard_table
+  - id: post_ddashboard_table
     type: AxiosHttp
     connectionId: app_api
     properties:
       url: 
         _nunjucks: /api/ddashboard/table/{{user_initials}},{{month}},{{epic_name}}
+      method: post
+      # data:
+      #   _state: ddashboard_table
+    
 
         
 events:
@@ -94,13 +98,24 @@ areas:
         events:
           onClick:
 
-            - id: fetch_table
+            - id: set_ddashboard_table
+              type: SetState
+              params:
+                ddashboard_table:
+                  user_initials:
+                    _state: user_initials
+                  month:
+                    _state: month
+                  epic_name:
+                    _state: epic_name
+
+            - id: post_table
               type: Request
-              params: get_ddashboard_table
+              params: post_ddashboard_table
 
       - id: block_id
         type: Html
         properties:
           html:
-            _request: get_ddashboard_table.data
+            _request: post_ddashboard_table.data
  

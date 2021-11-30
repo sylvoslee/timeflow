@@ -93,17 +93,18 @@ async def get_html():
 
 
 # Get work hours for Developer Dashboard (ddashboard)
-@app.get(
+@app.post(
     "/api/ddashboard/table/{user_initials},{month},{epic_name}",
     response_class=HTMLResponse,
 )
-async def get_ddashboard_work_days(
+async def post_ddashboard_work_days(
     user_initials: str,
     month: str,
     epic_name: str,
 ) -> str:
 
     # searching for work_days with selected arguments
+    # print(2, epic_name)
     statement = (
         select(TimeLog.work_hours)
         .where(TimeLog.user_initials == user_initials)
