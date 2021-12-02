@@ -41,7 +41,7 @@ async def list_users(list_name: str):
     return results
 
 
-# # Update users
+# Update users
 @router.put("/api/users/update")
 async def update_users(user_initials: str, user_email: str):
     statement = select(User).where(User.user_initials == user_initials)
@@ -60,15 +60,8 @@ async def delete_users(user_initials: str = None):
     statement = select(User).where(User.user_initials == user_initials)
     results = session.exec(statement)
     user_to_delete = results.one()
-    print("User: ", user_to_delete)
     session.delete(user_to_delete)
     session.commit()
-    print("Deleted hero:", user_to_delete)
     statement = select(User).where(User.user_initials == user_initials)
     result = session.exec(statement)
     hero = result.first()
-    if hero is None:
-        print(f"There's no user named {user_to_delete.user_initials}")
-
-
-METHODS
