@@ -4,12 +4,13 @@ from sqlalchemy.exc import OperationalError
 from models import Epic, TimeLog, User, engine, create_db, Client, Forecast
 from utils import *
 import datetime
-from api import user, timelog
+from api import user, timelog, forecast
 
 app = FastAPI()
 session = Session(engine)
 app.include_router(user.router)
 app.include_router(timelog.router)
+app.include_router(forecast.router)
 
 
 @app.on_event("startup")
