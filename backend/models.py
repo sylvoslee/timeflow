@@ -1,5 +1,8 @@
+from sqlite3.dbapi2 import Timestamp, adapt
 from typing import Optional
 from sqlmodel import Field, SQLModel, Field, create_engine
+from pydantic import validator
+from datetime import datetime
 
 con_str = f"sqlite:///database.sqlite"
 engine = create_engine(con_str, echo=True)
