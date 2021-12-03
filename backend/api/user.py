@@ -20,6 +20,7 @@ async def user(user: User):
         return True
 
 
+# Get user by initials or surname, if there are no initials
 @router.get("/api/users/read")
 async def read_users(user_initials: str = None, user_surname: str = None):
     if user_initials != None:
