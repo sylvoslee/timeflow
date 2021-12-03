@@ -49,3 +49,24 @@ async def client(client: Client):
 async def epic(epic: Epic):
     session.add(epic)
     session.commit()
+
+
+@app.post("/api/forecast/")
+async def forecast(forecast: Forecast):
+    statement = select(User.id).where(User.id == forecast.user_id)
+    results = session.exec(statement).first()
+
+    startt_to_dt = string_to_datetime(timelog.start_time)
+
+    new_forecast = Forecast(
+        id=forecast.id,
+        user_id=forecast.user_id,
+        epic_id=forecast.epic_id,
+        work_days=forecast.work_days,
+        month=startt_to_dt.month,
+        year=startt_to_dt.year,
+    )
+
+    session.add(new_forecast)
+    session.commit()
+    return "Hallo"
