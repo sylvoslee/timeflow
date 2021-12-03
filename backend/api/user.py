@@ -10,7 +10,7 @@ session = Session(engine)
 # Post new user
 @router.post("/api/users/create")
 async def user(user: User):
-    statement = select(User).where(User.user_initials == user.user_initials)
+    statement = select(User).where(User.username == user.username)
     try:
         result = session.exec(statement).one()
         return False
@@ -22,11 +22,11 @@ async def user(user: User):
 
 # Get user by initials or surname, if there are no initials
 @router.get("/api/users/read")
-async def read_users(user_initials: str = None, user_surname: str = None):
-    if user_initials != None:
-        statement = select(User).where(User.user_initials == user_initials)
-    elif user_surname != None:
-        statement = select(User).where(User.user_surname == user_surname)
+async def read_users(username: str = None, surname: str = None):
+    if username != None:
+        statement = select(User).where(User.username == username)
+    elif surname != None:
+        statement = select(User).where(User.surname == surname)
     results = session.exec(statement).first()
     return results
 
@@ -35,17 +35,17 @@ async def read_users(user_initials: str = None, user_surname: str = None):
 @router.get("/api/users/list")
 async def list_users(list_name: str):
     if list_name == "initials":
-        statement = select(User.user_initials)
+        statement = select(User.username)
     elif list_name == "surname":
-        statement = select(User.user_surname)
+        statement = select(User.surname)
     results = session.exec(statement).all()
     return results
 
 
 # Update users
 @router.put("/api/users/update")
-async def update_users(user_initials: str, user_email: str):
-    statement = select(User).where(User.user_initials == user_initials)
+async def update_users(username: str, user_email: str):
+    statement = select(User).where(User.username == username)
     user_to_update = session.exec(statement).one()
     print(user_to_update)
     user_to_update.user_email = user_email
@@ -57,12 +57,12 @@ async def update_users(user_initials: str, user_email: str):
 
 # Delete users
 @router.delete("/api/users/delete")
-async def delete_users(user_initials: str = None):
-    statement = select(User).where(User.user_initials == user_initials)
+async def delete_users(username: str = None):
+    statement = select(User).where(User.username == username)
     results = session.exec(statement)
     user_to_delete = results.one()
     session.delete(user_to_delete)
     session.commit()
-    statement = select(User).where(User.user_initials == user_initials)
+    statement = select(User).where(User.username == username)
     result = session.exec(statement)
     hero = result.first()

@@ -24,7 +24,7 @@ async def timelog(timelog: TimeLog):
 
     new_timelog = TimeLog(
         id=timelog.id,
-        user_initials=timelog.user_initials,
+        username=timelog.username,
         start_time=timelog.start_time,
         end_time=timelog.end_time,
         client_name=timelog.client_name,
