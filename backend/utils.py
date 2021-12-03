@@ -32,7 +32,7 @@ def time_period(time_of_start, time_of_end):
     return working_time
 
 
-def get_user_worktime_random(user_initials, epic_name, start_time, end_time):
+def get_user_worktime_random(username, epic_name, start_time, end_time):
     start_time_cut = start_time[:33]
     end_time_cut = end_time[:33]
     start_time_dt = string_to_datetime_GMT(start_time_cut)
@@ -41,7 +41,7 @@ def get_user_worktime_random(user_initials, epic_name, start_time, end_time):
     end_time_st = datetime_to_string(end_time_dt)
     statement = (
         select(TimeLog)
-        .where(TimeLog.user_initials == user_initials)
+        .where(TimeLog.username == username)
         .where(TimeLog.epic_name == epic_name)
         .where(TimeLog.start_time < end_time_st, TimeLog.end_time > start_time_st)
     )
@@ -59,6 +59,6 @@ def get_user_worktime_random(user_initials, epic_name, start_time, end_time):
         work_list.append(working_time)
     l_sum = sum(work_list, datetime.timedelta())
     work_time_sum = str(l_sum)
-    msg = f"""total work time spent by user {user_initials} from {start_time_cut} to {end_time} on epic {epic_name} is {work_time_sum}
+    msg = f"""total work time spent by user {username} from {start_time_cut} to {end_time} on epic {epic_name} is {work_time_sum}
             """
     return msg
