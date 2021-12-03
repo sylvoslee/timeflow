@@ -7,7 +7,7 @@ engine = create_engine(con_str, echo=True)
 
 class TimeLog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_initials: str
+    username: str
     start_time: str
     end_time: str
     client_name: str
@@ -46,20 +46,20 @@ class Forecast(SQLModel, table=True):
 
 class User(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_initials: str
-    user_name: str
-    user_surname: str
-    user_email: str
+    username: str
+    name: str
+    surname: str
+    email: str
 
 
 class Client(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    client_name: str
+    name: str
 
 
 class Epic(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    epic_name: str
+    name: str
 
 
 def create_db():
