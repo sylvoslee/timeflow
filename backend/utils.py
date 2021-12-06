@@ -1,6 +1,17 @@
 import datetime
-from models import TimeLog, User, engine, create_db, Client
-from sqlmodel import Session, select, SQLModel
+from models_old import Client
+from sqlmodel import Session, select, SQLModel, create_engine
+from models.user import User
+from models.timelog import TimeLog
+
+
+con_str = f"sqlite:///database.sqlite"
+engine = create_engine(con_str, echo=True)
+
+
+def create_db():
+    SQLModel.metadata.create_all(engine)
+
 
 session = Session(engine)
 

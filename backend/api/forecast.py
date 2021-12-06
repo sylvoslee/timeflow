@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from models import engine
+from utils import engine
 from sqlmodel import Session, select, SQLModel
 
 

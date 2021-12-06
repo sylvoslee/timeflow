@@ -1,7 +1,12 @@
 from fastapi import *
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
-from models import Epic, TimeLog, User, engine, create_db, Client, Forecast
+from models_old import Epic, Client, Forecast
+from utils import engine, create_db
+from models.user import User
+from models.timelog import TimeLog
+
+# from models import user
 from utils import *
 import datetime
 from api import user, timelog, forecast
