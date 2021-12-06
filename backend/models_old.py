@@ -15,7 +15,7 @@ class Forecast(SQLModel, table=True):
 
     @validator("year")
     def valid_year(cls, year_input):
-        assert year_input >= datetime.now().year
+        assert year_input >= datetime.now().years
         return year_input
 
     @validator("month")
@@ -28,15 +28,10 @@ class Forecast(SQLModel, table=True):
 
     @validator("work_days")
     def valid_work_days(cls, work_days_input):
-        assert work_days_input in range(0, 24), "Work days cannot be graeter than 24"
+        assert work_days_input in range(0, 24), "Work days cannot be greater than 24"
         return work_days_input
 
 
 class Client(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-
-
-class Epic(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str

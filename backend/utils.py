@@ -43,7 +43,7 @@ def time_period(time_of_start, time_of_end):
     return working_time
 
 
-def get_user_worktime_random(username, epic_name, start_time, end_time):
+def get_user_worktime(username, epic_name, start_time, end_time):
     start_time_cut = start_time[:33]
     end_time_cut = end_time[:33]
     start_time_dt = string_to_datetime_GMT(start_time_cut)

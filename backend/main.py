@@ -1,21 +1,23 @@
 from fastapi import *
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
-from models_old import Epic, Client, Forecast
+from models_old import Client, Forecast
 from utils import engine, create_db
 from models.user import User
 from models.timelog import TimeLog
+from models.epic import Epic
+from models.client import Client
 
-# from models import user
 from utils import *
 import datetime
-from api import user, timelog, forecast
+from api import user, timelog, forecast, epic
 
 app = FastAPI()
 session = Session(engine)
-app.include_router(user.router)
 app.include_router(timelog.router)
 app.include_router(forecast.router)
+app.include_router(user.router)
+app.include_router(epic.router)
 
 
 @app.on_event("startup")
@@ -38,7 +40,7 @@ async def clients():
 # Get full epic_name list
 @app.get("/api/epics")
 async def epics():
-    statement = select(Epic.epic_name)
+    statement = select(Epic.name)
     results = session.exec(statement).all()
     return results
 

@@ -64,6 +64,4 @@ async def delete_users(username: str = None):
     user_to_delete = results.one()
     session.delete(user_to_delete)
     session.commit()
-    statement = select(User).where(User.username == username)
-    result = session.exec(statement)
     return True
