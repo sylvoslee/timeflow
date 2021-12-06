@@ -45,14 +45,14 @@ async def list_rates():
 # Update rates
 @router.put("/api/rates/update")
 async def update_rates(
-    user_id: str = None, client_id: str = None, daily_value: str = None
+    user_id: str = None, client_id: str = None, new_daily_value: str = None
 ):
     statement = (
         select(Rate).where(Rate.user_id == user_id).where(Rate.client_id == client_id)
     )
     rate_to_update = session.exec(statement).one()
     print(rate_to_update)
-    rate_to_update.daily_value = daily_value
+    rate_to_update.daily_value = new_daily_value
     session.add(rate_to_update)
     session.commit()
     session.refresh(rate_to_update)
