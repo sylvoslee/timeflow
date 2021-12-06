@@ -1,5 +1,4 @@
 import datetime
-from models_old import Client
 from sqlmodel import Session, select, SQLModel, create_engine
 from models.user import User
 from models.timelog import TimeLog

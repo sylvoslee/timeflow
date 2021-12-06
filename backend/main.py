@@ -1,16 +1,15 @@
 from fastapi import *
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
-from models_old import Client, Forecast
+from models_old import Forecast
 from utils import engine, create_db
 from models.user import User
 from models.timelog import TimeLog
 from models.epic import Epic
 from models.client import Client
-
 from utils import *
 import datetime
-from api import user, timelog, forecast, epic
+from api import user, timelog, forecast, epic, client, rate
 
 app = FastAPI()
 session = Session(engine)
@@ -18,6 +17,8 @@ app.include_router(timelog.router)
 app.include_router(forecast.router)
 app.include_router(user.router)
 app.include_router(epic.router)
+app.include_router(client.router)
+app.include_router(rate.router)
 
 
 @app.on_event("startup")
@@ -27,33 +28,3 @@ def on_startup():
         results = session.exec(statement)
     except OperationalError:
         create_db()
-
-
-# Get full client list
-@app.get("/api/clients")
-async def clients():
-    statement = select(Client.client_name)
-    results = session.exec(statement).all()
-    return results
-
-
-# Get full epic_name list
-@app.get("/api/epics")
-async def epics():
-    statement = select(Epic.name)
-    results = session.exec(statement).all()
-    return results
-
-
-# Post client
-@app.post("/api/client/")
-async def client(client: Client):
-    session.add(client)
-    session.commit()
-
-
-# Post epic
-@app.post("/api/epic/")
-async def epic(epic: Epic):
-    session.add(epic)
-    session.commit()

@@ -30,8 +30,3 @@ class Forecast(SQLModel, table=True):
     def valid_work_days(cls, work_days_input):
         assert work_days_input in range(0, 24), "Work days cannot be greater than 24"
         return work_days_input
-
-
-class Client(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
