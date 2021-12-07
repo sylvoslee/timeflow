@@ -1,7 +1,8 @@
 from fastapi import APIRouter
-from models import User, engine
+from utils import engine
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
+from models.user import User
 
 router = APIRouter()
 session = Session(engine)
@@ -63,6 +64,4 @@ async def delete_users(username: str = None):
     user_to_delete = results.one()
     session.delete(user_to_delete)
     session.commit()
-    statement = select(User).where(User.username == username)
-    result = session.exec(statement)
-    hero = result.first()
+    return True
