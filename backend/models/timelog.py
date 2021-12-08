@@ -7,11 +7,14 @@ from datetime import datetime
 
 class TimeLog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    username: str = Field(foreign_key="user.id")
+    user_id: int = Field(foreign_key="user.id")
+    username: str
     start_time: str
     end_time: str
-    client_id: str = Field(foreign_key="client.id")
-    epic_id: str = Field(foreign_key="epic.id")
+    client_id: int = Field(foreign_key="client.id")
+    epic_id: int = Field(foreign_key="epic.id")
+    epic_name: str
     work_hours: float
+    daily_value: float
     month: int
     year: int
