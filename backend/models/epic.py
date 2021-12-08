@@ -10,3 +10,4 @@ class Epic(SQLModel, table=True):
     name: str
     work_area: str
     client_id: str = Field(foreign_key="client.id")
+    client_name: str = None

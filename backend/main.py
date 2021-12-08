@@ -28,3 +28,10 @@ def on_startup():
         results = session.exec(statement)
     except OperationalError:
         create_db()
+
+
+statement = select(Epic.name, Client.name).join(Client, isouter=True)
+results = session.exec(statement)
+print(results)
+for epic, timelog in results:
+    print("Epic:", epic, "Client:", timelog)
