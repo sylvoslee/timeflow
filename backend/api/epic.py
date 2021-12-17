@@ -54,7 +54,7 @@ async def get_epic_list(list_name: str = None):
 
 
 # Get epics with clients list
-@router.get("/clients/lists{list_name}")
+@router.get("/clients/lists/{list_name}")
 async def get_epic_list(list_name: str = None):
     if list_name == "epics_with_clients":
         statement = select(Epic.name, Client.name).select_from(Epic).join(Client)
