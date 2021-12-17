@@ -4,12 +4,12 @@ from sqlmodel import Session, select, SQLModel
 from utils import *
 from models.user import User
 
-router = APIRouter()
+router = APIRouter(prefix="/api/timelogs")
 session = Session(engine)
 
 
 # Post timelog
-@router.post("/api/timelogs/create")
+@router.post("/")
 async def timelog(timelog: TimeLog):
     startt_to_dt = string_to_datetime(timelog.start_time)
     # Timelog.month
@@ -23,14 +23,20 @@ async def timelog(timelog: TimeLog):
     work_delta_hours = work_delta.seconds / 3600
     work_hours = "{:.2f}".format(work_delta_hours)
 
+    # count_days = work_hours / 8
+
     new_timelog = TimeLog(
         id=timelog.id,
+        user_id=timelog.user_id,
         username=timelog.username,
         start_time=timelog.start_time,
         end_time=timelog.end_time,
-        client_name=timelog.client_name,
+        client_id=timelog.client_id,
+        epic_id=timelog.epic_id,
         epic_name=timelog.epic_name,
-        work_hours=work_hours,
+        count_hours=12.12,
+        count_days=13.13,
+        daily_value=11.11,
         month=month_from_dt,
         year=year_from_dt,
     )
@@ -41,7 +47,7 @@ async def timelog(timelog: TimeLog):
 
 
 # Get list of timelogs
-@router.get("/api/timelogs/list")
+@router.get("/lists/{username},{epic_name},{month}")
 async def get_timelog_list(
     username: str = None, epic_name: str = None, month: int = None
 ):
@@ -77,7 +83,7 @@ async def get_timelog_list(
 
 
 # Update timelogs
-@router.put("/api/timelogs/update")
+@router.put("/")
 async def update_timelogs(
     username: str = None,
     epic_name: str = None,
@@ -101,7 +107,7 @@ async def update_timelogs(
 
 
 # Delete timelogs
-@router.delete("/api/timelogs/delete")
+@router.delete("/")
 async def delete_timelogs(
     username: str = None,
     epic_name: str = None,
