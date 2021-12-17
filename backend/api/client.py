@@ -36,7 +36,7 @@ async def read_clients(client_name: str = None):
 @router.get("/api/clients/list")
 async def list_clients(list_name: str):
     if list_name == "clients":
-        statement = select(Client.name)
+        statement = select(Client.id, Client.name)
     results = session.exec(statement).all()
     return results
 
