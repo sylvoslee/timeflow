@@ -3,27 +3,35 @@ from utils import engine
 from sqlmodel import Session, select, SQLModel, or_
 from models.epic import Epic
 from models.client import Client
-
 from sqlalchemy.exc import NoResultFound
 
-router = APIRouter()
+router = APIRouter(prefix="/api/epics")
 session = Session(engine)
 
 # Post new epic
-@router.post("/api/epics/create")
+@router.post("/")
 async def post_epic(epic: Epic):
-    statement = select(Epic).where(Epic.name == epic.name)
+    statement1 = select(Epic).where(or_(Epic.name == epic.name, Epic.id == epic.id))
+    statement2 = select(Client.name).where(Client.id == epic.client_id)
     try:
-        result = session.exec(statement).one()
+        result = session.exec(statement1).one()
         return False
     except NoResultFound:
-        session.add(epic)
+        client_name = session.exec(statement2).first()
+        new_epic = Epic(
+            id=epic.id,
+            name=epic.name,
+            work_area=epic.work_area,
+            client_id=epic.client_id,
+            client_name=client_name,
+        )
+        session.add(new_epic)
         session.commit()
         return True
 
 
 # Get epic by name
-@router.get("/api/epics/read")
+@router.get("/{epic_name}")
 async def read_epics(epic_name: str = None):
     statement = select(Epic).where(Epic.name == epic_name)
     try:
@@ -35,7 +43,7 @@ async def read_epics(epic_name: str = None):
 
 
 # Get epics list
-@router.get("/api/epics/list")
+@router.get("/lists/{list_name}")
 async def get_epic_list(list_name: str = None):
     if list_name == "epics":
         statement = select(Epic.name)
@@ -45,8 +53,19 @@ async def get_epic_list(list_name: str = None):
         return f"""This list doesn't exist. Please select existing list"""
 
 
+# Get epics with clients list
+@router.get("/clients/lists{list_name}")
+async def get_epic_list(list_name: str = None):
+    if list_name == "epics_with_clients":
+        statement = select(Epic.name, Client.name).select_from(Epic).join(Client)
+        result = session.exec(statement).all()
+        return result
+    else:
+        return f"""This list doesn't exist. Please select existing list"""
+
+
 # Update epics
-@router.put("/api/epics/update")
+@router.put("/")
 async def update_epic(
     epic_id: str = None,
     epic_name: str = None,
@@ -64,7 +83,7 @@ async def update_epic(
 
 
 # Delete epics
-@router.delete("/api/epics/delete")
+@router.delete("/")
 async def delete_epics(epic_name: str = None):
     statement = select(Epic).where(Epic.name == epic_name)
     results = session.exec(statement)

@@ -4,12 +4,12 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from models.rate import Rate
 
-router = APIRouter()
+router = APIRouter(prefix="/api/rates")
 session = Session(engine)
 
 
 # Post new rate
-@router.post("/api/rates/create")
+@router.post("/")
 async def rate(rate: Rate):
     statement = select(Rate).where(Rate.id == rate.id)
     try:
@@ -22,7 +22,7 @@ async def rate(rate: Rate):
 
 
 # Get rate
-@router.get("/api/rates/read")
+@router.get("/{user_id},{client_id}")
 async def read_rates(user_id: str = None, client_id: str = None):
     if user_id != None and client_id != None:
         statement = (
@@ -35,7 +35,7 @@ async def read_rates(user_id: str = None, client_id: str = None):
 
 
 # Get list of rates
-@router.get("/api/rates/list")
+@router.get("/list")
 async def list_rates():
     statement = select(Rate)
     results = session.exec(statement).all()
@@ -43,7 +43,7 @@ async def list_rates():
 
 
 # Update rates
-@router.put("/api/rates/update")
+@router.put("/")
 async def update_rates(
     user_id: str = None, client_id: str = None, new_daily_value: str = None
 ):
@@ -60,7 +60,7 @@ async def update_rates(
 
 
 # Delete rates
-@router.delete("/api/rates/delete")
+@router.delete("/")
 async def delete_rates(user_id: str = None, client_id: str = None):
     statement = select(Rate).where(Rate.user_id == user_id)
     results = session.exec(statement)
