@@ -26,17 +26,64 @@ async def forecast(forecast: Forecast):
     session.commit()
     return True
 
+
 @router.get("/forecasts/list")
-async def list_clients(list_name: str):
-    if list_name == "clients":
-        statement = select(Forecast.id, 
-                            Forecast.user_id,
-                            Forecast.epic_id,
-                            Client.id,
-                            Forecast.days, 
-                            Forecast.month,
-                            Forecast.year).select_from(Forecast)
-        results = session.exec(statement).all()
-        return results
+async def get_forecasts_list(user_id: str = None, epic_id: str = None):
+    if user_id != None:
+        statement = (
+            select(Forecast)
+                .where(Forecast.user_id == user_id)
+        )
+    if epic_id != None:
+        statement = (
+            select(Forecast)
+                .where(Forecast.epic_id == epic_id)
+        )
     else:
-        return False
+        statement = select(Forecast)
+
+    results = session.exec(statement).all()
+    return results
+
+
+@router.put("/forecasts/update")
+async def update_forecasts(
+    user_id: str = None,
+    epic_id: str = None,
+    month: int = None,
+    year: int = None,
+    days: float = None
+):
+    statement = (
+        select(Forecast)
+        .where(Forecast.user_id == user_id)
+        .where(Forecast.epic_id == epic_id)
+        .where(Forecast.month == month)
+        .where(Forecast.year == year)
+    )
+    forecast_to_update = session.exec(statement).one()
+    forecast_to_update.days = days
+    session.add(forecast_to_update)
+    session.commit()
+    session.refresh(forecast_to_update)
+    return True
+
+
+@router.delete("/forecasts/delete")
+async def delete_forecasts(
+    user_id: str = None,
+    epic_id: str = None,
+    month: int = None,
+    year: int = None
+):
+    statement = (
+        select(Forecast)
+        .where(Forecast.user_id == user_id)
+        .where(Forecast.epic_id == epic_id)
+        .where(Forecast.month == month)
+        .where(Forecast.year == year)
+    )
+    results = session.exec(statement)
+    forecast_to_delete = results.one()
+    session.delete(forecast_to_delete)
+    session.commit()
