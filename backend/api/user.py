@@ -4,12 +4,12 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from models.user import User
 
-router = APIRouter()
+router = APIRouter(prefix="/api/users")
 session = Session(engine)
 
 
 # Post new user
-@router.post("/api/users/create")
+@router.post("/")
 async def user(user: User):
     statement = select(User).where(User.username == user.username)
     try:
@@ -22,7 +22,7 @@ async def user(user: User):
 
 
 # Get user by initials or surname, if there are no initials
-@router.get("/api/users/read")
+@router.get("/{username},{surname}")
 async def read_users(username: str = None, surname: str = None):
     if username != None:
         statement = select(User).where(User.username == username)
@@ -32,8 +32,15 @@ async def read_users(username: str = None, surname: str = None):
     return results
 
 
+@router.get("/lists/id-username")
+async def read_users_list():
+    statement = select(User.id)
+    results_list = session.exec(statement).all()
+    return results_list
+
+
 # Get list of users
-@router.get("/api/users/list")
+@router.get("/lists/{list_name}")
 async def list_users(list_name: str):
     if list_name == "initials":
         statement = select(User.username)
@@ -44,7 +51,7 @@ async def list_users(list_name: str):
 
 
 # Update users
-@router.put("/api/users/update")
+@router.put("/")
 async def update_users(username: str, user_email: str):
     statement = select(User).where(User.username == username)
     user_to_update = session.exec(statement).one()
@@ -57,7 +64,7 @@ async def update_users(username: str, user_email: str):
 
 
 # Delete users
-@router.delete("/api/users/delete")
+@router.delete("/")
 async def delete_users(username: str = None):
     statement = select(User).where(User.username == username)
     results = session.exec(statement)

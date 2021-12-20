@@ -3,12 +3,14 @@ from utils import engine
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from models.client import Client
+from models.epic import Epic
 
-router = APIRouter()
+
+router = APIRouter(prefix="/api/clients")
 session = Session(engine)
 
 # Post new client
-@router.post("/api/clients/create")
+@router.post("/")
 async def client(client: Client):
     statement = select(Client).where(Client.name == client.name)
     try:
@@ -21,7 +23,7 @@ async def client(client: Client):
 
 
 # Get client by name
-@router.get("/api/clients/read")
+@router.get("/{client_name}")
 async def read_clients(client_name: str = None):
     statement = select(Client).where(Client.name == client_name)
     try:
@@ -32,8 +34,21 @@ async def read_clients(client_name: str = None):
         return msg
 
 
+# Get all selected client's epics
+@router.get("/{client_id}/epics/list")
+async def read_clients(client_id: str = None):
+    statement = (
+        select(Client.name, Epic.name)
+        .select_from(Client)
+        .join(Epic)
+        .where(Client.id == client_id)
+    )
+    results = session.exec(statement).all()
+    return results
+
+
 # Get list of clients
-@router.get("/api/clients/list")
+@router.get("/{list_name}/list")
 async def list_clients(list_name: str):
     if list_name == "clients":
         statement = select(Client.id, Client.name)
@@ -42,7 +57,7 @@ async def list_clients(list_name: str):
 
 
 # Update client
-@router.put("/api/clients/update")
+@router.put("/")
 async def update_clients(client_name: str, new_client_name: str):
     statement = select(Client).where(Client.name == client_name)
     client_to_update = session.exec(statement).one()
@@ -55,7 +70,7 @@ async def update_clients(client_name: str, new_client_name: str):
 
 
 # Delete users
-@router.delete("/api/clients/delete")
+@router.delete("/")
 async def delete_clients(client_name: str = None):
     statement = select(Client).where(Client.name == client_name)
     results = session.exec(statement)
