@@ -26,6 +26,6 @@ npx lowdefy@latest dev
 6) Spin up the backend Fastapi dev server
 
 ```bash
-cd backend
-uvicorn main:app --reload
+cd timesheets
+uvicorn backend.main:app --reload
 ```
