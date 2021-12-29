@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from utils import engine
+from ..utils import engine
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
-from models.client import Client
-from models.epic import Epic
+from ..models.client import Client
+from ..models.epic import Epic
 
 
 router = APIRouter(prefix="/api/clients")

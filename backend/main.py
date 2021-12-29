@@ -1,14 +1,13 @@
 from fastapi import *
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
-from utils import engine, create_db
-from models.user import User
-from models.timelog import TimeLog
-from models.epic import Epic
-from models.client import Client
-from utils import *
+from backend.models.user import User
+from backend.models.timelog import TimeLog
+from backend.models.epic import Epic
+from backend.models.client import Client
+from backend.utils import engine, create_db
 import datetime
-from api import user, timelog, forecast, epic, client, rate
+from backend.api import user, timelog, forecast, epic, client, rate
 
 app = FastAPI()
 session = Session(engine)
@@ -27,16 +26,3 @@ def on_startup():
         results = session.exec(statement)
     except OperationalError:
         create_db()
-
-
-# statement = select(Epic.name, Client.name).join(Client, isouter=True)
-# results = session.exec(statement).all()
-# print(results)
-# for epic, timelog in results:
-#     print("Epic:", epic, "Client:", timelog)
-
-# statement = select(Epic.name, Client.name).join(Client, isouter=True)
-# results = session.exec(statement).first()
-# print(results)
-# for epic in results:
-#     print("Epic:", epic)
