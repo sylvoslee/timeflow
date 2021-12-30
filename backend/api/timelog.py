@@ -1,10 +1,12 @@
 from fastapi import APIRouter
-from utils import engine
+from ..utils import engine
 from sqlmodel import Session, select, SQLModel
-from utils import *
-from models.user import User
+from ..utils import engine
+from ..models.user import User
+from ..models.timelog import TimeLog
 
 router = APIRouter(prefix="/api/timelogs")
+
 session = Session(engine)
 
 

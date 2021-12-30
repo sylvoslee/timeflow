@@ -1,7 +1,7 @@
 import datetime
 from sqlmodel import Session, select, SQLModel, create_engine
-from models.user import User
-from models.timelog import TimeLog
+from backend.models.user import User
+from backend.models.timelog import TimeLog
 
 
 con_str = f"sqlite:///database.sqlite"

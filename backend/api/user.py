@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from utils import engine
+from ..utils import engine
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
-from models.user import User
+from ..models.user import User
 
 router = APIRouter(prefix="/api/users")
 session = Session(engine)

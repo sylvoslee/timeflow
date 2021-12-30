@@ -1,13 +1,14 @@
 from fastapi import APIRouter
-from models.forecast import Forecast
-from models.client import Client
-from models.user import User
-from utils import *
+from ..models.forecast import Forecast
+from ..models.client import Client
+from ..models.user import User
+from ..utils import engine
 from sqlmodel import Session, select, SQLModel
 
 
 router = APIRouter(prefix="/api")
 session = Session(engine)
+
 
 @router.post("/forecasts")
 async def forecast(forecast: Forecast):
@@ -19,7 +20,7 @@ async def forecast(forecast: Forecast):
         client_id=forecast.client_id,
         days=forecast.days,
         month=forecast.month,
-        year=forecast.year
+        year=forecast.year,
     )
 
     session.add(new_forecast)
@@ -30,15 +31,9 @@ async def forecast(forecast: Forecast):
 @router.get("/forecasts/list")
 async def get_forecasts_list(user_id: str = None, epic_id: str = None):
     if user_id != None:
-        statement = (
-            select(Forecast)
-                .where(Forecast.user_id == user_id)
-        )
+        statement = select(Forecast).where(Forecast.user_id == user_id)
     if epic_id != None:
-        statement = (
-            select(Forecast)
-                .where(Forecast.epic_id == epic_id)
-        )
+        statement = select(Forecast).where(Forecast.epic_id == epic_id)
     else:
         statement = select(Forecast)
 
@@ -52,7 +47,7 @@ async def update_forecasts(
     epic_id: str = None,
     month: int = None,
     year: int = None,
-    days: float = None
+    days: float = None,
 ):
     statement = (
         select(Forecast)
@@ -71,10 +66,7 @@ async def update_forecasts(
 
 @router.delete("/forecasts/delete")
 async def delete_forecasts(
-    user_id: str = None,
-    epic_id: str = None,
-    month: int = None,
-    year: int = None
+    user_id: str = None, epic_id: str = None, month: int = None, year: int = None
 ):
     statement = (
         select(Forecast)

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from utils import engine
+from ..utils import engine
 from sqlmodel import Session, select, SQLModel, or_
-from models.epic import Epic
-from models.client import Client
+from ..models.epic import Epic
+from ..models.client import Client
 from sqlalchemy.exc import NoResultFound
 
 router = APIRouter(prefix="/api/epics")
@@ -43,14 +43,11 @@ async def read_epics(epic_name: str = None):
 
 
 # Get epics list
-@router.get("/lists/{list_name}")
-async def get_epic_list(list_name: str = None):
-    if list_name == "epics":
-        statement = select(Epic.name)
-        result = session.exec(statement).all()
-        return result
-    else:
-        return f"""This list doesn't exist. Please select existing list"""
+@router.get("/")
+async def get_epic_list():
+    statement = select(Epic)
+    result = session.exec(statement).all()
+    return result
 
 
 # Get epics with clients list
