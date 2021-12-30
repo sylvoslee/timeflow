@@ -16,20 +16,28 @@ def create_test_db():
 def test_post_epic():
     create_test_db()
     response = client.post(
-        "/api/epics/", json={"name": "bricks", "work_area": "lego", "client_id": 1}
+        "/api/epics/",
+        json={"name": "[dyvenia]branding", "work_area": "DYV", "client_id": 1},
     )
     data = response.json()
     assert response.status_code == 200
-    assert data == {"id": 1, "client_id": 1, "name": "bricks", "work_area": "lego"}
+    assert data == {
+        "id": 1,
+        "client_id": 1,
+        "name": "[dyvenia]branding",
+        "work_area": "DYV",
+    }
 
 
 def test_get_epic_list():
     response = client.get("/api/epics/")
     data = response.json()
     assert response.status_code == 200
-    assert data == [{"id": 1, "client_id": 1, "name": "bricks", "work_area": "lego"}]
+    assert data == [
+        {"id": 1, "client_id": 1, "name": "[dyvenia]branding", "work_area": "DYV"}
+    ]
 
 
 def test_delete_epics():
-    response = client.delete("/api/epics/?epic_name=bricks")
+    response = client.delete("/api/epics/?epic_name=[dyvenia]branding")
     assert response.status_code == 200

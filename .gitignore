@@ -135,4 +135,5 @@ dmypy.json
 trashcode
 
 # databases
-.sqlite
+database.sqlite
+test_db.sqlite

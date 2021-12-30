@@ -27,7 +27,8 @@ async def post_epic(epic: Epic):
         )
         session.add(new_epic)
         session.commit()
-        return True
+        session.refresh(new_epic)
+        return new_epic
 
 
 # Get epic by name
