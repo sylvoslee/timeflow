@@ -1,3 +1,4 @@
+from os import name
 from fastapi import APIRouter
 from ..models.forecast import Forecast
 from ..models.client import Client
@@ -6,13 +7,12 @@ from ..utils import engine
 from sqlmodel import Session, select, SQLModel
 
 
-router = APIRouter(prefix="/api")
+router = APIRouter(prefix="/api/forecasts")
 session = Session(engine)
 
 
-@router.post("/forecasts")
+@router.post("/")
 async def forecast(forecast: Forecast):
-
     new_forecast = Forecast(
         id=forecast.id,
         user_id=forecast.user_id,
@@ -22,26 +22,44 @@ async def forecast(forecast: Forecast):
         month=forecast.month,
         year=forecast.year,
     )
-
     session.add(new_forecast)
     session.commit()
     return True
 
 
-@router.get("/forecasts/list")
-async def get_forecasts_list(user_id: str = None, epic_id: str = None):
-    if user_id != None:
-        statement = select(Forecast).where(Forecast.user_id == user_id)
-    if epic_id != None:
-        statement = select(Forecast).where(Forecast.epic_id == epic_id)
+@router.get("/lists/{client_id}")
+async def get_clients_list(client_id: str = None):
+    if client_id != None:
+        statement = select(Client.id
+                            ,Client.name
+                            ,Forecast.user_id
+                            ,Forecast.month
+                            ,Forecast.year
+                            ,Forecast.days
+                            ).join(Client).where(Client.id == client_id)
+        results = session.exec(statement).all()
+        return results
     else:
-        statement = select(Forecast)
-
-    results = session.exec(statement).all()
-    return results
+        raise ValueError
 
 
-@router.put("/forecasts/update")
+@router.get("/lists/{user_id}")
+async def get_forecasts_list(user_id: str = None):
+    if user_id != None:
+        statement = select(Client.id
+                            ,Client.name
+                            ,Forecast.user_id
+                            ,Forecast.month
+                            ,Forecast.year
+                            ,Forecast.days
+                            ).join(Client).where(Forecast.user_id == user_id)
+        results = session.exec(statement).all()
+        return results
+    else:
+        raise ValueError
+
+
+@router.put("/")
 async def update_forecasts(
     user_id: str = None,
     epic_id: str = None,
@@ -64,7 +82,7 @@ async def update_forecasts(
     return True
 
 
-@router.delete("/forecasts/delete")
+@router.delete("/")
 async def delete_forecasts(
     user_id: str = None, epic_id: str = None, month: int = None, year: int = None
 ):
