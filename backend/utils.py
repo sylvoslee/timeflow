@@ -4,7 +4,7 @@ from backend.models.user import User
 from backend.models.timelog import TimeLog
 
 
-con_str = f"sqlite:///database.sqlite"
+con_str = f"sqlite:///backend/database.sqlite"
 engine = create_engine(con_str, echo=True)
 
 
