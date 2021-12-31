@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from ..utils import engine
+from fastapi import APIRouter, Depends
+from ..utils import engine, get_session
 from sqlmodel import Session, select, SQLModel, or_
 from ..models.epic import Epic
 from ..models.client import Client
@@ -8,30 +8,37 @@ from sqlalchemy.exc import NoResultFound
 router = APIRouter(prefix="/api/epics")
 session = Session(engine)
 
+
 # Post new epic
 @router.post("/")
-async def post_epic(epic: Epic):
+async def post_epic(
+    *,
+    epic: Epic,
+    session: Session = Depends(get_session),
+):
     statement1 = select(Epic).where(or_(Epic.name == epic.name, Epic.id == epic.id))
     statement2 = select(Client.name).where(Client.id == epic.client_id)
     try:
         result = session.exec(statement1).one()
         return False
     except NoResultFound:
-        client_name = session.exec(statement2).first()
-        new_epic = Epic(
-            id=epic.id,
-            name=epic.name,
-            work_area=epic.work_area,
-            client_id=epic.client_id,
-            client_name=client_name,
-        )
-        session.add(new_epic)
+        session.add(epic)
         session.commit()
-        session.refresh(new_epic)
-        return new_epic
+        session.refresh(epic)
+        return epic
 
 
 # Get epic by name
+
+
+# Get epics list
+@router.get("/")
+async def get_epic_list(session: Session = Depends(get_session)):
+    statement = select(Epic)
+    result = session.exec(statement).all()
+    return result
+
+
 @router.get("/{epic_name}")
 async def read_epics(epic_name: str = None):
     statement = select(Epic).where(Epic.name == epic_name)
@@ -41,14 +48,6 @@ async def read_epics(epic_name: str = None):
     except NoResultFound:
         msg = f"""There is no epic named {epic_name}"""
         return msg
-
-
-# Get epics list
-@router.get("/")
-async def get_epic_list():
-    statement = select(Epic)
-    result = session.exec(statement).all()
-    return result
 
 
 # Get epics with clients list
@@ -82,7 +81,7 @@ async def update_epic(
 
 # Delete epics
 @router.delete("/")
-async def delete_epics(epic_name: str = None):
+async def delete_epics(epic_name: str = None, session: Session = Depends(get_session)):
     statement = select(Epic).where(Epic.name == epic_name)
     results = session.exec(statement)
     epic_to_delete = results.one()

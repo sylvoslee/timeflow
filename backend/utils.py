@@ -8,6 +8,11 @@ con_str = f"sqlite:///backend/database.sqlite"
 engine = create_engine(con_str, echo=True)
 
 
+def get_session():
+    session = Session(engine)
+    return session
+
+
 def create_db():
     SQLModel.metadata.create_all(engine)
 

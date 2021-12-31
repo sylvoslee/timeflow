@@ -10,6 +10,7 @@ import datetime
 from backend.api import user, timelog, forecast, epic, client, rate
 
 app = FastAPI()
+
 session = Session(engine)
 app.include_router(timelog.router)
 app.include_router(forecast.router)
