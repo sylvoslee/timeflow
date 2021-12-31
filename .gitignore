@@ -76,6 +76,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+.ipynb
 
 # IPython
 profile_default/
@@ -135,3 +136,4 @@ trashcode
 
 # databases
 database.sqlite
+test_db.sqlite
