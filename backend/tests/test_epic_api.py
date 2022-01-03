@@ -58,6 +58,18 @@ def test_post_epic(client):
     }
 
 
+def test_read_epics(client):
+    response = client.get("/api/epics/[dyvenia]branding")
+    data = response.json()
+    assert response.status_code == 200
+    assert data == {
+        "id": 1,
+        "client_id": 1,
+        "name": "[dyvenia]branding",
+        "work_area": "DYV",
+    }
+
+
 def test_get_epic_list(client):
     response = client.get("/api/epics/")
     data = response.json()

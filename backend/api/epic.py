@@ -40,7 +40,7 @@ async def get_epic_list(session: Session = Depends(get_session)):
 
 
 @router.get("/{epic_name}")
-async def read_epics(epic_name: str = None):
+async def read_epics(epic_name: str = None, session: Session = Depends(get_session)):
     statement = select(Epic).where(Epic.name == epic_name)
     try:
         result = session.exec(statement).one()

@@ -1,10 +1,7 @@
 from fastapi import *
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
-from backend.models.user import User
 from backend.models.timelog import TimeLog
-from backend.models.epic import Epic
-from backend.models.client import Client
 from backend.utils import engine, create_db
 import datetime
 from backend.api import user, timelog, forecast, epic, client, rate
