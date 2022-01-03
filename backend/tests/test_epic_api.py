@@ -70,12 +70,24 @@ def test_read_epics(client):
     }
 
 
+def test_update_epic(client):
+    response = client.put("api/epics/?epic_id=1&work_area=DYV&client_new_id=2")
+    data = response.json()
+    assert response.status_code == 200
+    assert data == {
+        "id": 1,
+        "client_id": 2,
+        "name": "[dyvenia]branding",
+        "work_area": "DYV",
+    }
+
+
 def test_get_epic_list(client):
     response = client.get("/api/epics/")
     data = response.json()
     assert response.status_code == 200
     assert data == [
-        {"id": 1, "client_id": 1, "name": "[dyvenia]branding", "work_area": "DYV"}
+        {"id": 1, "client_id": 2, "name": "[dyvenia]branding", "work_area": "DYV"}
     ]
 
 
