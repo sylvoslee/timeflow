@@ -60,3 +60,9 @@ def test_post_client(client):
     data2 = response2.json()
     assert response2.status_code == 200
     assert data2 == False
+
+
+def test_read_clients(client):
+    response = client.get("/api/clients/")
+    data = response.json()
+    assert data == [{"name": "dyvenia", "id": 1}]
