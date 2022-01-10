@@ -40,7 +40,7 @@ async def get_epic_list(session: Session = Depends(get_session)):
 
 
 @router.get("/{epic_name}")
-async def read_epics(epic_name: str = None):
+async def read_epics(epic_name: str = None, session: Session = Depends(get_session)):
     statement = select(Epic).where(Epic.name == epic_name)
     try:
         result = session.exec(statement).one()
@@ -68,6 +68,7 @@ async def update_epic(
     epic_name: str = None,
     work_area: str = None,
     client_new_id: int = None,
+    session: Session = Depends(get_session),
 ):
     statement = select(Epic).where(or_(Epic.name == epic_name, Epic.id == epic_id))
     epic_to_update = session.exec(statement).one()
@@ -76,7 +77,7 @@ async def update_epic(
     session.add(epic_to_update)
     session.commit()
     session.refresh(epic_to_update)
-    return True
+    return epic_to_update
 
 
 # Delete epics
