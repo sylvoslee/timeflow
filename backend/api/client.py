@@ -32,14 +32,14 @@ async def read_clients(session: Session = Depends(get_session)):
 
 
 # Get client by name
-@router.get("/{client_name}")
-async def read_clients(client_name: str = None):
-    statement = select(Client).where(Client.name == client_name)
+@router.get("/{client_id}")
+async def read_clients(client_id: str = None):
+    statement = select(Client).where(Client.id == client_id)
     try:
         result = session.exec(statement).one()
         return result
     except NoResultFound:
-        msg = f"""There is no client named {client_name}"""
+        msg = f"""There is no client with id = {client_id}"""
         return msg
 
 

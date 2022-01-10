@@ -56,7 +56,6 @@ def test_post_client(client):
         "/api/clients/",
         json={"name": "dyvenia"},
     )
-    app.dependency_overrides.clear()
     data2 = response2.json()
     assert response2.status_code == 200
     assert data2 == False
