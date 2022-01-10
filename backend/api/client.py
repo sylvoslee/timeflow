@@ -47,7 +47,7 @@ async def read_clients(client_name: str = None):
 @router.get("/{client_id}/epics/")
 async def read_clients(client_id: str = None):
     statement = (
-        select(Client.name, Epic.name)
+        select(Client.id, Client.name, Epic.name)
         .select_from(Client)
         .join(Epic)
         .where(Client.id == client_id)
