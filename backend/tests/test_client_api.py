@@ -59,3 +59,29 @@ def test_post_client(client):
     data2 = response2.json()
     assert response2.status_code == 200
     assert data2 == False
+
+
+def test_read_clients(client):
+    response1 = client.get("/api/clients/1")
+    data1 = response1.json()
+    assert data1 == {
+        "name": "dyvenia",
+        "id": 1,
+    }
+    response2 = client.get("/api/clients/0")
+    data2 = response2.json()
+    assert data2 == "There is no client with id = 0"
+
+
+# # Get client by id
+# @router.get("/{client_id}")
+# async def read_clients(
+#     *, client_id: int = None, session: Session = Depends(get_session)
+# ):
+#     statement = select(Client).where(Client.id == client_id)
+#     try:
+#         result = session.exec(statement).one()
+#         return result
+#     except NoResultFound:
+#         msg = f"""There is no client with id = {client_id}"""
+#         return msg
