@@ -1,5 +1,5 @@
-from fastapi import APIRouter
-from ..utils import engine
+from fastapi import APIRouter, Depends
+from ..utils import engine, get_session
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from ..models.client import Client
@@ -11,7 +11,7 @@ session = Session(engine)
 
 # Post new client
 @router.post("/")
-async def client(client: Client):
+async def post_client(*, client: Client, session: Session = Depends(get_session)):
     statement = select(Client).where(Client.name == client.name)
     try:
         result = session.exec(statement).one()
@@ -19,7 +19,16 @@ async def client(client: Client):
     except NoResultFound:
         session.add(client)
         session.commit()
-        return True
+        session.refresh(client)
+        return client
+
+
+# Get list of all clients
+@router.get("/")
+async def read_clients(session: Session = Depends(get_session)):
+    statement = select(Client)
+    results = session.exec(statement).all()
+    return results
 
 
 # Get client by name
@@ -35,7 +44,7 @@ async def read_clients(client_name: str = None):
 
 
 # Get all selected client's epics
-@router.get("/{client_id}/epics/list")
+@router.get("/{client_id}/epics/")
 async def read_clients(client_id: str = None):
     statement = (
         select(Client.name, Epic.name)
@@ -43,15 +52,6 @@ async def read_clients(client_id: str = None):
         .join(Epic)
         .where(Client.id == client_id)
     )
-    results = session.exec(statement).all()
-    return results
-
-
-# Get list of clients
-@router.get("/{list_name}/list")
-async def list_clients(list_name: str):
-    if list_name == "clients":
-        statement = select(Client.id, Client.name)
     results = session.exec(statement).all()
     return results
 
