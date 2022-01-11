@@ -45,7 +45,7 @@ async def read_clients(client_id: str = None):
 
 # Get all selected client's epics
 @router.get("/{client_id}/epics/")
-async def read_clients(client_id: str = None):
+async def read_clients_epics(client_id: str = None):
     statement = (
         select(Client.id, Client.name, Epic.name)
         .select_from(Client)

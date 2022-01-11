@@ -6,41 +6,8 @@ from sqlmodel import SQLModel, Session, create_engine
 from sqlmodel.pool import StaticPool
 from ..api.client import get_session
 
-db_name = "test_db.sqlite"
-test_con = f"sqlite:///{db_name}"
-test_engine = create_engine(
-    test_con, connect_args={"check_same_thread": False}, echo=True
-)
 
-
-@pytest.fixture(name="create_db", scope="module")
-def create_db():
-    # setup
-    SQLModel.metadata.create_all(test_engine)
-    yield
-    # teardown
-    os.remove(db_name)
-
-
-@pytest.fixture(name="session")
-def session_fixture(create_db):
-    create_db
-
-    with Session(test_engine) as session:
-        yield session
-
-
-@pytest.fixture(name="client")
-def client_fixture(session: Session):
-    def get_session_override():
-        return session
-
-    app.dependency_overrides[get_session] = get_session_override
-    client = TestClient(app)
-    yield client
-    app.dependency_overrides.clear()
-
-
+@pytest.mark.order(2)
 def test_post_client(client):
     response1 = client.post(
         "/api/clients/",
@@ -65,3 +32,9 @@ def test_read_clients(client):
     response = client.get("/api/clients/")
     data = response.json()
     assert data == [{"name": "dyvenia", "id": 1}]
+
+
+def test_read_clients_epics(client):
+    response = client.get("api/clients/1/epics")
+    data = response.json()
+    assert data == [{"id": 1, "name": "dyvenia", "name_1": "[dyvenia]branding"}]
