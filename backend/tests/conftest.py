@@ -1,3 +1,5 @@
+# A file containing fixtures for testing
+# Fixtures defined here are available for the whole scope
 from fastapi.testclient import TestClient
 import pytest
 import os
@@ -5,6 +7,7 @@ from ..main import app, session
 from sqlmodel import SQLModel, Session, create_engine
 from sqlmodel.pool import StaticPool
 from ..utils import get_session
+
 
 db_name = "test_db.sqlite"
 test_con = f"sqlite:///{db_name}"
