@@ -45,7 +45,7 @@ async def read_clients(client_id: str = None):
 
 # Get all selected client's epics
 @router.get("/{client_id}/epics/")
-async def read_clients_epics(client_id: str = None):
+async def read_clients_epics(client_id: int = None):
     statement = (
         select(Client.id, Client.name, Epic.name)
         .select_from(Client)
@@ -57,9 +57,9 @@ async def read_clients_epics(client_id: str = None):
 
 
 # Update client
-@router.put("/")
-async def update_clients(client_name: str, new_client_name: str):
-    statement = select(Client).where(Client.name == client_name)
+@router.put("/{client_id}")
+async def update_clients(client_id: int = None, new_client_name: str = None):
+    statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
     print(client_to_update)
     client_to_update.name = new_client_name
