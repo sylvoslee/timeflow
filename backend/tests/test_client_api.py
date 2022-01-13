@@ -61,7 +61,13 @@ def test_post_client(client):
     assert data2 == False
 
 
-def test_read_clients(client):
+def test_read_clients_all(client):
+    response = client.get("/api/clients/")
+    data = response.json()
+    assert data == [{"name": "dyvenia", "id": 1}]
+
+
+def test_read_client_id(client):
     response1 = client.get("/api/clients/1")
     data1 = response1.json()
     assert data1 == {
