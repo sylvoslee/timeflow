@@ -31,9 +31,11 @@ async def read_clients(session: Session = Depends(get_session)):
     return results
 
 
-# Get client by name
+# Get client by id
 @router.get("/{client_id}")
-async def read_clients(client_id: str = None):
+async def read_clients(
+    *, client_id: int = None, session: Session = Depends(get_session)
+):
     statement = select(Client).where(Client.id == client_id)
     try:
         result = session.exec(statement).one()
