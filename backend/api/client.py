@@ -61,16 +61,20 @@ async def read_clients_epics(
 
 
 # Update client
-@router.put("/{client_id}")
-async def update_clients(client_id: int = None, new_client_name: str = None):
+@router.put("/{client_id}/new-name")
+async def update_clients(
+    *,
+    client_id: int = None,
+    new_client_name: str = None,
+    session: Session = Depends(get_session),
+):
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
-    print(client_to_update)
     client_to_update.name = new_client_name
     session.add(client_to_update)
     session.commit()
     session.refresh(client_to_update)
-    return True
+    return client_to_update
 
 
 # Delete users
