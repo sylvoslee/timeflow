@@ -19,6 +19,33 @@ def create_db():
 
 session = Session(engine)
 
+tags_metadata = [
+    {
+        "name": "user",
+        "description": "Operations with users",
+    },
+    {
+        "name": "epic",
+        "description": "operations with epics",
+    },
+    {
+        "name": "client",
+        "description": "operations with clients",
+    },
+    {
+        "name": "forecast",
+        "description": "operations with forecasts",
+    },
+    {
+        "name": "rate",
+        "description": "operations with rates",
+    },
+    {
+        "name": "timelog",
+        "description": "operations with timelogs",
+    },
+]
+
 
 def string_to_datetime(date_string):
     date = datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")

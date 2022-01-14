@@ -4,7 +4,7 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from ..models.user import User
 
-router = APIRouter(prefix="/api/users")
+router = APIRouter(prefix="/api/users", tags=["user"])
 session = Session(engine)
 
 

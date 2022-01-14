@@ -7,7 +7,7 @@ from ..utils import engine
 from sqlmodel import Session, select, SQLModel
 
 
-router = APIRouter(prefix="/api/forecasts")
+router = APIRouter(prefix="/api/forecasts", tags=["forecast"])
 session = Session(engine)
 
 
@@ -30,13 +30,18 @@ async def forecast(forecast: Forecast):
 @router.get("/lists/{client_id}")
 async def get_clients_list(client_id: str = None):
     if client_id != None:
-        statement = select(Client.id
-                            ,Client.name
-                            ,Forecast.user_id
-                            ,Forecast.month
-                            ,Forecast.year
-                            ,Forecast.days
-                            ).join(Client).where(Client.id == client_id)
+        statement = (
+            select(
+                Client.id,
+                Client.name,
+                Forecast.user_id,
+                Forecast.month,
+                Forecast.year,
+                Forecast.days,
+            )
+            .join(Client)
+            .where(Client.id == client_id)
+        )
         results = session.exec(statement).all()
         return results
     else:
@@ -46,13 +51,18 @@ async def get_clients_list(client_id: str = None):
 @router.get("/lists/{user_id}")
 async def get_forecasts_list(user_id: str = None):
     if user_id != None:
-        statement = select(Client.id
-                            ,Client.name
-                            ,Forecast.user_id
-                            ,Forecast.month
-                            ,Forecast.year
-                            ,Forecast.days
-                            ).join(Client).where(Forecast.user_id == user_id)
+        statement = (
+            select(
+                Client.id,
+                Client.name,
+                Forecast.user_id,
+                Forecast.month,
+                Forecast.year,
+                Forecast.days,
+            )
+            .join(Client)
+            .where(Forecast.user_id == user_id)
+        )
         results = session.exec(statement).all()
         return results
     else:

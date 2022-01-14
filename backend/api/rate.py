@@ -4,7 +4,7 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from ..models.rate import Rate
 
-router = APIRouter(prefix="/api/rates")
+router = APIRouter(prefix="/api/rates", tags=["rate"])
 session = Session(engine)
 
 

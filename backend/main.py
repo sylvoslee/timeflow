@@ -5,8 +5,9 @@ from backend.models.timelog import TimeLog
 from backend.utils import engine, create_db
 import datetime
 from backend.api import user, timelog, forecast, epic, client, rate
+from .utils import tags_metadata
 
-app = FastAPI()
+app = FastAPI(title="timesheets app API", openapi_tags=tags_metadata)
 
 session = Session(engine)
 app.include_router(timelog.router)
