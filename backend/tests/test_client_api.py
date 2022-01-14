@@ -56,3 +56,23 @@ def test_update_clients(client):
     response = client.put("api/clients/1/new-name?new_client_name=dyvenia_update")
     data = response.json()
     assert data == {"id": 1, "name": "dyvenia_update"}
+
+
+def test_delete_clients(client):
+    response = client.delete("/api/clients/1?client_name=dyvenia_update")
+    data = response.json()
+    assert data == True
+
+
+# # Delete clients
+# @router.delete("/{client_id}")
+# async def delete_clients(
+#     *, client_id: int, client_name: str, session: Session = Depends(get_session)
+# ):
+#     statement = (
+#         select(Client).where(Client.name == client_name).where(Client.id == client_id)
+#     )
+#     client_to_delete = session.exec(statement).one()
+#     session.delete(client_to_delete)
+#     session.commit()
+#     return True

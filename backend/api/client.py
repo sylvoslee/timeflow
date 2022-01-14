@@ -77,12 +77,15 @@ async def update_clients(
     return client_to_update
 
 
-# Delete users
-@router.delete("/")
-async def delete_clients(client_name: str = None):
-    statement = select(Client).where(Client.name == client_name)
-    results = session.exec(statement)
-    client_to_delete = results.one()
+# Delete clients
+@router.delete("/{client_id}")
+async def delete_clients(
+    *, client_id: int, client_name: str, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Client).where(Client.name == client_name).where(Client.id == client_id)
+    )
+    client_to_delete = session.exec(statement).one()
     session.delete(client_to_delete)
     session.commit()
     return True
