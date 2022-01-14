@@ -6,41 +6,8 @@ from sqlmodel import SQLModel, Session, create_engine
 from sqlmodel.pool import StaticPool
 from ..api.client import get_session
 
-db_name = "test_db.sqlite"
-test_con = f"sqlite:///{db_name}"
-test_engine = create_engine(
-    test_con, connect_args={"check_same_thread": False}, echo=True
-)
 
-
-@pytest.fixture(name="create_db", scope="module")
-def create_db():
-    # setup
-    SQLModel.metadata.create_all(test_engine)
-    yield
-    # teardown
-    os.remove(db_name)
-
-
-@pytest.fixture(name="session")
-def session_fixture(create_db):
-    create_db
-
-    with Session(test_engine) as session:
-        yield session
-
-
-@pytest.fixture(name="client")
-def client_fixture(session: Session):
-    def get_session_override():
-        return session
-
-    app.dependency_overrides[get_session] = get_session_override
-    client = TestClient(app)
-    yield client
-    app.dependency_overrides.clear()
-
-
+@pytest.mark.order(2)
 def test_post_client(client):
     response1 = client.post(
         "/api/clients/",
@@ -77,3 +44,35 @@ def test_read_client_id(client):
     response2 = client.get("/api/clients/0")
     data2 = response2.json()
     assert data2 == "There is no client with id = 0"
+
+
+def test_read_clients_epics(client):
+    response = client.get("api/clients/1/epics")
+    data = response.json()
+    assert data == [{"id": 1, "name": "dyvenia", "name_1": "[dyvenia]branding"}]
+
+
+def test_update_clients(client):
+    response = client.put("api/clients/1/new-name?new_client_name=dyvenia_update")
+    data = response.json()
+    assert data == {"id": 1, "name": "dyvenia_update"}
+
+
+def test_delete_clients(client):
+    response = client.delete("/api/clients/1?client_name=dyvenia_update")
+    data = response.json()
+    assert data == True
+
+
+# # Delete clients
+# @router.delete("/{client_id}")
+# async def delete_clients(
+#     *, client_id: int, client_name: str, session: Session = Depends(get_session)
+# ):
+#     statement = (
+#         select(Client).where(Client.name == client_name).where(Client.id == client_id)
+#     )
+#     client_to_delete = session.exec(statement).one()
+#     session.delete(client_to_delete)
+#     session.commit()
+#     return True

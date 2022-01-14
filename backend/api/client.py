@@ -47,9 +47,11 @@ async def read_clients(
 
 # Get all selected client's epics
 @router.get("/{client_id}/epics/")
-async def read_clients(client_id: str = None):
+async def read_clients_epics(
+    client_id: int = None, session: Session = Depends(get_session)
+):
     statement = (
-        select(Client.name, Epic.name)
+        select(Client.id, Client.name, Epic.name)
         .select_from(Client)
         .join(Epic)
         .where(Client.id == client_id)
@@ -59,24 +61,31 @@ async def read_clients(client_id: str = None):
 
 
 # Update client
-@router.put("/")
-async def update_clients(client_name: str, new_client_name: str):
-    statement = select(Client).where(Client.name == client_name)
+@router.put("/{client_id}/new-name")
+async def update_clients(
+    *,
+    client_id: int = None,
+    new_client_name: str = None,
+    session: Session = Depends(get_session),
+):
+    statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
-    print(client_to_update)
     client_to_update.name = new_client_name
     session.add(client_to_update)
     session.commit()
     session.refresh(client_to_update)
-    return True
+    return client_to_update
 
 
-# Delete users
-@router.delete("/")
-async def delete_clients(client_name: str = None):
-    statement = select(Client).where(Client.name == client_name)
-    results = session.exec(statement)
-    client_to_delete = results.one()
+# Delete clients
+@router.delete("/{client_id}")
+async def delete_clients(
+    *, client_id: int, client_name: str, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Client).where(Client.name == client_name).where(Client.id == client_id)
+    )
+    client_to_delete = session.exec(statement).one()
     session.delete(client_to_delete)
     session.commit()
     return True
