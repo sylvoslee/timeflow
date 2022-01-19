@@ -1,8 +1,24 @@
 from sqlite3.dbapi2 import Timestamp, adapt
 from typing import Optional
 from sqlmodel import Field, SQLModel, Field
-from pydantic import validator
-from datetime import datetime
+from pydantic import validator, root_validator, ValidationError
+from datetime import datetime, timedelta
+from ..utils import string_to_datetime
+
+# """
+# {
+#   "user_id": 1,
+#   "start_time": "2022-01-19T08:30:00.000Z",
+#   "end_time": "2022-01-19T09:30:00.000Z",
+#   "client_id": 1,
+#   "epic_id": 1,
+#   "count_hours": 0,
+#   "count_days": 0,
+#   "daily_value": 0,
+#   "month": 0,
+#   "year": 0
+# }
+# """
 
 
 class TimeLog(SQLModel, table=True):
@@ -18,20 +34,37 @@ class TimeLog(SQLModel, table=True):
     month: int
     year: int
 
-    # @validator("year")
-    # def valid_year(cls, year_input):
-    #     assert year_input >= datetime.now().years
-    #     return year_input
+    # actually computed "month" field
+    @validator("month", always=True, pre=True)
+    def set_month(cls, month_value, values):
+        start_time_dt = string_to_datetime(values["start_time"])
+        month_value = start_time_dt.month
+        return month_value
 
-    # @validator("month")
-    # def valid_month(cls, month_input):
-    #     if month_input not in range(1, 13):
-    #         # or  (month_input < datetime.now().month
-    #         # or (month_input < datetime.now().month and Forecast.year == datetime.now().year + 1)):
-    #         raise TypeError("Month is not valid")
-    #     return month_input
+    # actually computed "year" field
+    @validator("year", always=True, pre=True)
+    def set_year(cls, year_value, values):
+        start_time_dt = string_to_datetime(values["start_time"])
+        year_value = start_time_dt.year
+        return year_value
 
-    # @validator("work_days")
-    # def valid_work_days(cls, work_days_input):
-    #     assert work_days_input in range(0, 24), "Work days cannot be greater than 24"
-    #     return work_days_input
+    @validator("end_time", always=True, pre=True)
+    def check_time_delta(cls, v, values):
+        if v <= values["start_time"]:
+            raise ValueError("start_time is bigger or same as end_time")
+        return v
+
+    @root_validator
+    def count_hours_change(cls, values):
+        delta = string_to_datetime(values["end_time"]) - string_to_datetime(
+            values["start_time"]
+        )
+        work_delta_hours = delta.total_seconds() / 3600
+        work_hours = "{:.2f}".format(work_delta_hours)
+        values["count_hours"] = work_hours
+        return values
+
+    @validator("year", always=True)
+    def valid_year(cls, year_input):
+        assert year_input >= datetime.now().year
+        return year_input
