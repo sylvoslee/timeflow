@@ -5,7 +5,7 @@ from ..models.epic import Epic
 from ..models.client import Client
 from sqlalchemy.exc import NoResultFound
 
-router = APIRouter(prefix="/api/epics")
+router = APIRouter(prefix="/api/epics", tags=["epic"])
 session = Session(engine)
 
 

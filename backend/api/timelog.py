@@ -5,7 +5,7 @@ from ..utils import engine
 from ..models.user import User
 from ..models.timelog import TimeLog
 
-router = APIRouter(prefix="/api/timelogs")
+router = APIRouter(prefix="/api/timelogs", tags=["timelog"])
 
 session = Session(engine)
 

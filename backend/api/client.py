@@ -6,7 +6,7 @@ from ..models.client import Client
 from ..models.epic import Epic
 
 
-router = APIRouter(prefix="/api/clients")
+router = APIRouter(prefix="/api/clients", tags=["client"])
 session = Session(engine)
 
 # Post new client
