@@ -20,42 +20,6 @@ async def timelog(timelog: TimeLog):
     return timelog
 
 
-# startt_to_dt = string_to_datetime(timelog.start_time)
-# # timelog.month
-# month_from_dt = startt_to_dt.month
-# # timelog.year
-# year_from_dt = startt_to_dt.year
-# # timelog.work_hours
-# work_delta = string_to_datetime(timelog.end_time) - string_to_datetime(
-#     timelog.start_time
-# )
-# work_delta_hours = work_delta.seconds / 3600
-# work_hours = "{:.2f}".format(work_delta_hours)
-
-# count_days = work_hours / 8
-
-# new_timelog = TimeLog(
-#     id=timelog.id,
-#     user_id=timelog.user_id,
-#     start_time=timelog.start_time,
-#     end_time=timelog.end_time,
-#     client_id=timelog.client_id,
-#     epic_id=timelog.epic_id,
-#     count_hours=12.12,
-#     count_days=13.13,
-#     daily_value=11.11,
-#     month=month_from_dt,
-#     year=year_from_dt,
-# )
-# if new_timelog.month == 0 or new_timelog.year == 0:
-#     return False
-# else:
-# session.add(new_timelog)
-# session.commit()
-# session.refresh(new_timelog)
-# return new_timelog
-
-
 # Get all timelogs
 @router.get("/")
 async def get_timelogs_all():
