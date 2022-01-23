@@ -18,7 +18,7 @@ async def timelog(timelog: TimeLog):
         select(TimeLog)
         .where(TimeLog.user_id == timelog.user_id)
         .where(TimeLog.start_time >= timelog.start_time)
-        .where(TimeLog.start_time <= timelog.start_time)
+        .where(TimeLog.start_time <= timelog.end_time)
     )
     statement2 = (
         select(TimeLog)
