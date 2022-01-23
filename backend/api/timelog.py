@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..utils import engine, string_to_datetime
-from sqlmodel import Session, select, SQLModel
+from sqlmodel import Session, select, SQLModel, or_
 from ..utils import engine
 from ..models.user import User
 from ..models.timelog import TimeLog
@@ -14,10 +14,27 @@ session = Session(engine)
 # example: timelog.start_time = "2022-01-19T08:30:00.000Z"
 @router.post("/")
 async def timelog(timelog: TimeLog):
-    session.add(timelog)
-    session.commit()
-    session.refresh(timelog)
-    return timelog
+    statement1 = (
+        select(TimeLog)
+        .where(TimeLog.user_id == timelog.user_id)
+        .where(TimeLog.start_time >= timelog.start_time)
+        .where(TimeLog.start_time <= timelog.start_time)
+    )
+    statement2 = (
+        select(TimeLog)
+        .where(TimeLog.user_id == timelog.user_id)
+        .where(TimeLog.end_time >= timelog.start_time)
+        .where(TimeLog.end_time <= timelog.end_time)
+    )
+    results1 = session.exec(statement1).all()
+    results2 = session.exec(statement2).all()
+    if results1 or results2:
+        return "currently posted timelog overlaps with another timelog"
+    else:
+        session.add(timelog)
+        session.commit()
+        session.refresh(timelog)
+        return timelog
 
 
 # Get all timelogs

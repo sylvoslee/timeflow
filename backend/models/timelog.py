@@ -35,7 +35,7 @@ class TimeLog(SQLModel, table=True):
     def check_time_delta(cls, values):
         assert (
             values["start_time"] < values["end_time"]
-        ), "start_time can't be smaller then end_time"
+        ), "start_time must be smaller then end_time"
         return values
 
     # actually computed "month" field --> to be changed
