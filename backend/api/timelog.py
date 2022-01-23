@@ -29,7 +29,7 @@ async def timelog(timelog: TimeLog):
     results1 = session.exec(statement1).all()
     results2 = session.exec(statement2).all()
     if results1 or results2:
-        return "currently posted timelog overlaps with another timelog"
+        return "currently posted timelog overlaps another timelog"
     else:
         session.add(timelog)
         session.commit()
