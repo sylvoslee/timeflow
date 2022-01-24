@@ -127,6 +127,23 @@ def test_get_timelogs_all(client):
     ]
 
 
+def test_get_timelog_by_id(client):
+    response = client.get("api/timelogs/1")
+    data = response.json()
+    assert data == {
+        "user_id": 1,
+        "client_id": 1,
+        "end_time": "2022-01-19T10:50:00.000Z",
+        "count_hours": 2.33,
+        "month": 1,
+        "start_time": "2022-01-19T08:30:00.000Z",
+        "id": 1,
+        "epic_id": 1,
+        "count_days": 0.29,
+        "year": 2022,
+    }
+
+
 def test_get_timelog_user_month_year_client(client):
     response = client.get("/api/timelogs/users/1/months/1/years/2022/clients/1")
     data = response.json()
