@@ -77,7 +77,7 @@ async def update_clients(
 
 
 # Delete timelogs
-@router.delete("/")
+@router.delete("/{timelog_id}")
 async def delete_timelogs(
     timelog_id: int,
     user_id: int,
