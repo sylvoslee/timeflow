@@ -76,7 +76,7 @@ class TimeLog(SQLModel, table=True):
 
     @validator("count_hours", always=True)
     def daily_hours(cls, hours_input):
-        assert hours_input < 12, "developer worked over 12 hours"
+        assert hours_input < 12, "user worked over 12 hours"
         return hours_input
 
     @validator("year", always=True)
