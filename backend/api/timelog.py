@@ -7,13 +7,11 @@ from ..models.timelog import TimeLog
 
 router = APIRouter(prefix="/api/timelogs", tags=["timelog"])
 
-session = Session(engine)
-
 
 # Post timelog
 # example: timelog.start_time = "2022-01-19T08:30:00.000Z"
 @router.post("/")
-async def timelog(timelog: TimeLog):
+async def timelog(*, timelog: TimeLog, session: Session = Depends(get_session)):
     statement1 = (
         select(TimeLog)
         .where(TimeLog.user_id == timelog.user_id)
@@ -29,7 +27,7 @@ async def timelog(timelog: TimeLog):
     results1 = session.exec(statement1).all()
     results2 = session.exec(statement2).all()
     if results1 or results2:
-        return "currently posted timelog overlaps another timelog", results1, results2
+        return "currently posted timelog overlaps another timelog"
     else:
         session.add(timelog)
         session.commit()
@@ -39,15 +37,30 @@ async def timelog(timelog: TimeLog):
 
 # Get all timelogs
 @router.get("/")
-async def get_timelogs_all():
+async def get_timelogs_all(session: Session = Depends(get_session)):
     statement = select(TimeLog)
     results = session.exec(statement).all()
     return results
 
 
+# Get timelog by id
+@router.get("/{timelog_id}")
+async def get_timelog_by_id(timelog_id: int, session: Session = Depends(get_session)):
+    statement = select(TimeLog).where(TimeLog.id == timelog_id)
+    result = session.exec(statement).one()
+    return result
+
+
 # Get list of timelogs by user_id, month and client
 @router.get("/users/{user_id}/months/{month}/years/{year}/clients/{client_id}")
-async def get_timelog_user_id(user_id: str, month: int, year: int, client_id: int):
+async def get_timelog_user_id(
+    *,
+    user_id: str,
+    month: int,
+    year: int,
+    client_id: int,
+    session: Session = Depends(get_session),
+):
     statement = (
         select(TimeLog)
         .where(TimeLog.user_id == user_id)
@@ -79,12 +92,14 @@ async def update_clients(
 # Delete timelogs
 @router.delete("/{timelog_id}")
 async def delete_timelogs(
+    *,
     timelog_id: int,
     user_id: int,
     start_time: str,
     end_time: str,
     client_id: int,
     epic_id: int,
+    session: Session = Depends(get_session),
 ):
     statement = (
         select(TimeLog)
