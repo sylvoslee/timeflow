@@ -46,13 +46,14 @@ async def get_timelogs_all():
 
 
 # Get list of timelogs by user_id, month and client
-@router.get("/{user_id}/months/{month}/clients/{client_id}")
-async def get_timelog_user_id(user_id: str, month: int, client_id: int):
+@router.get("/users/{user_id}/months/{month}/years/{year}/clients/{client_id}")
+async def get_timelog_user_id(user_id: str, month: int, year: int, client_id: int):
     statement = (
         select(TimeLog)
         .where(TimeLog.user_id == user_id)
         .where(TimeLog.month == month)
         .where(TimeLog.client_id == client_id)
+        .where(TimeLog.year == year)
     )
     results = session.exec(statement).all()
     return results
