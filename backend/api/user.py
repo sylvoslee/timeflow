@@ -11,7 +11,6 @@ session = Session(engine)
 # Post new user
 @router.post("/")
 async def post_user(
-    *,
     user: User,
     session: Session = Depends(get_session),
 ):
@@ -28,26 +27,15 @@ async def post_user(
 
 # get all users list
 @router.get("/")
-async def get_users_list(session: Session = Depends(get_session)):
+async def get_users(session: Session = Depends(get_session)):
     statement = select(User)
     result = session.exec(statement).all()
     return result
 
 
-# # Get list of users
-# @router.get("/lists/{list_name}")
-# async def list_users(list_name: str):
-#     if list_name == "initials":
-#         statement = select(User.username)
-#     elif list_name == "surname":
-#         statement = select(User.surname)
-#     results = session.exec(statement).all()
-#     return results
-
-
 # Update user email
 @router.put("/")
-async def update_users(
+async def update_user(
     username: str = None,
     email: str = None,
     session: Session = Depends(get_session),
@@ -63,7 +51,7 @@ async def update_users(
 
 # Delete users
 @router.delete("/")
-async def delete_users(username: str = None, session: Session = Depends(get_session)):
+async def delete_user(username: str = None, session: Session = Depends(get_session)):
     statement = select(User).where(User.username == username)
     results = session.exec(statement)
     user_to_delete = results.one()
