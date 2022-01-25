@@ -1,6 +1,6 @@
-from fastapi import APIRouter
-from ..utils import engine
-from sqlmodel import Session, select, SQLModel
+from fastapi import APIRouter, Depends
+from ..utils import engine, get_session
+from sqlmodel import Session, select, SQLModel, or_
 from sqlalchemy.exc import NoResultFound
 from ..models.user import User
 
@@ -10,62 +10,60 @@ session = Session(engine)
 
 # Post new user
 @router.post("/")
-async def user(user: User):
-    statement = select(User).where(User.username == user.username)
+async def post_user(
+    *,
+    user: User,
+    session: Session = Depends(get_session),
+):
+    statement = select(User).where(or_(User.username == user.username, User.id == user.id))
     try:
         result = session.exec(statement).one()
         return False
     except NoResultFound:
         session.add(user)
         session.commit()
-        return True
+        session.refresh(user)
+        return user
 
 
-# Get user by initials or surname, if there are no initials
-@router.get("/{username},{surname}")
-async def read_users(username: str = None, surname: str = None):
-    if username != None:
-        statement = select(User).where(User.username == username)
-    elif surname != None:
-        statement = select(User).where(User.surname == surname)
-    results = session.exec(statement).first()
-    return results
+# get all users list
+@router.get("/")
+async def get_users_list(session: Session = Depends(get_session)):
+    statement = select(User)
+    result = session.exec(statement).all()
+    return result
 
 
-@router.get("/lists/id-username")
-async def read_users_list():
-    statement = select(User.id)
-    results_list = session.exec(statement).all()
-    return results_list
+# # Get list of users
+# @router.get("/lists/{list_name}")
+# async def list_users(list_name: str):
+#     if list_name == "initials":
+#         statement = select(User.username)
+#     elif list_name == "surname":
+#         statement = select(User.surname)
+#     results = session.exec(statement).all()
+#     return results
 
 
-# Get list of users
-@router.get("/lists/{list_name}")
-async def list_users(list_name: str):
-    if list_name == "initials":
-        statement = select(User.username)
-    elif list_name == "surname":
-        statement = select(User.surname)
-    results = session.exec(statement).all()
-    return results
-
-
-# Update users
+# Update user email
 @router.put("/")
-async def update_users(username: str, user_email: str):
+async def update_users(
+    username: str = None,
+    email: str = None,
+    session: Session = Depends(get_session),
+):
     statement = select(User).where(User.username == username)
     user_to_update = session.exec(statement).one()
-    print(user_to_update)
-    user_to_update.user_email = user_email
+    user_to_update.email = email
     session.add(user_to_update)
     session.commit()
     session.refresh(user_to_update)
-    return True
+    return user_to_update
 
 
 # Delete users
 @router.delete("/")
-async def delete_users(username: str = None):
+async def delete_users(username: str = None, session: Session = Depends(get_session)):
     statement = select(User).where(User.username == username)
     results = session.exec(statement)
     user_to_delete = results.one()
