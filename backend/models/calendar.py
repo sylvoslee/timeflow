@@ -10,6 +10,8 @@ class Calendar(SQLModel, table=True):
     date: datetime
     year_number: int
     year_name: str
+    quarter_number: int
+    quarter_name: str
     month_number: int
     month_name: str
     week_number: int
