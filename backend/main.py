@@ -37,9 +37,6 @@ def implement_calendar_table():
     try:
         assert result != None
     except AssertionError:
-        calendar_read_excel = pd.read_excel("backend/calendar_id.xlsx")
-        calendar_to_dict = calendar_read_excel.to_dict(orient="records")
-        for calendar in calendar_to_dict:
-            calendar_obj = Calendar.parse_obj(calendar)
-            session.add(calendar_obj)
-            session.commit()
+        calendar_from_excel = pd.read_excel("backend/calendar_id.xlsx")
+        calendar_change_index = calendar_from_excel.set_index("date")
+        calendar_change_index.to_sql("calendar", con=engine, if_exists="append")
