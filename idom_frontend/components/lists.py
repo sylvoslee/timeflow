@@ -2,7 +2,7 @@ from typing import Any, Callable, List
 from idom import html
 
 
-def ListSimple(items: List[Any]):
+def ListSimple(items: List[str]):
     li_items = []
     for item in items:
         li_items.append(

@@ -16,12 +16,14 @@ base_url = "http://127.0.0.1:8000"
 
 
 @component
-def create_user():
+def page():
     username, set_username = use_state("")
     name, set_name = use_state("")
     surname, set_surname = use_state("")
     email, set_email = use_state("")
     submitted_surname, set_submitted_surname = use_state("")
+    is_changed, set_is_changed = use_state(False)
+
     return html.div(
         {"class": "bg-primary-500"},
         html.div(html.link({"href": "/static/tailwind.css", "rel": "stylesheet"})),
@@ -36,7 +38,8 @@ def create_user():
             set_email,
             set_submitted_surname,
         ),
-        Column(Row(list_users(submitted_surname))),
+        Column(Row(list_users(submitted_surname, is_changed))),
+        Column(Row(delete_user(is_changed, set_is_changed))),
     )
 
 
@@ -96,13 +99,37 @@ def create_user_form(
 
 
 @component
-def list_users(surname):
-    api = f"{base_url}/api/users/lists/surname"
+def list_users(surname, is_changed):
+    api = f"{base_url}/api/users"
     response = requests.get(api)
+
     lis = []
     for item in response.json():
-        lis.append(html.li(item))
-    return ListSimple(items=response.json())
+        li_str = f"""name: {item["name"]}, surname: {item["surname"]}, username: {item["username"]}, email:{item["email"]}"""
+        lis.append(html.li(li_str))
+    return ListSimple(items=lis)
+
+
+@component
+def delete_user(is_changed, set_is_changed):
+    username, set_username = use_state("")
+
+    def delete_user(event):
+        api = f"{base_url}/api/users?username={username}"
+        response = requests.delete(api)
+        set_is_changed(True)
+
+    inp_username = Input(
+        value=username, set_value=set_username, label="delete user input"
+    )
+    btn = html.button(
+        {
+            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+            "onClick": delete_user,
+        },
+        "Submit",
+    )
+    return html.div(inp_username, btn)
 
 
 # run(create_user, port=8001)
@@ -111,7 +138,7 @@ app = Sanic(__name__)
 HERE = Path(__file__).parent
 app.static("/static", str(HERE / "tailwind/build"))
 PerClientStateServer(
-    create_user,
+    page,
     {
         "redirect_root_to_index": False,
     },
