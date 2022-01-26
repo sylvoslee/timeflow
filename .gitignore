@@ -137,3 +137,7 @@ trashcode
 # databases
 database.sqlite
 test_db.sqlite
+
+# tailwind
+build
+node_modules
