@@ -11,6 +11,7 @@ from sanic import Sanic, response
 from components.input import Input
 from components.layout import Row, Column
 from components.lists import ListSimple
+from components.table import SimpleTable
 
 base_url = "http://127.0.0.1:8000"
 
@@ -39,7 +40,7 @@ def page():
             set_submitted_surname,
         ),
         Column(Row(list_users(submitted_surname, is_changed))),
-        Column(Row(delete_user(is_changed, set_is_changed))),
+        delete_user(is_changed, set_is_changed),
     )
 
 
@@ -103,11 +104,16 @@ def list_users(surname, is_changed):
     api = f"{base_url}/api/users"
     response = requests.get(api)
 
-    lis = []
+    rows = []
     for item in response.json():
-        li_str = f"""name: {item["name"]}, surname: {item["surname"]}, username: {item["username"]}, email:{item["email"]}"""
-        lis.append(html.li(li_str))
-    return ListSimple(items=lis)
+        d = {
+            "name": item["name"],
+            "surname": item["surname"],
+            "username": item["username"],
+            "email": item["email"],
+        }
+        rows.append(d)
+    return SimpleTable(rows=rows)
 
 
 @component
@@ -129,7 +135,7 @@ def delete_user(is_changed, set_is_changed):
         },
         "Submit",
     )
-    return html.div(inp_username, btn)
+    return Column(Row(inp_username), Row(btn))
 
 
 # run(create_user, port=8001)
