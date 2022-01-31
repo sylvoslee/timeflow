@@ -8,7 +8,7 @@ def Input(
     label: str = "",
     type: str = "text",
     placeholder: str = "Write here the",
-    _class: str = """text-gray-50 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
+    _class: str = """text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
                     text-base transition duration-500 ease-in-out transform 
                     border-transparent bg-secondary-300 focus:border-blueGray-500 
                     focus:bg-white dark:focus:bg-secondary-400 focus:outline-none 

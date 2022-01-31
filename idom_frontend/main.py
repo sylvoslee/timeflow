@@ -5,11 +5,10 @@ from black import click
 from idom import html, run, use_state, component, event, vdom
 from idom.server.sanic import PerClientStateServer
 import requests
-from pathlib import Path
 from sanic import Sanic, response
 
 from components.input import Input
-from components.layout import Row, Column
+from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 
@@ -25,9 +24,7 @@ def page():
     submitted_surname, set_submitted_surname = use_state("")
     is_changed, set_is_changed = use_state(False)
 
-    return html.div(
-        {"class": "bg-primary-500"},
-        html.div(html.link({"href": "/static/tailwind.css", "rel": "stylesheet"})),
+    return Container(
         create_user_form(
             username,
             set_username,
@@ -39,8 +36,10 @@ def page():
             set_email,
             set_submitted_surname,
         ),
-        Column(Row(list_users(submitted_surname, is_changed))),
-        delete_user(is_changed, set_is_changed),
+        Column(
+            Row(list_users(submitted_surname, is_changed)),
+        ),
+        Row(delete_user(is_changed, set_is_changed)),
     )
 
 
@@ -139,20 +138,3 @@ def delete_user(is_changed, set_is_changed):
 
 
 # run(create_user, port=8001)
-
-app = Sanic(__name__)
-HERE = Path(__file__).parent
-app.static("/static", str(HERE / "tailwind/build"))
-PerClientStateServer(
-    page,
-    {
-        "redirect_root_to_index": False,
-    },
-    app,
-)
-app.run(
-    host="0.0.0.0",
-    port=8001,
-    workers=1,
-    debug=True,
-)
