@@ -31,10 +31,10 @@ def ClientsTableComponent(rows: List[Any]):
         tds = []
         for k in row:
             value = row[k]
-            tds.append(html.td({"class": "p-4 w-1/4"}, value))
+            tds.append(html.td({"class": "p-4 w-full"}, value))
         trs.append(html.tr({"class": "flex w-full mb-4"}, tds))
 
-    ths = [html.th({"class": "p-4 w-1/4"}, header) for header in rows[0].keys()]
+    ths = [html.th({"class": "p-4 w-full"}, header) for header in rows[0].keys()]
     thead = html.thead(
         {"class": "flex bg-secondary-400 text-white w-full"},
         html.tr({"class": "flex w-full mb-4"}, ths),
