@@ -12,3 +12,10 @@ def Column(*args: html):
 
 def Row(*args: html):
     return html.div({"class": "flex flex-col md:flex-row space-x-4"}, args)
+
+
+def ContainerClients(*args: html):
+    return html.div(
+        {"class": "flex flex-row w-full justify-center"},
+        html.div({"class": "flex flex-col w-full md:w-1/2"}, args),
+    )
