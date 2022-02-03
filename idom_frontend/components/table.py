@@ -25,7 +25,7 @@ def SimpleTable(rows: List[Any]):
     return html.table({"class": "text-left w-full"}, thead, tbody)
 
 
-def ClientsTableComponent(rows: List[Any]):
+def ClientsTable(rows: List[Any]):
     trs = []
     for row in rows:
         tds = []
