@@ -25,7 +25,7 @@ class ScanPyFiles:
         self.observer.join()
 
 
-cmd = "python run_app.py"
+cmd = "python3 run_app.py"
 process = subprocess.Popen(cmd, shell=True)
 scan_py_files = ScanPyFiles(process, cmd)
 

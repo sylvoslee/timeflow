@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../build/_tailwind.css" rel="stylesheet">
+</head>
+
+<body class="bg-primary-500">
+
+    <div class="flex">
+        <div class="flex flex-col h-screen w-2/12 mr-4 p-2 bg-white">
+            <div class="bg-secondary-400">sidebar</div>
+        </div>
+        <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+            <div class="flex flex-col md:flex-row space-x-4">
+                <div class="flex flex-col w-full md:w-1/2">
+                    <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                        <div class="flex flex-col md:flex-row space-x-4">
+                            <input type="text" placeholder="Write here the name of a new client"
+                                class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 text-base transition duration-500 ease-in-out transform border-transparent bg-secondary-300 focus:border-blueGray-500 focus:bg-white dark:focus:bg-secondary-400 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
+                                value="">
+                        </div>
+                        <div class="flex flex-col md:flex-row space-x-4">
+                            <button
+                                class="relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200">Submit</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                        <div class="flex flex-col md:flex-row space-x-4">
+                            <table class="text-left w-full">
+                                <thead class="flex bg-secondary-400 text-white w-full">
+                                    <tr class="flex w-full mb-4">
+                                        <th class="p-4 w-1/4">id</th>
+                                    </tr>
+                                    <tr class="flex w-full mb-4">
+                                        <th class="p-4 w-1/4">name</th>
+                                    </tr>
+                                </thead>
+                                <tbody
+                                    class="flex flex-col bg-secondary-200 items-center justify-between overflow-y-scroll w-full">
+                                    <tr class="flex w-full mb-4">
+                                        <td class="p-4 w-1/4"></td>
+                                        <td class="p-4 w-1/4"></td>
+                                        <td class="p-4 w-1/4"></td>
+                                        <td class="p-4 w-1/4"></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row space-x-4">
+                        <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                            <div class="flex flex-row space-x-2">
+                                <div class="flex flex-col md:flex-row space-x-4 w-full"><input type="text"
+                                        placeholder="Client id to delete"
+                                        class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 text-base transition duration-500 ease-in-out transform border-transparent bg-secondary-300 focus:border-blueGray-500 focus:bg-white dark:focus:bg-secondary-400 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
+                                        value=""></div>
+                                <div
+                                    class="flex flex-col md:flex-row space-x-4 w-1/5 px-4 py-2.5 mt-2 bg-secondary-500 text-center">
+                                    and </div>
+                                <div class="flex flex-col md:flex-row space-x-4 w-full"><input type="text"
+                                        placeholder="Client name to del"
+                                        class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 text-base transition duration-500 ease-in-out transform border-transparent bg-secondary-300 focus:border-blueGray-500 focus:bg-white dark:focus:bg-secondary-400 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
+                                        value=""></div>
+                            </div>
+
+                            <div class="flex flex-col md:flex-row space-x-4"><button
+                                    class="relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
