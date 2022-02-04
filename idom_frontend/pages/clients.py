@@ -92,7 +92,8 @@ def delete_client(is_changed, set_is_changed):
     client_name, set_client_name = use_state("")
 
     def delete_client(event):
-        api = f"{base_url}/api/clients/{client_id}?name={client_name}"
+        api = f"{base_url}/api/clients/{client_id}?client_name={client_name}"
+        print(api)
         response = requests.delete(api)
         set_is_changed(True)
 
