@@ -25,11 +25,6 @@ def SimpleTable(rows: List[Any]):
         },
         trs,
     )
-    # if is_hidden == True:
-    #     set_is_table_visible("invisible")
-    # else:
-    #     set_is_table_visible("")
-    # tclass = f
     return Column(
         html.table({"class": "text-left"}, thead, tbody),
         SimpleTableButton(is_hidden, set_is_hidden),
