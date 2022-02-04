@@ -1,15 +1,13 @@
 from idom.server.sanic import PerClientStateServer
 from sanic import Sanic, response
 from pathlib import Path
-
-from main import page as main_page
-from sidebar import page as sidebar_page
+from index import page as index_page
 
 app = Sanic(__name__)
 HERE = Path(__file__).parent
 app.static("/static", str(HERE / "tailwind/build"))
 PerClientStateServer(
-    sidebar_page,
+    index_page,
     {
         "redirect_root_to_index": False,
     },

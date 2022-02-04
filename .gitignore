@@ -141,3 +141,6 @@ test_db.sqlite
 # tailwind
 build
 node_modules
+
+# VSCode
+.vscode

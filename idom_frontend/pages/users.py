@@ -135,6 +135,3 @@ def delete_user(is_changed, set_is_changed):
         "Submit",
     )
     return Column(Row(inp_username), Row(btn))
-
-
-# run(create_user, port=8001)

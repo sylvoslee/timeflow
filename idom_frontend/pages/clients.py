@@ -8,25 +8,30 @@ import requests
 from sanic import Sanic, response
 
 from components.input import Input
-from components.layout import Row, Column, ContainerClients
+from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
-from components.table import SimpleTable, ClientsTableComponent
+from components.table import SimpleTable, ClientsTable
 
 base_url = "http://127.0.0.1:8000"
 
 
 @component
-def clients_page():
+def page():
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
     is_changed, set_is_changed = use_state(False)
 
-    return ContainerClients(
-        create_client_form(name, set_name, set_submitted_name),
+    return FlexContainer(
+        Column(width="3/12"),
         Column(
-            Row(list_clients(submitted_name, is_changed)),
+            create_client_form(name, set_name, set_submitted_name),
+            Column(
+                Row(list_clients(submitted_name, is_changed)),
+            ),
+            Row(delete_client(is_changed, set_is_changed)),
+            width="6/12",
         ),
-        Row(delete_client(is_changed, set_is_changed)),
+        Column(width="3/12"),
     )
 
 
@@ -78,7 +83,7 @@ def list_clients(name, is_changed):
             "name": item["name"],
         }
         rows.append(d)
-    return ClientsTableComponent(rows=rows)
+    return ClientsTable(rows=rows)
 
 
 @component
