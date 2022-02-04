@@ -10,7 +10,7 @@ from sanic import Sanic, response
 from components.input import Input
 from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
-from components.table import SimpleTable, ClientsTable
+from components.table import SimpleTable
 
 base_url = "http://127.0.0.1:8000"
 
@@ -83,7 +83,7 @@ def list_clients(name, is_changed):
             "name": item["name"],
         }
         rows.append(d)
-    return ClientsTable(rows=rows)
+    return SimpleTable(rows=rows)
 
 
 @component
