@@ -1,10 +1,13 @@
 from typing import Any, Callable, List
-from idom import html
+from idom import html, component, use_state
+from components.layout import Column, Row
 
 
 def SimpleTable(rows: List[Any]):
+    is_hidden, set_is_hidden = use_state(True)
+    print(is_hidden)
     trs = []
-    for row in rows:
+    for row in rows[:3]:
         tds = []
         for k in row:
             value = row[k]
@@ -22,4 +25,35 @@ def SimpleTable(rows: List[Any]):
         },
         trs,
     )
-    return html.table({"class": "text-left w-full"}, thead, tbody)
+    # if is_hidden == True:
+    #     set_is_table_visible("invisible")
+    # else:
+    #     set_is_table_visible("")
+    # tclass = f
+    return Column(
+        html.table({"class": "text-left"}, thead, tbody),
+        SimpleTableButton(is_hidden, set_is_hidden),
+    )
+
+
+@component
+def SimpleTableButton(is_hidden, set_is_hidden):
+    text, set_text = use_state("show table")
+
+    def show_page(event):
+        if is_hidden:
+            set_is_hidden(False)
+            set_text("unshow table")
+        else:
+            set_is_hidden(True)
+            set_text("show table")
+
+    btn = html.button(
+        {
+            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+            "onClick": show_page,
+        },
+        text,
+    )
+
+    return btn
