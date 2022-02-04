@@ -19,6 +19,7 @@ base_url = "http://127.0.0.1:8000"
 def page():
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
+    deleted_name, set_deleted_name = use_state("")
     is_changed, set_is_changed = use_state(False)
 
     return FlexContainer(
@@ -87,14 +88,15 @@ def list_clients(name, is_changed):
 
 
 @component
-def delete_client(is_changed, set_is_changed):
+def delete_client(deleted_name, set_deleted_name):
     client_id, set_client_id = use_state("")
     client_name, set_client_name = use_state("")
 
     def delete_client(event):
         api = f"{base_url}/api/clients/{client_id}?client_name={client_name}"
         response = requests.delete(api)
-        set_is_changed(True)
+        set_deleted_name(client_name)
+        # set_is_changed(True)
 
     inp_client_id = Input(
         value=client_id, set_value=set_client_id, label="delete client:id input"
