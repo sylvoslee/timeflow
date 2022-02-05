@@ -42,7 +42,7 @@ def SimpleTableButton(is_hidden, set_is_hidden):
     def show_page(event):
         if is_hidden:
             set_is_hidden(False)
-            set_text("unshow table")
+            set_text("hide table")
         else:
             set_is_hidden(True)
             set_text("show table")
