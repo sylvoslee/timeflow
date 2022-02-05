@@ -112,7 +112,7 @@ def list_users(surname, is_changed):
             "email": item["email"],
         }
         rows.append(d)
-    return SimpleTable(rows=rows)
+    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
 @component

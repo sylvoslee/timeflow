@@ -3,6 +3,7 @@ from idom import html, component, use_state
 from components.layout import Column, Row
 
 
+@component
 def SimpleTable(rows: List[Any]):
     is_hidden, set_is_hidden = use_state(True)
     print(is_hidden)
@@ -25,8 +26,11 @@ def SimpleTable(rows: List[Any]):
         },
         trs,
     )
+    tclass = "text-left"
+    if is_hidden:
+        tclass = "invisible"
     return Column(
-        html.table({"class": "text-left"}, thead, tbody),
+        html.table({"class": tclass}, thead, tbody),
         SimpleTableButton(is_hidden, set_is_hidden),
     )
 

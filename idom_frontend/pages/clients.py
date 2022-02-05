@@ -84,7 +84,7 @@ def list_clients(name, is_changed):
             "name": item["name"],
         }
         rows.append(d)
-    return SimpleTable(rows=rows)
+    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
 @component
