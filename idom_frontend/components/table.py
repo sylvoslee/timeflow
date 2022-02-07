@@ -1,20 +1,21 @@
 from typing import Any, Callable, List
 from idom import html, component, use_state
 from components.layout import Column, Row
+import math
 
 
 @component
 def SimpleTable(rows: List[Any]):
     is_hidden, set_is_hidden = use_state(True)
-    page_number, set_page_number = use_state(2)
+    page_number, set_page_number = use_state(1)
     print(is_hidden)
     print(f"page number is {page_number}")
     trs = []
     p = page_number
     m = p - 1
-    r = 5
-    a = m * r
-    b = a + r
+    number_of_visible_rows = 5
+    a = m * number_of_visible_rows
+    b = a + number_of_visible_rows
     for row in rows[a:b]:
         tds = []
         for k in row:
@@ -33,25 +34,33 @@ def SimpleTable(rows: List[Any]):
         },
         trs,
     )
+    pages_total = math.ceil(len(rows) / number_of_visible_rows)
+    print(f"number of pages is {pages_total}")
+    pg_range = range(1, pages_total + 1)
+    list_pages_nr = []
+    for n in pg_range:
+        list_pages_nr.append(n)
+
     tclass = "text-left"
     if is_hidden:
         tclass = "invisible"
     pgnr = "1"
+
+    a = 1
+    b = 2
+    c = 3
     return Column(
         html.table({"class": tclass}, thead, tbody),
-        SimpleTableButton(is_hidden, set_is_hidden),
+        Row(
+            SimpleTableButton(is_hidden, set_is_hidden),
+            Row(
+                PaginationButton(set_page_number, page_number, button_page=a),
+                PaginationButton(set_page_number, page_number, button_page=b),
+                PaginationButton(set_page_number, page_number, button_page=c),
+            ),
+            justify="justify-between",
+        ),
     )
-
-    # html.a(
-    #     {
-    #         "href": "#",
-    #         "class": "flex px-4 py-2 text-black bg-white rounded-md hover:bg-black hover:text-white",
-    #     },
-    #     pgnr,
-    # html.div(
-    #     {"class": "flex items-center space-x-1"},
-    # ),
-    # justify="justify-between",
 
 
 @component
@@ -75,3 +84,19 @@ def SimpleTableButton(is_hidden, set_is_hidden):
     )
 
     return btn
+
+
+@component
+def PaginationButton(set_page_number, page_number, button_page):
+    def select_page_number(event):
+        set_page_number(button_page)
+
+    pgn_btn = html.button(
+        {
+            "class": "flex px-4 py-2 text-black bg-white rounded-md hover:bg-black hover:text-white",
+            "onClick": select_page_number,
+        },
+        button_page,
+    )
+
+    return pgn_btn
