@@ -1,9 +1,9 @@
 from idom import html, run, use_state, component, event, vdom, EventHandler
-from idom.server.sanic import PerClientStateServer
 from idom.web import module_from_url, export
-
 from pages.users import page as users_page
 from pages.clients import page as clients_page
+from pages.epics import page as epics_page
+
 from components.layout import Column, Row, FlexContainer
 from components.sidebar import Sidebar
 
@@ -17,13 +17,11 @@ def page():
     timelogs_page = html.h1(
         {"class": "text-white"}, "Timelogs Page, not implemented yet"
     )
-    epics_page = html.h1({"class": "text-white"}, "Epics Page, not implemented yet")
-
     print("here", current_page)
     if current_page == "Users":
         current_page_component = users_page()
     elif current_page == "Epics":
-        current_page_component = epics_page
+        current_page_component = epics_page()
     elif current_page == "Timelogs":
         current_page_component = timelogs_page
     elif current_page == "Clients":

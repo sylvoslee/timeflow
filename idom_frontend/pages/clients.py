@@ -29,7 +29,7 @@ def page():
             Column(
                 Row(list_clients(submitted_name, is_changed)),
             ),
-            Row(delete_client(is_changed, set_is_changed)),
+            Row(delete_client(set_deleted_name)),
             width="6/12",
         ),
         Column(width="3/12"),
@@ -88,7 +88,7 @@ def list_clients(name, is_changed):
 
 
 @component
-def delete_client(deleted_name, set_deleted_name):
+def delete_client(set_deleted_name):
     client_id, set_client_id = use_state("")
     client_name, set_client_name = use_state("")
 
@@ -96,6 +96,7 @@ def delete_client(deleted_name, set_deleted_name):
         api = f"{base_url}/api/clients/{client_id}?client_name={client_name}"
         response = requests.delete(api)
         set_deleted_name(client_name)
+        print(f"state of deleted_name is {deleted_name}")
         # set_is_changed(True)
 
     inp_client_id = Input(

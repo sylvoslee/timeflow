@@ -23,7 +23,6 @@ def page():
     email, set_email = use_state("")
     submitted_surname, set_submitted_surname = use_state("")
     is_changed, set_is_changed = use_state(False)
-
     return Container(
         create_user_form(
             username,
