@@ -6,9 +6,16 @@ from components.layout import Column, Row
 @component
 def SimpleTable(rows: List[Any]):
     is_hidden, set_is_hidden = use_state(True)
+    page_number, set_page_number = use_state(2)
     print(is_hidden)
+    print(f"page number is {page_number}")
     trs = []
-    for row in rows[:3]:
+    p = page_number
+    m = p - 1
+    r = 5
+    a = m * r
+    b = a + r
+    for row in rows[a:b]:
         tds = []
         for k in row:
             value = row[k]
@@ -29,10 +36,22 @@ def SimpleTable(rows: List[Any]):
     tclass = "text-left"
     if is_hidden:
         tclass = "invisible"
+    pgnr = "1"
     return Column(
         html.table({"class": tclass}, thead, tbody),
         SimpleTableButton(is_hidden, set_is_hidden),
     )
+
+    # html.a(
+    #     {
+    #         "href": "#",
+    #         "class": "flex px-4 py-2 text-black bg-white rounded-md hover:bg-black hover:text-white",
+    #     },
+    #     pgnr,
+    # html.div(
+    #     {"class": "flex items-center space-x-1"},
+    # ),
+    # justify="justify-between",
 
 
 @component
