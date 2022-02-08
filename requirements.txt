@@ -1,0 +1,12 @@
+black==21.10b0
+dominate==2.6.0
+fastapi==0.73.0
+idom==0.36.2
+numpy==1.17.4
+pandas==0.25.3
+pydantic==1.8.2
+pytest==4.6.9
+sanic==19.9.0
+SQLAlchemy==1.4.23
+sqlmodel==0.0.6
+watchdog==2.1.6

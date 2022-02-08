@@ -2,13 +2,21 @@
 
 1) Install [npm](https://nodejs.org/en/download/)
 
+```bash
+npm install -g npm
+```
+
 2) Install npx
 
 ```bash
 npm install -g npx
 ```
 
-3) Install [lowdefy](https://docs.lowdefy.com/tutorial-start)
+3) Install IDOM
+
+```bash
+pip install "idom[stable]"
+```
 
 4) Install FastAPI
 
@@ -16,16 +24,21 @@ npm install -g npx
 pip install FastAPI
 ```
 
-5) Spin up the lowdefy development server
-
-```bash
-cd frontend
-npx lowdefy@latest dev
-```
-
-6) Spin up the backend Fastapi dev server
+5) Spin up the backend Fastapi dev server
 
 ```bash
 cd timesheets
 uvicorn backend.main:app --reload
+```
+
+6) Spin up the frontend IDOM dev server
+```bash
+cd timesheets/idom_frontend
+python3 -m run_reload.py
+```
+7) Compile the tailwind css file
+
+```bash
+cd idom_frontend/tailwind
+npm run build
 ```
