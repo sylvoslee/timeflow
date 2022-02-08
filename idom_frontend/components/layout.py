@@ -1,5 +1,5 @@
 from typing import Any, Callable, List
-from idom import html
+from idom import html, component
 
 
 def Container(*args: html):
@@ -16,5 +16,6 @@ def Column(*args: html, width: str = "full"):
     )
 
 
-def Row(*args: html):
-    return html.div({"class": "flex flex-col md:flex-row space-x-4"}, args)
+@component
+def Row(*args: html, justify: str = None):
+    return html.div({"class": f"flex flex-col md:flex-row {justify} space-x-4"}, args)
