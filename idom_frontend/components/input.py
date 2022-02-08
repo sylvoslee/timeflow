@@ -25,3 +25,15 @@ def Input(
             "class": _class,
         }
     )
+
+
+def Selector(placeholder):
+    return html.select(
+        {
+            "placeholder": f"{placeholder}",
+            # "value": placeholder,
+            # "onChange": lambda event: set_placeholder(event["target"]["value"]),
+        },
+        html.option({"value": "Alice"}, "Alice"),
+        html.option({"value": "Bob"}, "Bob"),
+    )
