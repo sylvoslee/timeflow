@@ -18,25 +18,31 @@ npm install -g npx
 pip install "idom[stable]"
 ```
 
-4) Install FastAPI
+4) Install Tailwind CSS
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+```
+
+5) Install FastAPI
 
 ```bash
 pip install FastAPI
 ```
 
-5) Spin up the backend Fastapi dev server
+6) Spin up the backend Fastapi dev server
 
 ```bash
 cd timesheets
 uvicorn backend.main:app --reload
 ```
 
-6) Spin up the frontend IDOM dev server
+7) Spin up the frontend IDOM dev server
 ```bash
 cd timesheets/idom_frontend
 python3 -m run_reload.py
 ```
-7) Compile the tailwind css file
+8) Compile the tailwind css file
 
 ```bash
 cd idom_frontend/tailwind
