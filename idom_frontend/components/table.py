@@ -6,7 +6,7 @@ import math
 
 @component
 def SimpleTable(rows: List[Any]):
-    is_hidden, set_is_hidden = use_state(True)
+    is_hidden, set_is_hidden = use_state(False)
     page_number, set_page_number = use_state(1)
     print(is_hidden)
     print(f"page number is {page_number}")
@@ -41,16 +41,18 @@ def SimpleTable(rows: List[Any]):
     for n in pg_range:
         list_pages_nr.append(n)
 
-    tclass = "text-left"
+    table = html.table({"class": "text-left"}, thead, tbody)
+
     if is_hidden:
-        tclass = "invisible"
+        table = None
     pgnr = "1"
 
     a = 1
     b = 2
     c = 3
+
     return Column(
-        html.table({"class": tclass}, thead, tbody),
+        table,
         Row(
             SimpleTableButton(is_hidden, set_is_hidden),
             Row(
@@ -65,7 +67,7 @@ def SimpleTable(rows: List[Any]):
 
 @component
 def SimpleTableButton(is_hidden, set_is_hidden):
-    text, set_text = use_state("show table")
+    text, set_text = use_state("hide table")
 
     def show_page(event):
         if is_hidden:
