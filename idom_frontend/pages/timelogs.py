@@ -6,7 +6,7 @@ import requests
 from sanic import Sanic, response
 from black import click
 
-from components.input import Input, Selector, Datalist
+from components.input import Input, Selector
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
