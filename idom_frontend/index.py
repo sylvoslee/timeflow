@@ -12,7 +12,7 @@ from components.sidebar import Sidebar
 @component
 def page():
 
-    current_page, set_current_page = use_state("Users")
+    current_page, set_current_page = use_state("Timelogs")
     pages = ["Users", "Timelogs", "Epics", "Clients"]
 
     print("here", current_page)

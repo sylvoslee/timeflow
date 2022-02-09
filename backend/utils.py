@@ -51,6 +51,11 @@ def string_to_datetime(date_string):
     return date
 
 
+def string_to_datetime_hm(date_string):
+    date = datetime.datetime.strptime(date_string, "%H:%M")
+    return date
+
+
 def string_to_datetime_GMT(date_string):
     date = datetime.datetime.strptime(date_string, "%a %b %d %Y %H:%M:%S %Z%z")
     return date

@@ -1,7 +1,8 @@
 from typing import Any, Callable
-from idom import html
+from idom import html, component
 
 
+@component
 def Input(
     value: Any,
     set_value: Callable,
@@ -27,13 +28,25 @@ def Input(
     )
 
 
-def Selector(placeholder):
+@component
+def Selector(
+    value: Any,
+    set_value: Callable,
+    placeholder,
+    dropdown_list,
+    _class: str = """text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
+                    text-base transition duration-500 ease-in-out transform 
+                    border-transparent bg-secondary-300 focus:border-blueGray-500 
+                    focus:bg-white dark:focus:bg-secondary-400 focus:outline-none 
+                    focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 
+                    ring-gray-400""",
+):
     return html.select(
         {
-            "placeholder": f"{placeholder}",
-            # "value": placeholder,
-            # "onChange": lambda event: set_placeholder(event["target"]["value"]),
+            "class": _class,
+            "value": value,
+            "onChange": lambda event: set_value(event["target"]["value"]),
         },
-        html.option({"value": "Alice"}, "Alice"),
-        html.option({"value": "Bob"}, "Bob"),
+        html.option({"value": ""}, placeholder),
+        dropdown_list,
     )
