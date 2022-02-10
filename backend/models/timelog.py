@@ -3,7 +3,7 @@ from typing import Optional
 from sqlmodel import Field, SQLModel, Field
 from pydantic import validator, root_validator, ValidationError
 from datetime import datetime, timedelta
-from ..utils import string_to_datetime_hm
+from ..utils import string_to_datetime
 
 
 # {
@@ -24,7 +24,6 @@ class TimeLog(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     start_time: str
     end_time: str
-    client_id: int = Field(foreign_key="client.id")
     epic_id: int = Field(foreign_key="epic.id")
     count_hours: float
     count_days: float
@@ -55,7 +54,7 @@ class TimeLog(SQLModel, table=True):
     # actually computed "count_hours" field --> to be changed
     @root_validator(pre=True)
     def count_hours_compute(cls, values):
-        delta = string_to_datetime_hm(values["end_time"]) - string_to_datetime_hm(
+        delta = string_to_datetime(values["end_time"]) - string_to_datetime(
             values["start_time"]
         )
         work_delta_hours = delta.total_seconds() / 3600
@@ -66,7 +65,7 @@ class TimeLog(SQLModel, table=True):
     # actually computed "count_days" field --> to be changed
     @root_validator(pre=True)
     def count_days_compute(cls, values):
-        delta = string_to_datetime_hm(values["end_time"]) - string_to_datetime_hm(
+        delta = string_to_datetime(values["end_time"]) - string_to_datetime(
             values["start_time"]
         )
         work_delta_days = delta.total_seconds() / 3600 / 8

@@ -115,7 +115,7 @@ def list_users(surname, is_changed):
 
 
 @component
-def delete_user(is_changed, set_is_changed):
+def delete_user(set_delete_timelog):
     username, set_username = use_state("")
 
     def delete_user(event):
