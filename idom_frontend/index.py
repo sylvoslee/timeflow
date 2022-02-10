@@ -17,13 +17,13 @@ def page():
 
     print("here", current_page)
     if current_page == "Users":
-        current_page_component = users_page()
+        current_page_component = users_page(key="users_page")
     elif current_page == "Epics":
-        current_page_component = epics_page()
+        current_page_component = epics_page(key="epics_page")
     elif current_page == "Timelogs":
-        current_page_component = timelogs_page()
+        current_page_component = timelogs_page(key="timelogs_page")
     elif current_page == "Clients":
-        current_page_component = clients_page()
+        current_page_component = clients_page(key="clients_page")
     else:
         current_page_component = html.h1(
             {"class": "text-white"}, "Test Page, not implemented yet"

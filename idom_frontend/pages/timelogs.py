@@ -6,7 +6,12 @@ import requests
 from sanic import Sanic, response
 from black import click
 
-from components.input import Input, Selector
+from components.input import (
+    Input,
+    Selector,
+    SelectorDropdownList,
+    SelectorDropdownKeyValue,
+)
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
@@ -18,11 +23,11 @@ base_url = "http://127.0.0.1:8000"
 def page():
     year_month, set_year_month = use_state("")
     day, set_day = use_state("")
-    user_id, set_user_id = use_state("")
+    user, set_user = use_state("")
     epic_id, set_epic_id = use_state("")
     start_time, set_start_time = use_state("")
     end_time, set_end_time = use_state("")
-    delete_timelog, set_delete_timelog = use_state("")
+    deleted_timelog, set_deleted_timelog = use_state("")
     submitted_user_id, set_submitted_user_id = use_state("")
     return Container(
         create_timelog_form(
@@ -30,8 +35,8 @@ def page():
             set_year_month,
             day,
             set_day,
-            user_id,
-            set_user_id,
+            user,
+            set_user,
             epic_id,
             set_epic_id,
             start_time,
@@ -44,7 +49,7 @@ def page():
         Column(
             Row(list_timelogs(submitted_user_id)),
         ),
-        # Row(delete_timelogs(set_delete_timelog)),
+        Row(delete_timelog_input(set_deleted_timelog)),
     )
 
 
@@ -54,8 +59,8 @@ def create_timelog_form(
     set_year_month,
     day,
     set_day,
-    user_id,
-    set_user_id,
+    user,
+    set_user,
     epic_id,
     set_epic_id,
     start_time,
@@ -92,20 +97,19 @@ def create_timelog_form(
         data = {
             "start_time": start_time_post,
             "end_time": end_time_post,
-            "user_id": user_id,
+            "user_id": user,
             "epic_id": epic_id,
             "count_hours": 0,
             "count_days": 0,
             "month": month_int,
             "year": year_int,
         }
-        print("timelog post json", data)
         response = requests.post(
             f"{base_url}/api/timelogs",
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
-        set_submitted_user_id(user_id)
+        set_submitted_user_id(user)
 
     # year and month dropdown list
     year_month_dropdown_list = (
@@ -129,11 +133,7 @@ def create_timelog_form(
     for n in month_days_nr:
         month_days_list.append(n)
 
-    days_dropdown = []
-    for n in month_days_list:
-        a = html.option({"value": f"{n}"}, n)
-        days_dropdown.append(a)
-        days_dropdown_list = tuple(days_dropdown)
+    days_dropdown_list = SelectorDropdownList(month_days_list)
 
     # hours dropdown list
     # fmt: off
@@ -141,16 +141,50 @@ def create_timelog_form(
         "17", "18", "19", "20", "21", "22"]
     q = ["00", "15", "30", "45"]
     # fmt: on
+
     hours_list = []
     for n in h:
         for m in q:
             hours = f"{n}:{m}"
             hours_list.append(hours)
-    hours_dropdown = []
-    for n in hours_list:
-        a = html.option({"value": f"{n}"}, n)
-        hours_dropdown.append(a)
-        hours_dropdown_list = tuple(hours_dropdown)
+
+    hours_dropdown_list = SelectorDropdownList(hours_list)
+
+    # username dropdown list
+    api_username = f"{base_url}/api/users"
+    response_username = requests.get(api_username)
+
+    username_rows = []
+    for item in response_username.json():
+        d = {item["username"]: item["id"]}
+        username_rows.append(d)
+
+    username_dropdown_list = SelectorDropdownKeyValue(rows=username_rows)
+
+    # epic name dropdown list
+    api_epic_name = f"{base_url}/api/epics"
+    response_epic_name = requests.get(api_epic_name)
+
+    epic_name_rows = []
+    for item in response_epic_name.json():
+        d = {item["name"]: item["id"]}
+        epic_name_rows.append(d)
+
+    epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
+
+    selector_epic_id = Selector(
+        value=epic_id,
+        set_value=set_epic_id,
+        placeholder="select epic",
+        dropdown_list=epic_name_dropdown_list,
+    )
+
+    selector_user = Selector(
+        value=user,
+        set_value=set_user,
+        placeholder="select user",
+        dropdown_list=username_dropdown_list,
+    )
 
     selector_year_month = Selector(
         value=year_month,
@@ -179,8 +213,6 @@ def create_timelog_form(
         dropdown_list=hours_dropdown_list,
     )
 
-    inp_user_id = Input(value=user_id, set_value=set_user_id, label="user id")
-    inp_epic_id = Input(value=epic_id, set_value=set_epic_id, label="epic id")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
@@ -191,8 +223,8 @@ def create_timelog_form(
 
     return Column(
         Row(
-            inp_user_id,
-            inp_epic_id,
+            selector_user,
+            selector_epic_id,
             selector_year_month,
             selector_days,
             selector_start_time,
@@ -211,8 +243,6 @@ def list_timelogs(submitted_user_id):
     for item in response.json():
         d = {
             "timelog id": item["id"],
-            "user_id": item["user_id"],
-            "epic_id": item["epic_id"],
             "start_time": item["start_time"],
             "end_time": item["end_time"],
             "count_hours": item["count_hours"],
@@ -222,23 +252,25 @@ def list_timelogs(submitted_user_id):
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
-# @component
-# def delete_user(set_delete_timelog):
-#     username, set_username = use_state("")
+@component
+def delete_timelog_input(set_deleted_timelog):
+    timelog_to_delete, set_timelog_to_delete = use_state("")
 
-#     def delete_user(event):
-#         api = f"{base_url}/api/users?username={username}"
-#         response = requests.delete(api)
-#         set_is_changed(True)
+    def handle_delete(event):
+        api = f"{base_url}/api/timelogs/{timelog_to_delete}"
+        response = requests.delete(api)
+        set_deleted_timelog(timelog_to_delete)
 
-#     inp_username = Input(
-#         value=username, set_value=set_username, label="delete user input"
-#     )
-#     btn = html.button(
-#         {
-#             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-#             "onClick": delete_user,
-#         },
-#         "Submit",
-#     )
-#     return Column(Row(inp_username), Row(btn))
+    inp_username = Input(
+        value=timelog_to_delete,
+        set_value=set_timelog_to_delete,
+        label="timelog id to delete",
+    )
+    btn = html.button(
+        {
+            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+            "onClick": handle_delete,
+        },
+        "Submit",
+    )
+    return Column(Row(inp_username), Row(btn))

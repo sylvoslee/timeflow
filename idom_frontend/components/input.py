@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, List
 from idom import html, component
 
 
@@ -50,3 +50,23 @@ def Selector(
         html.option({"value": ""}, placeholder),
         dropdown_list,
     )
+
+
+def SelectorDropdownKeyValue(rows: List[Any]):
+    crows = []
+    for row in rows:
+        for key in row:
+            value = row[key]
+            c = html.option({"value": f"{value}"}, key)
+            crows.append(c)
+    dropdown_list = tuple(crows)
+    return dropdown_list
+
+
+def SelectorDropdownList(rows: List[Any]):
+    crows = []
+    for n in rows:
+        a = html.option({"value": f"{n}"}, n)
+        crows.append(a)
+    dropdown_list = tuple(crows)
+    return dropdown_list

@@ -92,22 +92,11 @@ async def update_timelogs(
 async def delete_timelogs(
     *,
     timelog_id: int,
-    user_id: int,
-    start_time: str,
-    end_time: str,
-    epic_id: int,
     session: Session = Depends(get_session),
 ):
-    statement = (
-        select(TimeLog)
-        .where(TimeLog.id == timelog_id)
-        .where(TimeLog.user_id == user_id)
-        .where(TimeLog.start_time == start_time)
-        .where(TimeLog.end_time == end_time)
-        .where(TimeLog.epic_id == epic_id)
-    )
+    statement = select(TimeLog).where(TimeLog.id == timelog_id)
     result = session.exec(statement).one()
-    timelogs_to_delete = result
-    session.delete(timelogs_to_delete)
+    timelog_to_delete = result
+    session.delete(timelog_to_delete)
     session.commit()
     return True
