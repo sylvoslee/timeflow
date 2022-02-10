@@ -45,7 +45,8 @@ def SimpleTable(rows: List[Any]):
     b = 2
     c = 3
 
-    return Column(
+    return html.div(
+        {"class": "flex flex-col w-full space-y-2"},
         table,
         Row(
             Row(
