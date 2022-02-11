@@ -12,7 +12,7 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 
-base_url = "http://127.0.0.1:8000"
+base_url = "http://172.28.1.2:8000"
 
 
 @component
@@ -101,7 +101,7 @@ def create_user_form(
 def list_users(surname, is_changed):
     api = f"{base_url}/api/users"
     response = requests.get(api)
-
+    print(api)
     rows = []
     for item in response.json():
         d = {
