@@ -37,14 +37,16 @@ cd timesheets
 uvicorn backend.main:app --reload
 ```
 
-7) Spin up the frontend IDOM dev server
-```bash
-cd timesheets/idom_frontend
-python3 -m run_reload.py
-```
-8) Compile the tailwind css file
+7) Compile the tailwind css file
 
 ```bash
 cd idom_frontend/tailwind
 npm run build
+```
+
+8) Spin up the frontend IDOM dev server
+
+```bash
+cd timesheets/idom_frontend
+python3 -m run_reload.py
 ```
