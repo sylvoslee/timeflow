@@ -15,8 +15,7 @@ from components.input import (
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
-
-base_url = "http://127.0.0.1:8000"
+from config import base_url
 
 
 @component
@@ -28,7 +27,8 @@ def page():
     start_time, set_start_time = use_state("")
     end_time, set_end_time = use_state("")
     deleted_timelog, set_deleted_timelog = use_state("")
-    submitted_user_id, set_submitted_user_id = use_state("")
+    submitted_user, set_submitted_user = use_state("")
+    is_true, set_is_true = use_state(True)
     return Container(
         create_timelog_form(
             year_month,
@@ -43,11 +43,11 @@ def page():
             set_start_time,
             end_time,
             set_end_time,
-            submitted_user_id,
-            set_submitted_user_id,
+            is_true,
+            set_is_true,
         ),
         Column(
-            Row(list_timelogs(submitted_user_id)),
+            Row(list_timelogs(is_true)),
         ),
         Row(delete_timelog_input(set_deleted_timelog)),
     )
@@ -67,8 +67,8 @@ def create_timelog_form(
     set_start_time,
     end_time,
     set_end_time,
-    submitted_user_id,
-    set_submitted_user_id,
+    is_true,
+    set_is_true,
 ):
     """
     schema:
@@ -109,7 +109,10 @@ def create_timelog_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
-        set_submitted_user_id(user)
+        if is_true:
+            set_is_true(False)
+        else:
+            set_is_true(True)
 
     # year and month dropdown list
     year_month_dropdown_list = (
@@ -235,7 +238,7 @@ def create_timelog_form(
 
 
 @component
-def list_timelogs(submitted_user_id):
+def list_timelogs(is_true):
     api = f"{base_url}/api/timelogs"
     response = requests.get(api)
 
