@@ -29,7 +29,7 @@ def page():
     end_time, set_end_time = use_state("")
     deleted_timelog, set_deleted_timelog = use_state("")
     submitted_user, set_submitted_user = use_state("")
-    is_true, set_is_true = use_state("")
+    is_true, set_is_true = use_state(True)
     return Container(
         create_timelog_form(
             year_month,
@@ -44,13 +44,11 @@ def page():
             set_start_time,
             end_time,
             set_end_time,
-            submitted_user,
-            set_submitted_user,
             is_true,
             set_is_true,
         ),
         Column(
-            Row(list_timelogs(submitted_user)),
+            Row(list_timelogs(is_true)),
         ),
         Row(delete_timelog_input(set_deleted_timelog)),
     )
@@ -70,9 +68,6 @@ def create_timelog_form(
     set_start_time,
     end_time,
     set_end_time,
-    submitted_user,
-    set_submitted_user,
-    set_deleted_timelog,
     is_true,
     set_is_true,
 ):
@@ -115,7 +110,10 @@ def create_timelog_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
-        set_submitted_user(start_time)
+        if is_true:
+            set_is_true(False)
+        else:
+            set_is_true(True)
 
     # year and month dropdown list
     year_month_dropdown_list = (
@@ -241,7 +239,7 @@ def create_timelog_form(
 
 
 @component
-def list_timelogs(submitted_user_id):
+def list_timelogs(is_true):
     api = f"{base_url}/api/timelogs"
     response = requests.get(api)
 
