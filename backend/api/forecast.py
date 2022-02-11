@@ -110,20 +110,13 @@ async def update_forecasts(
 
 @router.delete("/")
 async def delete_forecasts(
-    user_id: str = None,
-    epic_id: str = None,
-    month: int = None,
-    year: int = None,
+    forecast_id: str = None,
     session: Session = Depends(get_session),
 ):
     statement = select(Forecast).where(
-        and_(
-            Forecast.user_id == user_id,
-            Forecast.epic_id == epic_id,
-            Forecast.month == month,
-            Forecast.year == year,
-        )
+        Forecast.id == forecast_id,
     )
+
     forecast_to_delete = session.exec(statement).one()
     session.delete(forecast_to_delete)
     session.commit()

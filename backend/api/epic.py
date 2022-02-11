@@ -50,15 +50,16 @@ async def read_epics(epic_name: str = None, session: Session = Depends(get_sessi
         return msg
 
 
-# Get epics with clients list
-@router.get("/clients/lists/{list_name}")
-async def get_epic_list(list_name: str = None):
-    if list_name == "epics_with_clients":
-        statement = select(Epic.name, Client.name).select_from(Epic).join(Client)
-        result = session.exec(statement).all()
-        return result
-    else:
-        return f"""This list doesn't exist. Please select existing list"""
+# get client name by epic id
+@router.get("/{epic_id}/client-name")
+async def get_client_name_by_epic_id(
+    epic_id: int, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Epic.id, Client.id, Client.name).join(Client).where(Epic.id == epic_id)
+    )
+    result = session.exec(statement).one()
+    return result
 
 
 # Update epics
