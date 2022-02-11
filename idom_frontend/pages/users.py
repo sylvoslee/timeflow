@@ -22,7 +22,7 @@ def page():
     surname, set_surname = use_state("")
     email, set_email = use_state("")
     submitted_surname, set_submitted_surname = use_state("")
-    is_changed, set_is_changed = use_state(False)
+    deleted_user, set_deleted_user = use_state("")
     return Container(
         create_user_form(
             username,
@@ -36,9 +36,9 @@ def page():
             set_submitted_surname,
         ),
         Column(
-            Row(list_users(submitted_surname, is_changed)),
+            Row(list_users(submitted_surname)),
         ),
-        Row(delete_user(is_changed, set_is_changed)),
+        Row(delete_user(set_deleted_user)),
     )
 
 
@@ -98,7 +98,7 @@ def create_user_form(
 
 
 @component
-def list_users(surname, is_changed):
+def list_users(submitted_surname):
     api = f"{base_url}/api/users"
     response = requests.get(api)
 
@@ -115,16 +115,16 @@ def list_users(surname, is_changed):
 
 
 @component
-def delete_user(is_changed, set_is_changed):
-    username, set_username = use_state("")
+def delete_user(set_delete_user):
+    delete_user, set_delete_user = use_state("")
 
     def delete_user(event):
-        api = f"{base_url}/api/users?username={username}"
+        api = f"{base_url}/api/users?username={delete_user}"
         response = requests.delete(api)
-        set_is_changed(True)
+        set_deleted_user(delete_user)
 
     inp_username = Input(
-        value=username, set_value=set_username, label="delete user input"
+        value=delete_user, set_value=set_delete_user, label="delete user (username)"
     )
     btn = html.button(
         {

@@ -6,9 +6,7 @@ import math
 
 @component
 def SimpleTable(rows: List[Any]):
-    is_hidden, set_is_hidden = use_state(False)
     page_number, set_page_number = use_state(1)
-    print(is_hidden)
     print(f"page number is {page_number}")
     trs = []
     p = page_number
@@ -43,30 +41,26 @@ def SimpleTable(rows: List[Any]):
 
     table = html.table({"class": "text-left"}, thead, tbody)
 
-    if is_hidden:
-        table = None
-    pgnr = "1"
-
     a = 1
     b = 2
     c = 3
 
-    return Column(
+    return html.div(
+        {"class": "flex flex-col w-full space-y-2"},
         table,
         Row(
-            SimpleTableButton(is_hidden, set_is_hidden),
             Row(
                 PaginationButton(set_page_number, page_number, button_page=a),
                 PaginationButton(set_page_number, page_number, button_page=b),
                 PaginationButton(set_page_number, page_number, button_page=c),
             ),
-            justify="justify-between",
+            justify="justify-end",
         ),
     )
 
 
 @component
-def SimpleTableButton(is_hidden, set_is_hidden):
+def HiddenButton(is_hidden, set_is_hidden):
     text, set_text = use_state("hide table")
 
     def show_page(event):

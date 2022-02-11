@@ -24,7 +24,6 @@ class TimeLog(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     start_time: str
     end_time: str
-    client_id: int = Field(foreign_key="client.id")
     epic_id: int = Field(foreign_key="epic.id")
     count_hours: float
     count_days: float
@@ -39,18 +38,18 @@ class TimeLog(SQLModel, table=True):
         return values
 
     # actually computed "month" field --> to be changed
-    @validator("month", always=True, pre=True)
-    def set_month(cls, month_value, values):
-        start_time_dt = string_to_datetime(values["start_time"])
-        month_value = start_time_dt.month
-        return month_value
+    # @validator("month", always=True, pre=True)
+    # def set_month(cls, month_value, values):
+    #     start_time_dt = string_to_datetime(values["start_time"])
+    #     month_value = start_time_dt.month
+    #     return month_value
 
     # actually computed "year" field --> to be changed
-    @validator("year", always=True, pre=True)
-    def set_year(cls, year_value, values):
-        start_time_dt = string_to_datetime(values["start_time"])
-        year_value = start_time_dt.year
-        return year_value
+    # @validator("year", always=True, pre=True)
+    # def set_year(cls, year_value, values):
+    #     start_time_dt = string_to_datetime(values["start_time"])
+    #     year_value = start_time_dt.year
+    #     return year_value
 
     # actually computed "count_hours" field --> to be changed
     @root_validator(pre=True)
