@@ -28,7 +28,8 @@ def page():
     start_time, set_start_time = use_state("")
     end_time, set_end_time = use_state("")
     deleted_timelog, set_deleted_timelog = use_state("")
-    submitted_user_id, set_submitted_user_id = use_state("")
+    submitted_user, set_submitted_user = use_state("")
+    is_true, set_is_true = use_state("")
     return Container(
         create_timelog_form(
             year_month,
@@ -43,11 +44,13 @@ def page():
             set_start_time,
             end_time,
             set_end_time,
-            submitted_user_id,
-            set_submitted_user_id,
+            submitted_user,
+            set_submitted_user,
+            is_true,
+            set_is_true,
         ),
         Column(
-            Row(list_timelogs(submitted_user_id)),
+            Row(list_timelogs(submitted_user)),
         ),
         Row(delete_timelog_input(set_deleted_timelog)),
     )
@@ -67,8 +70,11 @@ def create_timelog_form(
     set_start_time,
     end_time,
     set_end_time,
-    submitted_user_id,
-    set_submitted_user_id,
+    submitted_user,
+    set_submitted_user,
+    set_deleted_timelog,
+    is_true,
+    set_is_true,
 ):
     """
     schema:
@@ -109,7 +115,7 @@ def create_timelog_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
-        set_submitted_user_id(user)
+        set_submitted_user(start_time)
 
     # year and month dropdown list
     year_month_dropdown_list = (
