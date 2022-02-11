@@ -12,7 +12,7 @@ from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
 from components.table import SimpleTable
 
-base_url = "http://127.0.0.1:8000"
+base_url = "http://172.28.1.2:8000"
 
 
 @component
