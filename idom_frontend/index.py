@@ -4,6 +4,7 @@ from pages.users import page as users_page
 from pages.clients import page as clients_page
 from pages.epics import page as epics_page
 from pages.timelogs import page as timelogs_page
+from pages.forecasts import page as forecasts_page
 
 from components.layout import Column, Row, FlexContainer
 from components.sidebar import Sidebar
@@ -13,7 +14,7 @@ from components.sidebar import Sidebar
 def page():
 
     current_page, set_current_page = use_state("Timelogs")
-    pages = ["Users", "Timelogs", "Epics", "Clients"]
+    pages = ["Users", "Timelogs", "Epics", "Clients", "Forecasts"]
 
     print("here", current_page)
     if current_page == "Users":
@@ -24,6 +25,8 @@ def page():
         current_page_component = timelogs_page(key="timelogs_page")
     elif current_page == "Clients":
         current_page_component = clients_page(key="clients_page")
+    elif current_page == "Forecasts":
+        current_page_component = forecasts_page(key="forecasts_page")
     else:
         current_page_component = html.h1(
             {"class": "text-white"}, "Test Page, not implemented yet"
