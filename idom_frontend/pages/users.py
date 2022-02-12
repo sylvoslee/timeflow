@@ -11,7 +11,9 @@ from components.input import Input
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
+
 from config import base_url
+
 
 
 @component
@@ -100,7 +102,7 @@ def create_user_form(
 def list_users(submitted_surname):
     api = f"{base_url}/api/users"
     response = requests.get(api)
-
+    print(api)
     rows = []
     for item in response.json():
         d = {

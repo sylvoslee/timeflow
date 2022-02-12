@@ -11,6 +11,7 @@ from components.input import Input
 from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
 from components.table import SimpleTable
+
 from config import base_url
 
 
