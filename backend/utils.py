@@ -47,7 +47,12 @@ tags_metadata = [
 
 
 def string_to_datetime(date_string):
-    date = datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+    date = datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M")
+    return date
+
+
+def string_to_datetime_hm(date_string):
+    date = datetime.datetime.strptime(date_string, "%H:%M")
     return date
 
 

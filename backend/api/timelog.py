@@ -51,30 +51,28 @@ async def get_timelog_by_id(timelog_id: int, session: Session = Depends(get_sess
     return result
 
 
-# Get list of timelogs by user_id, month and client
-@router.get("/users/{user_id}/months/{month}/years/{year}/clients/{client_id}")
+# Get list of timelogs by user_id, month
+@router.get("/users/{user_id}/months/{month}/years/{year}")
 async def get_timelog_user_id(
     *,
     user_id: str,
     month: int,
     year: int,
-    client_id: int,
     session: Session = Depends(get_session),
 ):
     statement = (
         select(TimeLog)
         .where(TimeLog.user_id == user_id)
         .where(TimeLog.month == month)
-        .where(TimeLog.client_id == client_id)
         .where(TimeLog.year == year)
     )
     results = session.exec(statement).all()
     return results
 
 
-# Update client
+# Update timelogs
 @router.put("/{timelog_id}/new-start-time")
-async def update_clients(
+async def update_timelogs(
     *,
     timelog_id: int = None,
     timelog_new_start_time: str = None,
@@ -94,24 +92,11 @@ async def update_clients(
 async def delete_timelogs(
     *,
     timelog_id: int,
-    user_id: int,
-    start_time: str,
-    end_time: str,
-    client_id: int,
-    epic_id: int,
     session: Session = Depends(get_session),
 ):
-    statement = (
-        select(TimeLog)
-        .where(TimeLog.id == timelog_id)
-        .where(TimeLog.user_id == user_id)
-        .where(TimeLog.start_time == start_time)
-        .where(TimeLog.end_time == end_time)
-        .where(TimeLog.client_id == client_id)
-        .where(TimeLog.epic_id == epic_id)
-    )
+    statement = select(TimeLog).where(TimeLog.id == timelog_id)
     result = session.exec(statement).one()
-    timelogs_to_delete = result
-    session.delete(timelogs_to_delete)
+    timelog_to_delete = result
+    session.delete(timelog_to_delete)
     session.commit()
     return True
