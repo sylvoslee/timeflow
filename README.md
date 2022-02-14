@@ -48,6 +48,9 @@ python3 -m run_reload.py
 cd idom_frontend/tailwind
 npm run build
 ```
-9) Open a git bash terminal
-10) Run `sh build.sh`
-11) Run `docker-compose up`
+
+# Docker instructions
+* Open a git bash terminal
+* Ensure you are in the root directory of the project
+* Run `sh build.sh`
+* Run `docker-compose up`
