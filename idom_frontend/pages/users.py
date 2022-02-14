@@ -101,7 +101,6 @@ def create_user_form(
 def list_users(submitted_surname):
     api = f"{base_url}/api/users"
     response = requests.get(api)
-    print(api)
     rows = []
     for item in response.json():
         d = {
@@ -123,9 +122,7 @@ def delete_user(set_delete_user):
         response = requests.delete(api)
         set_deleted_user(delete_user)
 
-    inp_username = Input(
-        value=delete_user, set_value=set_delete_user, label="delete user (username)"
-    )
+    inp_username = Input(set_value=set_delete_user, label="delete user (username)")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",

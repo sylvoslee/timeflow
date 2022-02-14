@@ -117,9 +117,7 @@ def delete_epic(set_delete_name):
         set_delete_name(name_to_delete)
         print(name)
 
-    inp_delete_name = Input(
-        value=name_to_delete, set_value=set_name_to_delete, label="delete epic input"
-    )
+    inp_delete_name = Input(set_value=set_name_to_delete, label="delete epic input")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
