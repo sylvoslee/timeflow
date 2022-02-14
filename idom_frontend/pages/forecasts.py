@@ -24,7 +24,7 @@ def page():
     year_month, set_year_month = use_state("")
     days, set_days = use_state("")
     user, set_user = use_state("")
-    epic_id, set_epic_id = use_state("1")
+    epic_id, set_epic_id = use_state("")
     client_id, set_client_id = use_state("")
     deleted_forecst, set_deleted_forecast = use_state("")
     is_true, set_is_true = use_state(True)
@@ -165,31 +165,25 @@ def create_forecast_form(
     client_id = r.get("id_1")
     option = html.option({"value": f"{client_id}"}, client_name)
     selector_user = Selector(
-        value=user,
         set_value=set_user,
         placeholder="select user",
         dropdown_list=username_dropdown_list,
     )
 
     selector_epic_id = Selector(
-        value=epic_id,
         set_value=set_epic_id,
         placeholder="select epic",
         dropdown_list=epic_name_dropdown_list,
     )
-    selector_client_id = AutoSelect(
-        value=client_id, set_value=set_client_id, option=option
-    )
+    selector_client_id = AutoSelect(set_value=set_client_id, option=option)
 
     selector_year_month = Selector(
-        value=year_month,
         set_value=set_year_month,
         placeholder="select a month",
         dropdown_list=year_month_dropdown_list,
     )
 
     selector_days = Selector(
-        value=days,
         set_value=set_days,
         placeholder="select forecast days",
         dropdown_list=days_dropdown_list,
@@ -243,7 +237,6 @@ def delete_forecast_input(set_deleted_forecast):
         set_deleted_forecast(forecast_to_delete)
 
     inp_forecast = Input(
-        value=forecast_to_delete,
         set_value=set_forecast_to_delete,
         label="forecast id to delete",
     )

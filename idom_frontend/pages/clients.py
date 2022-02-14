@@ -21,6 +21,7 @@ def page():
     submitted_name, set_submitted_name = use_state("")
     deleted_name, set_deleted_name = use_state("")
     is_changed, set_is_changed = use_state(False)
+    print(name)
 
     return FlexContainer(
         Column(width="3/12"),
@@ -55,7 +56,7 @@ def create_client_form(name, set_name, set_submitted_name):
         )
         set_submitted_name(name)
 
-    inp_name = Input(value=name, set_value=set_name, label="name")
+    inp_name = Input(set_value=set_name, label="name")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
@@ -99,12 +100,8 @@ def delete_client(set_deleted_name):
         print(f"state of deleted_name is {deleted_name}")
         # set_is_changed(True)
 
-    inp_client_id = Input(
-        value=client_id, set_value=set_client_id, label="delete client:id input"
-    )
-    inp_client_name = Input(
-        value=client_name, set_value=set_client_name, label="delete client:name input"
-    )
+    inp_client_id = Input(set_value=set_client_id, label="delete client:id input")
+    inp_client_name = Input(set_value=set_client_name, label="delete client:name input")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",

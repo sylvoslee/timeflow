@@ -14,7 +14,7 @@ from components.sidebar import Sidebar
 def page():
 
     current_page, set_current_page = use_state("Timelogs")
-    pages = ["Users", "Timelogs", "Epics", "Clients", "Forecasts"]
+    pages = ["Timelogs", "Forecasts"]
 
     print("here", current_page)
     if current_page == "Users":

@@ -8,7 +8,7 @@ from .icons import arrow_down, arrow_up
 
 
 @component
-def Dropdown():
+def Dropdown(current_page, set_current_page):
     is_down, set_value = use_state(True)
 
     def handle_click(event):
@@ -25,14 +25,14 @@ def Dropdown():
     if is_down:
         btn = html.button(
             {"class": btn_class, "onClick": handle_click},
-            html.span("Dropdown"),
+            html.span("Admin"),
             arrow_down,
         )
         return html.div({"class": "relative"}, btn)
     else:
         btn = html.button(
             {"class": btn_class, "onClick": handle_click},
-            html.span("Dropdown"),
+            html.span("Admin"),
             arrow_up,
         )
         aclass = """block px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg 
@@ -42,9 +42,9 @@ def Dropdown():
                     focus:outline-none focus:shadow-outline
                 """
         anchors = []
-        for item in ["oranges", "apples", "test"]:
+        for item in ["Users", "Epics", "Clients"]:
             anchors.append(html.a({"class": aclass}, item))
-
+        pages = ["Users", "Epics", "Clients"]
         return html.div(
             {"class": "relative"},
             btn,
@@ -56,7 +56,7 @@ def Dropdown():
                     {
                         "class": "px-2 py-2 bg-white rounded-md shadow dark-mode:bg-gray-800"
                     },
-                    anchors,
+                    ListPages(current_page, set_current_page, pages=pages),
                 ),
             ),
         )
@@ -120,7 +120,7 @@ def Sidebar(current_page, set_current_page, pages: List[str], title: str = ""):
                         "class": "flex-grow md:block px-4 pb-4 md:pb-0 md:overflow-y-auto"
                     },
                     ListPages(current_page, set_current_page, pages=pages, title=title),
-                    Dropdown(),
+                    Dropdown(current_page, set_current_page),
                 ),
             ),
         ),
