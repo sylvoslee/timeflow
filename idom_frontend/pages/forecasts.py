@@ -24,7 +24,7 @@ def page():
     year_month, set_year_month = use_state("")
     days, set_days = use_state("")
     user, set_user = use_state("")
-    epic_id, set_epic_id = use_state("1")
+    epic_id, set_epic_id = use_state("")
     client_id, set_client_id = use_state("")
     deleted_forecst, set_deleted_forecast = use_state("")
     is_true, set_is_true = use_state(True)
@@ -158,11 +158,13 @@ def create_forecast_form(
     epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
 
     # client name dropdown list
+    print(client_id)
     api_client_name = f"{base_url}/api/epics/{epic_id}/client-name"
     response_client_name = requests.get(api_client_name)
     r = response_client_name.json()
     client_name = r.get("name")
     client_id = r.get("id_1")
+    print(client_id)
     option = html.option({"value": f"{client_id}"}, client_name)
     selector_user = Selector(
         value=user,

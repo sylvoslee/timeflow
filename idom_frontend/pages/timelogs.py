@@ -5,7 +5,6 @@ from idom import html, run, use_state, component, event, vdom
 import requests
 from sanic import Sanic, response
 from black import click
-
 from components.input import (
     Input,
     Selector,

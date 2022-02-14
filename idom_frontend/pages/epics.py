@@ -10,8 +10,7 @@ from components.input import Input
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
-
-base_url = "http://172.28.1.2:8000"
+from config import base_url
 
 
 @component
