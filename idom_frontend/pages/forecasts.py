@@ -158,40 +158,32 @@ def create_forecast_form(
     epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
 
     # client name dropdown list
-    print(client_id)
     api_client_name = f"{base_url}/api/epics/{epic_id}/client-name"
     response_client_name = requests.get(api_client_name)
     r = response_client_name.json()
     client_name = r.get("name")
     client_id = r.get("id_1")
-    print(client_id)
     option = html.option({"value": f"{client_id}"}, client_name)
     selector_user = Selector(
-        value=user,
         set_value=set_user,
         placeholder="select user",
         dropdown_list=username_dropdown_list,
     )
 
     selector_epic_id = Selector(
-        value=epic_id,
         set_value=set_epic_id,
         placeholder="select epic",
         dropdown_list=epic_name_dropdown_list,
     )
-    selector_client_id = AutoSelect(
-        value=client_id, set_value=set_client_id, option=option
-    )
+    selector_client_id = AutoSelect(set_value=set_client_id, option=option)
 
     selector_year_month = Selector(
-        value=year_month,
         set_value=set_year_month,
         placeholder="select a month",
         dropdown_list=year_month_dropdown_list,
     )
 
     selector_days = Selector(
-        value=days,
         set_value=set_days,
         placeholder="select forecast days",
         dropdown_list=days_dropdown_list,
@@ -245,7 +237,6 @@ def delete_forecast_input(set_deleted_forecast):
         set_deleted_forecast(forecast_to_delete)
 
     inp_forecast = Input(
-        value=forecast_to_delete,
         set_value=set_forecast_to_delete,
         label="forecast id to delete",
     )

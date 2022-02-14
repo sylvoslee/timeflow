@@ -70,9 +70,9 @@ def create_epic_form(
         )
         set_submitted_name(name)
 
-    inp_name = Input(value=name, set_value=set_name, label="name")
-    inp_work_area = Input(value=work_area, set_value=set_work_area, label="work_area")
-    inp_client_id = Input(value=client_id, set_value=set_client_id, label="client_id")
+    inp_name = Input(set_value=set_name, label="name")
+    inp_work_area = Input(set_value=set_work_area, label="work_area")
+    inp_client_id = Input(set_value=set_client_id, label="client_id")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",

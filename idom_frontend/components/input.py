@@ -11,7 +11,6 @@ class_str = """text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-
 
 @component
 def Input(
-    value: Any,
     set_value: Callable,
     label: str = "",
     type: str = "text",
@@ -23,7 +22,6 @@ def Input(
         {
             "type": type,
             "placeholder": f"{placeholder} {label}",
-            "value": value,
             "onChange": lambda event: set_value(event["target"]["value"]),
             "class": _class,
         }
@@ -32,7 +30,6 @@ def Input(
 
 @component
 def Selector(
-    value: Any,
     set_value: Callable,
     placeholder,
     dropdown_list,
@@ -41,7 +38,6 @@ def Selector(
     return html.select(
         {
             "class": _class,
-            "value": value,
             "onChange": lambda event: set_value(event["target"]["value"]),
         },
         html.option({"value": ""}, placeholder),
@@ -71,7 +67,6 @@ def SelectorDropdownList(rows: List[Any]):
 
 @component
 def AutoSelect(
-    value: Any,
     set_value: Callable,
     option: Any,
     _class: str = class_str,
@@ -79,7 +74,6 @@ def AutoSelect(
     return html.select(
         {
             "class": _class,
-            "value": value,
             "onChange": lambda event: set_value(event["target"]["value"]),
         },
         option,

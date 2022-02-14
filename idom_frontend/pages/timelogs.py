@@ -175,41 +175,35 @@ def create_timelog_form(
     epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
 
     selector_epic_id = Selector(
-        value=epic_id,
         set_value=set_epic_id,
         placeholder="select epic",
         dropdown_list=epic_name_dropdown_list,
     )
 
     selector_user = Selector(
-        value=user,
         set_value=set_user,
         placeholder="select user",
         dropdown_list=username_dropdown_list,
     )
 
     selector_year_month = Selector(
-        value=year_month,
         set_value=set_year_month,
         placeholder="select a month",
         dropdown_list=year_month_dropdown_list,
     )
 
     selector_days = Selector(
-        value=day,
         set_value=set_day,
         placeholder="select a day",
         dropdown_list=days_dropdown_list,
     )
 
     selector_start_time = Selector(
-        value=start_time,
         set_value=set_start_time,
         placeholder="select start time",
         dropdown_list=hours_dropdown_list,
     )
     selector_end_time = Selector(
-        value=end_time,
         set_value=set_end_time,
         placeholder="select end time",
         dropdown_list=hours_dropdown_list,
@@ -264,7 +258,6 @@ def delete_timelog_input(set_deleted_timelog):
         set_deleted_timelog(timelog_to_delete)
 
     inp_username = Input(
-        value=timelog_to_delete,
         set_value=set_timelog_to_delete,
         label="timelog id to delete",
     )

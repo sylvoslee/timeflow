@@ -15,7 +15,6 @@ from components.table import SimpleTable
 from config import base_url
 
 
-
 @component
 def page():
     username, set_username = use_state("")
@@ -75,10 +74,10 @@ def create_user_form(
         )
         set_submitted_surname(surname)
 
-    inp_username = Input(value=username, set_value=set_username, label="username")
-    inp_name = Input(value=name, set_value=set_name, label="name")
-    inp_surname = Input(value=surname, set_value=set_surname, label="surname")
-    inp_email = Input(value=email, set_value=set_email, label="email")
+    inp_username = Input(set_value=set_username, label="username")
+    inp_name = Input(set_value=set_name, label="name")
+    inp_surname = Input(set_value=set_surname, label="surname")
+    inp_email = Input(set_value=set_email, label="email")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
