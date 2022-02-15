@@ -10,7 +10,7 @@ from sanic import Sanic, response
 from components.input import Input
 from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
-from components.table import SimpleTable
+from components.table import SimpleTable, SubmitTable
 
 from config import base_url
 
@@ -20,25 +20,58 @@ def page():
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
     deleted_name, set_deleted_name = use_state("")
-    is_changed, set_is_changed = use_state(False)
+    is_table_visible, set_is_table_visible = use_state(False)
     print(name)
+    try:
+        api_client_name = f"{base_url}/api/clients/names/{name}"
+        print(api_client_name)
+        response_client_name = requests.get(api_client_name)
+        client_name_row = []
+        r = response_client_name.json()
+        print(r)
+        client_name_row.append(r)
+        print(client_name_row)
 
-    return FlexContainer(
-        Column(width="3/12"),
-        Column(
-            create_client_form(name, set_name, set_submitted_name),
+        return FlexContainer(
+            Column(width="3/12"),
             Column(
-                Row(list_clients(submitted_name, is_changed)),
+                create_client_form(
+                    name, set_name, set_submitted_name, set_is_table_visible
+                ),
+                Column(
+                    Row(list_clients_by_name(rows=client_name_row)),
+                ),
+                Row(delete_client(set_deleted_name)),
+                width="6/12",
             ),
-            Row(delete_client(set_deleted_name)),
-            width="6/12",
-        ),
-        Column(width="3/12"),
-    )
+            Column(width="3/12"),
+        )
+    except Exception as e:
+        print(e)
+        print("bypass")
+        print(api_client_name)
+        return FlexContainer(
+            Column(width="3/12"),
+            Column(
+                create_client_form(
+                    name, set_name, set_submitted_name, set_is_table_visible
+                ),
+                Column(
+                    Row(
+                        list_clients(
+                            is_table_visible, set_is_table_visible, submitted_name
+                        )
+                    ),
+                ),
+                Row(delete_client(set_deleted_name)),
+                width="6/12",
+            ),
+            Column(width="3/12"),
+        )
 
 
 @component
-def create_client_form(name, set_name, set_submitted_name):
+def create_client_form(name, set_name, set_submitted_name, set_is_table_visible):
     """
     endpoint: /api/clients
     schema: {
@@ -55,6 +88,7 @@ def create_client_form(name, set_name, set_submitted_name):
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
         set_submitted_name(name)
+        set_is_table_visible(True)
 
     inp_name = Input(set_value=set_name, label="name")
     btn = html.button(
@@ -74,7 +108,12 @@ def create_client_form(name, set_name, set_submitted_name):
 
 
 @component
-def list_clients(name, is_changed):
+def list_clients_by_name(rows):
+    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
+
+
+@component
+def list_clients(is_table_visible, set_is_table_visible, submitted_name):
     api = f"{base_url}/api/clients"
     response = requests.get(api)
 
@@ -85,7 +124,7 @@ def list_clients(name, is_changed):
             "name": item["name"],
         }
         rows.append(d)
-    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
+    return html.div({"class": "flex w-full"}, SubmitTable(is_table_visible, rows=rows))
 
 
 @component
@@ -98,7 +137,6 @@ def delete_client(set_deleted_name):
         response = requests.delete(api)
         set_deleted_name(client_name)
         print(f"state of deleted_name is {deleted_name}")
-        # set_is_changed(True)
 
     inp_client_id = Input(set_value=set_client_id, label="delete client:id input")
     inp_client_name = Input(set_value=set_client_name, label="delete client:name input")

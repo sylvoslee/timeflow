@@ -7,6 +7,7 @@ import math
 @component
 def SimpleTable(rows: List[Any]):
     page_number, set_page_number = use_state(1)
+    print(f"rows are {rows}")
     print(f"page number is {page_number}")
     trs = []
     p = page_number
@@ -14,6 +15,7 @@ def SimpleTable(rows: List[Any]):
     number_of_visible_rows = 5
     a = m * number_of_visible_rows
     b = a + number_of_visible_rows
+
     for row in rows[a:b]:
         tds = []
         for k in row:
@@ -57,6 +59,38 @@ def SimpleTable(rows: List[Any]):
             justify="justify-end",
         ),
     )
+
+
+@component
+def SubmitTable(is_table_visible, rows: List[Any]):
+    trs = []
+    for row in rows[-5:]:
+        tds = []
+        for k in row:
+            value = row[k]
+            tds.append(html.td({"class": "p-4 w-full"}, value))
+        trs.append(html.tr({"class": "flex w-full mb-4"}, tds))
+
+    ths = [html.th({"class": "p-4 w-full"}, header) for header in rows[0].keys()]
+    thead = html.thead(
+        {"class": "flex bg-secondary-400 text-white w-full"},
+        html.tr({"class": "flex w-full mb-4"}, ths),
+    )
+    tbody = html.tbody(
+        {
+            "class": "flex flex-col bg-secondary-200 items-center justify-between overflow-y-scroll w-full"
+        },
+        trs,
+    )
+    table = html.table({"class": "text-left"}, thead, tbody)
+
+    if is_table_visible:
+        return html.div(
+            {"class": "flex flex-col w-full space-y-2"},
+            table,
+        )
+    else:
+        return html.div()
 
 
 @component
