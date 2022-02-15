@@ -34,9 +34,7 @@ def on_startup():
 def implement_calendar_table():
     statement = select(Calendar).where(Calendar.id == 1)
     result = session.exec(statement).first()
-    try:
-        assert result != None
-    except AssertionError:
+    if result == None:
         calendar_from_excel = pd.read_excel("backend/calendar_id.xlsx")
         calendar_change_index = calendar_from_excel.set_index("date")
         calendar_change_index.to_sql("calendar", con=engine, if_exists="append")
