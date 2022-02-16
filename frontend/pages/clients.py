@@ -20,45 +20,18 @@ def page():
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
     deleted_name, set_deleted_name = use_state("")
-    print(name)
-    try:
-        api_client_name = f"{base_url}/api/clients/names/{name}"
-        print(api_client_name)
-        response_client_name = requests.get(api_client_name)
-        client_name_row = []
-        r = response_client_name.json()
-        print(r)
-        client_name_row.append(r)
-        print(client_name_row)
-
-        return FlexContainer(
-            Column(width="3/12"),
+    return FlexContainer(
+        Column(width="3/12"),
+        Column(
+            create_client_form(name, set_name, set_submitted_name),
             Column(
-                create_client_form(name, set_name, set_submitted_name),
-                Column(
-                    Row(list_clients_by_name(rows=client_name_row)),
-                ),
-                Row(delete_client(set_deleted_name)),
-                width="6/12",
+                Row(list_clients(submitted_name)),
             ),
-            Column(width="3/12"),
-        )
-    except Exception as e:
-        print(e)
-        print("bypass")
-        print(api_client_name)
-        return FlexContainer(
-            Column(width="3/12"),
-            Column(
-                create_client_form(name, set_name, set_submitted_name),
-                Column(
-                    Row(list_clients(submitted_name)),
-                ),
-                Row(delete_client(set_deleted_name)),
-                width="6/12",
-            ),
-            Column(width="3/12"),
-        )
+            Row(delete_client(set_deleted_name)),
+            width="6/12",
+        ),
+        Column(width="3/12"),
+    )
 
 
 @component
