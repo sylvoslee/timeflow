@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends
 from ..utils import engine, get_session
 from ..models.forecast import Forecast
 from ..models.client import Client
+from ..models.epic import Epic
 from sqlmodel import Session, select, SQLModel, or_, and_
 from sqlalchemy.exc import NoResultFound
 
@@ -67,20 +68,65 @@ async def get_forecasts_users(
     if user_id != None:
         statement = (
             select(
-                Client.id,
-                Client.name,
+                Epic.name,
                 Forecast.user_id,
                 Forecast.month,
                 Forecast.year,
                 Forecast.days,
             )
-            .join(Client)
+            .join(Epic)
             .where(Forecast.user_id == user_id)
         )
         results = session.exec(statement).all()
         return results
     else:
         raise ValueError
+
+
+# get forecast by user and epic
+@router.get("/users/{user_id}/epics/{epic_id}")
+async def get_forecasts_by_user_year_epic(
+    user_id, epic_id, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Forecast.month, Forecast.days)
+        .where(Forecast.user_id == user_id)
+        .where(Forecast.epic_id == epic_id)
+    )
+    results = session.exec(statement).all()
+    return results
+
+
+# get forecast by user and month_year
+@router.get("/users/{user_id}/epics/year/{year}/month/{month}")
+async def get_forecasts_by_user_year_epic(
+    user_id, year, month, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Epic.name, Forecast.year, Forecast.month, Forecast.days)
+        .where(Forecast.user_id == user_id)
+        .where(Forecast.year == year)
+        .where(Forecast.month == month)
+        .join(Epic)
+    )
+    results = session.exec(statement).all()
+    return results
+
+
+# get forecast by user, epic, year, month
+@router.get("/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}")
+async def get_forecasts_by_user_year_epic(
+    user_id, epic_id, year, month, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Forecast.month, Forecast.year, Forecast.days)
+        .where(Forecast.user_id == user_id)
+        .where(Forecast.epic_id == epic_id)
+        .where(Forecast.year == year)
+        .where(Forecast.month == month)
+    )
+    results = session.exec(statement).all()
+    return results
 
 
 @router.put("/new-days")

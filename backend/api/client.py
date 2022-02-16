@@ -45,6 +45,15 @@ async def read_clients(
         return msg
 
 
+@router.get("/names/{name}")
+async def read_clients_by_name(
+    *, name: str = None, session: Session = Depends(get_session)
+):
+    statement = select(Client).where(Client.name == name)
+    result = session.exec(statement).one()
+    return result
+
+
 # Get all selected client's epics
 @router.get("/{client_id}/epics/")
 async def read_clients_epics(

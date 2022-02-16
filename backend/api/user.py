@@ -14,7 +14,9 @@ async def post_user(
     user: User,
     session: Session = Depends(get_session),
 ):
-    statement = select(User).where(or_(User.username == user.username, User.id == user.id))
+    statement = select(User).where(
+        or_(User.username == user.username, User.id == user.id)
+    )
     try:
         result = session.exec(statement).one()
         return False
@@ -30,6 +32,14 @@ async def post_user(
 async def get_users(session: Session = Depends(get_session)):
     statement = select(User)
     result = session.exec(statement).all()
+    return result
+
+
+# get user by id
+@router.get("/{user_id}")
+async def get_users(user_id, session: Session = Depends(get_session)):
+    statement = select(User).where(User.id == user_id)
+    result = session.exec(statement).one()
     return result
 
 

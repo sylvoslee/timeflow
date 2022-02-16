@@ -10,7 +10,7 @@ from sanic import Sanic, response
 from components.input import Input
 from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
-from components.table import SimpleTable
+from components.table import SimpleTable, SubmitTable
 
 from config import base_url
 
@@ -20,15 +20,12 @@ def page():
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
     deleted_name, set_deleted_name = use_state("")
-    is_changed, set_is_changed = use_state(False)
-    print(name)
-
     return FlexContainer(
         Column(width="3/12"),
         Column(
             create_client_form(name, set_name, set_submitted_name),
             Column(
-                Row(list_clients(submitted_name, is_changed)),
+                Row(list_clients(submitted_name)),
             ),
             Row(delete_client(set_deleted_name)),
             width="6/12",
@@ -74,7 +71,12 @@ def create_client_form(name, set_name, set_submitted_name):
 
 
 @component
-def list_clients(name, is_changed):
+def list_clients_by_name(rows):
+    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
+
+
+@component
+def list_clients(submitted_name):
     api = f"{base_url}/api/clients"
     response = requests.get(api)
 
@@ -85,7 +87,7 @@ def list_clients(name, is_changed):
             "name": item["name"],
         }
         rows.append(d)
-    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
+    return html.div({"class": "flex w-full"}, SubmitTable(rows=rows))
 
 
 @component
@@ -98,7 +100,6 @@ def delete_client(set_deleted_name):
         response = requests.delete(api)
         set_deleted_name(client_name)
         print(f"state of deleted_name is {deleted_name}")
-        # set_is_changed(True)
 
     inp_client_id = Input(set_value=set_client_id, label="delete client:id input")
     inp_client_name = Input(set_value=set_client_name, label="delete client:name input")
