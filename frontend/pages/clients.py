@@ -20,7 +20,6 @@ def page():
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
     deleted_name, set_deleted_name = use_state("")
-    is_table_visible, set_is_table_visible = use_state(False)
     print(name)
     try:
         api_client_name = f"{base_url}/api/clients/names/{name}"
@@ -35,9 +34,7 @@ def page():
         return FlexContainer(
             Column(width="3/12"),
             Column(
-                create_client_form(
-                    name, set_name, set_submitted_name, set_is_table_visible
-                ),
+                create_client_form(name, set_name, set_submitted_name),
                 Column(
                     Row(list_clients_by_name(rows=client_name_row)),
                 ),
@@ -53,15 +50,9 @@ def page():
         return FlexContainer(
             Column(width="3/12"),
             Column(
-                create_client_form(
-                    name, set_name, set_submitted_name, set_is_table_visible
-                ),
+                create_client_form(name, set_name, set_submitted_name),
                 Column(
-                    Row(
-                        list_clients(
-                            is_table_visible, set_is_table_visible, submitted_name
-                        )
-                    ),
+                    Row(list_clients(submitted_name)),
                 ),
                 Row(delete_client(set_deleted_name)),
                 width="6/12",
@@ -71,7 +62,7 @@ def page():
 
 
 @component
-def create_client_form(name, set_name, set_submitted_name, set_is_table_visible):
+def create_client_form(name, set_name, set_submitted_name):
     """
     endpoint: /api/clients
     schema: {
@@ -88,7 +79,6 @@ def create_client_form(name, set_name, set_submitted_name, set_is_table_visible)
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
         set_submitted_name(name)
-        set_is_table_visible(True)
 
     inp_name = Input(set_value=set_name, label="name")
     btn = html.button(
@@ -113,7 +103,7 @@ def list_clients_by_name(rows):
 
 
 @component
-def list_clients(is_table_visible, set_is_table_visible, submitted_name):
+def list_clients(submitted_name):
     api = f"{base_url}/api/clients"
     response = requests.get(api)
 
@@ -124,7 +114,7 @@ def list_clients(is_table_visible, set_is_table_visible, submitted_name):
             "name": item["name"],
         }
         rows.append(d)
-    return html.div({"class": "flex w-full"}, SubmitTable(is_table_visible, rows=rows))
+    return html.div({"class": "flex w-full"}, SubmitTable(rows=rows))
 
 
 @component

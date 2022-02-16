@@ -23,19 +23,20 @@ from config import base_url
 def page():
     year_month, set_year_month = use_state("")
     days, set_days = use_state("")
-    user, set_user = use_state("")
+    user_id, set_user_id = use_state("")
     epic_id, set_epic_id = use_state("")
     client_id, set_client_id = use_state("")
     deleted_forecst, set_deleted_forecast = use_state("")
     is_true, set_is_true = use_state(True)
+    print(client_id)
     return Container(
         create_forecast_form(
             year_month,
             set_year_month,
             days,
             set_days,
-            user,
-            set_user,
+            user_id,
+            set_user_id,
             epic_id,
             set_epic_id,
             client_id,
@@ -44,7 +45,7 @@ def page():
             set_is_true,
         ),
         Column(
-            Row(list_forecasts(is_true)),
+            Row(list_forecasts(is_true, user_id, epic_id, year_month)),
         ),
         Row(delete_forecast_input(set_deleted_forecast)),
     )
@@ -56,8 +57,8 @@ def create_forecast_form(
     set_year_month,
     days,
     set_days,
-    user,
-    set_user,
+    user_id,
+    set_user_id,
     epic_id,
     set_epic_id,
     client_id,
@@ -87,7 +88,7 @@ def create_forecast_form(
         year_int = int(year)
         month_int = int(month)
         data = {
-            "user_id": user,
+            "user_id": user_id,
             "epic_id": epic_id,
             "client_id": client_id,
             "month": month_int,
@@ -107,7 +108,7 @@ def create_forecast_form(
     # year and month dropdown list
     # fmt: off
     year_month_list = [
-    "2022_01","2022_02","2022_02","2022_03","2022_03","2022_04","2022_05",
+    "2022_01","2022_02","2022_03","2022_04","2022_05",
     "2022_06","2022_07","2022_08","2022_09","2022_10","2022_11", "2022_12"
     ]
     # fmt: on
@@ -164,8 +165,8 @@ def create_forecast_form(
     client_name = r.get("name")
     client_id = r.get("id_1")
     option = html.option({"value": f"{client_id}"}, client_name)
-    selector_user = Selector(
-        set_value=set_user,
+    selector_user_id = Selector(
+        set_value=set_user_id,
         placeholder="select user",
         dropdown_list=username_dropdown_list,
     )
@@ -199,7 +200,7 @@ def create_forecast_form(
 
     return Column(
         Row(
-            selector_user,
+            selector_user_id,
             selector_epic_id,
             selector_client_id,
             selector_year_month,
@@ -210,19 +211,50 @@ def create_forecast_form(
 
 
 @component
-def list_forecasts(is_true):
-    api = f"{base_url}/api/forecasts"
-    response = requests.get(api)
+def list_forecasts(is_true, user_id, epic_id, year_month):
 
+    year = year_month[:4]
+    month = year_month[5:7]
     rows = []
-    for item in response.json():
-        d = {
-            "forecast id": item["id"],
-            "month": item["month"],
-            "year": item["year"],
-            "days": item["days"],
-        }
-        rows.append(d)
+    if user_id != "" and epic_id != "" and year_month != "":
+        api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}"
+        print(api)
+        response = requests.get(api)
+        print(response.json())
+        for item in response.json():
+            d = {
+                "year": item["year"],
+                "month": item["month"],
+                "days": item["days"],
+            }
+            rows.append(d)
+
+    elif user_id != "" and epic_id != "" and year_month == "":
+        api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}"
+        print(api)
+        response = requests.get(api)
+        print(response.json())
+        for item in response.json():
+            d = {
+                "month": item["month"],
+                "days": item["days"],
+            }
+            rows.append(d)
+    elif user_id != "" and epic_id == "" and year_month != "":
+        api = (
+            f"{base_url}/api/forecasts/users/{user_id}/epics/year/{year}/month/{month}"
+        )
+        print(api)
+        response = requests.get(api)
+        print(response.json())
+        for item in response.json():
+            d = {
+                "epic name": item["name"],
+                "year": item["year"],
+                "month": item["month"],
+                "days": item["days"],
+            }
+            rows.append(d)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 

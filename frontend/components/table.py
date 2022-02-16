@@ -62,7 +62,7 @@ def SimpleTable(rows: List[Any]):
 
 
 @component
-def SubmitTable(is_table_visible, rows: List[Any]):
+def SubmitTable(rows: List[Any]):
     trs = []
     for row in rows[-5:]:
         tds = []
@@ -84,13 +84,10 @@ def SubmitTable(is_table_visible, rows: List[Any]):
     )
     table = html.table({"class": "text-left"}, thead, tbody)
 
-    if is_table_visible:
-        return html.div(
-            {"class": "flex flex-col w-full space-y-2"},
-            table,
-        )
-    else:
-        return html.div()
+    return html.div(
+        {"class": "flex flex-col w-full space-y-2"},
+        table,
+    )
 
 
 @component
