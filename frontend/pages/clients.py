@@ -6,6 +6,7 @@ from idom import html, run, use_state, component, event, vdom
 from idom.server.sanic import PerClientStateServer
 import requests
 from sanic import Sanic, response
+from datetime import datetime
 
 from components.input import Input
 from components.layout import Row, Column, Container, FlexContainer
@@ -37,14 +38,23 @@ def page():
 @component
 def create_client_form(name, set_name, set_submitted_name):
     """
-    endpoint: /api/clients
-    schema: {
+        endpoint: /api/clients
+        schema:
+        {
       "name": "string",
+      "active": True,
+      "created_at": "2022-02-17T15:03:24.260Z",
+      "updated_at": "2022-02-17T15:03:24.260Z"
     }"""
 
     @event(prevent_default=True)
     async def handle_submit(event):
-        data = {"name": name}
+        data = {
+            "name": name,
+            "active": True,
+            "created_at": str(datetime.now()),
+            "updated_at": str(datetime.now()),
+        }
         print("here", data)
         response = requests.post(
             f"{base_url}/api/clients",
@@ -77,7 +87,7 @@ def list_clients_by_name(rows):
 
 @component
 def list_clients(submitted_name):
-    api = f"{base_url}/api/clients"
+    api = f"{base_url}/api/clients/active"
     response = requests.get(api)
 
     rows = []

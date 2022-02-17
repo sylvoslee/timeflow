@@ -10,3 +10,6 @@ class Epic(SQLModel, table=True):
     name: str
     work_area: str
     client_id: int = Field(foreign_key="client.id")
+    active: bool
+    created_at: datetime
+    updated_at: datetime
