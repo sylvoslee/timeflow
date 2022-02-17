@@ -148,7 +148,7 @@ def create_forecast_form(
     username_dropdown_list = SelectorDropdownKeyValue(rows=username_rows)
 
     # epic name dropdown list
-    api_epic_name = f"{base_url}/api/epics"
+    api_epic_name = f"{base_url}/api/epics/active"
     response_epic_name = requests.get(api_epic_name)
 
     epic_name_rows = []
