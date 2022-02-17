@@ -44,7 +44,7 @@ def create_client_form(name, set_name, set_submitted_name):
 
     @event(prevent_default=True)
     async def handle_submit(event):
-        data = {"name": name}
+        data = {"name": name, "active": True}
         print("here", data)
         response = requests.post(
             f"{base_url}/api/clients",
@@ -77,7 +77,7 @@ def list_clients_by_name(rows):
 
 @component
 def list_clients(submitted_name):
-    api = f"{base_url}/api/clients"
+    api = f"{base_url}/api/clients/active"
     response = requests.get(api)
 
     rows = []
