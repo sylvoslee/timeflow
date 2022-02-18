@@ -201,7 +201,6 @@ def forecasts_table(user_id, epic_id, year_month):
     """Generates a table component with forecast days by year and month
 
     Args:
-        on_submit (bool): TBD
         user_id (_type_): the id of the user for which the forecast is for
         epic_id (_type_): the id of the epic for which the forecast is for
         year_month (_type_): the year_month combined for which the forecast is for
