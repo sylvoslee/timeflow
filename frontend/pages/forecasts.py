@@ -212,44 +212,25 @@ def create_forecast_form(
 
 @component
 def list_forecasts(is_true, user_id, epic_id, year_month):
+    """Generates a table component with forecast days by year and month
 
+    Args:
+        is_true (bool): TBD
+        user_id (_type_): the id of the user for which the forecast is for
+        epic_id (_type_): the id of the epic for which the forecast is for
+        year_month (_type_): the year_month combined for which the forecast is for
+
+    Returns:
+        _type_: _description_
+    """
     year = year_month[:4]
     month = year_month[5:7]
     rows = []
-    if user_id != "" and epic_id != "" and year_month != "":
+    if user_id != "" and epic_id != "" and year != "" and month != "":
         api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}"
-        print(api)
         response = requests.get(api)
-        print(response.json())
         for item in response.json():
             d = {
-                "year": item["year"],
-                "month": item["month"],
-                "days": item["days"],
-            }
-            rows.append(d)
-
-    elif user_id != "" and epic_id != "" and year_month == "":
-        api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}"
-        print(api)
-        response = requests.get(api)
-        print(response.json())
-        for item in response.json():
-            d = {
-                "month": item["month"],
-                "days": item["days"],
-            }
-            rows.append(d)
-    elif user_id != "" and epic_id == "" and year_month != "":
-        api = (
-            f"{base_url}/api/forecasts/users/{user_id}/epics/year/{year}/month/{month}"
-        )
-        print(api)
-        response = requests.get(api)
-        print(response.json())
-        for item in response.json():
-            d = {
-                "epic name": item["name"],
                 "year": item["year"],
                 "month": item["month"],
                 "days": item["days"],
