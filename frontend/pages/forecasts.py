@@ -67,7 +67,7 @@ def create_forecast_form(
     on_submit,
     set_on_submit,
 ):
-    """_summary_
+    """Generates forecast form to submit forecasts and filter forecast by month user and epic
 
     Args:
         year_month (_type_): the year_month combined for which the forecast is for
