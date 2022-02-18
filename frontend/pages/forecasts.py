@@ -46,7 +46,7 @@ def page():
             set_on_submit,
         ),
         Column(
-            Row(list_forecasts(user_id, epic_id, year_month)),
+            Row(forecasts_table(user_id, epic_id, year_month)),
         ),
         Row(delete_forecast_input(set_deleted_forecast)),
     )
@@ -197,7 +197,7 @@ def create_forecast_form(
 
 
 @component
-def list_forecasts(user_id, epic_id, year_month):
+def forecasts_table(user_id, epic_id, year_month):
     """Generates a table component with forecast days by year and month
 
     Args:
