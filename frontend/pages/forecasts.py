@@ -29,7 +29,7 @@ def page():
     epic_id, set_epic_id = use_state("")
     client_id, set_client_id = use_state("")
     deleted_forecst, set_deleted_forecast = use_state("")
-    is_true, set_is_true = use_state(True)
+    on_submit, set_on_submit = use_state(True)
     return Container(
         create_forecast_form(
             year_month,
@@ -42,11 +42,11 @@ def page():
             set_epic_id,
             client_id,
             set_client_id,
-            is_true,
-            set_is_true,
+            on_submit,
+            set_on_submit,
         ),
         Column(
-            Row(list_forecasts(is_true, user_id, epic_id, year_month)),
+            Row(list_forecasts(user_id, epic_id, year_month)),
         ),
         Row(delete_forecast_input(set_deleted_forecast)),
     )
@@ -64,8 +64,8 @@ def create_forecast_form(
     set_epic_id,
     client_id,
     set_client_id,
-    is_true,
-    set_is_true,
+    on_submit,
+    set_on_submit,
 ):
     """_summary_
 
@@ -80,8 +80,8 @@ def create_forecast_form(
         set_epic_id (_type_): function to update epic_id state
         client_id (_type_): the client id for which the forecast is for
         set_client_id (_type_): function to update client_id state
-        is_true (bool): _description_
-        set_is_true (_type_): function to update is_true state
+        on_submit (bool): to be switched on submit, triggering render by state change
+        set_on_submit (_type_): function to update on_submit state
 
     Returns:
         _type_: _description_
@@ -119,10 +119,10 @@ def create_forecast_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
-        if is_true:
-            set_is_true(False)
+        if on_submit:
+            set_on_submit(False)
         else:
-            set_is_true(True)
+            set_on_submit(True)
 
     api_username = f"{base_url}/api/users"
     response_username = requests.get(api_username)
@@ -197,11 +197,11 @@ def create_forecast_form(
 
 
 @component
-def list_forecasts(is_true, user_id, epic_id, year_month):
+def list_forecasts(user_id, epic_id, year_month):
     """Generates a table component with forecast days by year and month
 
     Args:
-        is_true (bool): TBD
+        on_submit (bool): TBD
         user_id (_type_): the id of the user for which the forecast is for
         epic_id (_type_): the id of the epic for which the forecast is for
         year_month (_type_): the year_month combined for which the forecast is for
