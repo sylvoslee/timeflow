@@ -16,6 +16,8 @@ from components.input import (
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
+
+from pages.utils import year_month_list, forecast_days_list, hours_list
 from config import base_url
 
 
@@ -28,7 +30,6 @@ def page():
     client_id, set_client_id = use_state("")
     deleted_forecst, set_deleted_forecast = use_state("")
     is_true, set_is_true = use_state(True)
-    print(client_id)
     return Container(
         create_forecast_form(
             year_month,
@@ -66,35 +67,53 @@ def create_forecast_form(
     is_true,
     set_is_true,
 ):
-    """
-        schema:
-    {
-      "user_id": 0,
-      "epic_id": 0,
-      "client_id": 0,
-      "days": 0,
-      "month": 0,
-      "year": 0
-    }
+    """_summary_
+
+    Args:
+        year_month (_type_): the year_month combined for which the forecast is for
+        set_year_month (_type_): function to update year_month state
+        days (_type_): number of forecasted days
+        set_days (_type_): function to update days state
+        user_id (_type_): the user id for which the forecast is for
+        set_user_id (_type_): function to update user_id state
+        epic_id (_type_): the epic id for which the forecast is for
+        set_epic_id (_type_): function to update epic_id state
+        client_id (_type_): the client id for which the forecast is for
+        set_client_id (_type_): function to update client_id state
+        is_true (bool): _description_
+        set_is_true (_type_): function to update is_true state
+
+    Returns:
+        _type_: _description_
     """
 
     @event(prevent_default=True)
     async def handle_submit(event):
-        # set_client_id(r_value)
-        a = year_month
-        year = a[:4]
-        month = a[5:7]
+        """
+        schema:
+        {
+        "user_id": 0,
+        "epic_id": 0,
+        "client_id": 0,
+        "days": 0,
+        "month": 0,
+        "year": 0
+        }
+        """
 
-        year_int = int(year)
-        month_int = int(month)
+        ym = year_month
+        year = ym[:4]
+        month = ym[5:7]
+
         data = {
             "user_id": user_id,
             "epic_id": epic_id,
             "client_id": client_id,
-            "month": month_int,
-            "year": year,
+            "month": int(month),
+            "year": int(year),
             "days": days,
         }
+        print(data)
         response = requests.post(
             f"{base_url}/api/forecasts",
             data=json.dumps(data),
@@ -105,38 +124,6 @@ def create_forecast_form(
         else:
             set_is_true(True)
 
-    # year and month dropdown list
-    # fmt: off
-    year_month_list = [
-    "2022_01","2022_02","2022_03","2022_04","2022_05",
-    "2022_06","2022_07","2022_08","2022_09","2022_10","2022_11", "2022_12"
-    ]
-    # fmt: on
-    year_month_dropdown_list = SelectorDropdownList(year_month_list)
-
-    # days dropdown list
-    forecast_days_nr = range(1, 30)
-    forecast_days_list = []
-    for n in forecast_days_nr:
-        forecast_days_list.append(n)
-
-    days_dropdown_list = SelectorDropdownList(forecast_days_list)
-    # hours dropdown list
-    # fmt: off
-    h = ["07", "08", "09", "10", "11", "12", "13", "14", "15", "16", 
-        "17", "18", "19", "20", "21", "22"]
-    q = ["00", "15", "30", "45"]
-    # fmt: on
-
-    hours_list = []
-    for n in h:
-        for m in q:
-            hours = f"{n}:{m}"
-            hours_list.append(hours)
-
-    hours_dropdown_list = SelectorDropdownList(hours_list)
-
-    # username dropdown list
     api_username = f"{base_url}/api/users"
     response_username = requests.get(api_username)
 
@@ -145,9 +132,13 @@ def create_forecast_form(
         d = {item["username"]: item["id"]}
         username_rows.append(d)
 
-    username_dropdown_list = SelectorDropdownKeyValue(rows=username_rows)
+    username_dropdown = SelectorDropdownKeyValue(rows=username_rows)
+    selector_user_id = Selector(
+        set_value=set_user_id,
+        placeholder="select user",
+        dropdown_list=username_dropdown,
+    )
 
-    # epic name dropdown list
     api_epic_name = f"{base_url}/api/epics/active"
     response_epic_name = requests.get(api_epic_name)
 
@@ -156,38 +147,33 @@ def create_forecast_form(
         d = {item["name"]: item["id"]}
         epic_name_rows.append(d)
 
-    epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
-
-    # client name dropdown list
-    api_client_name = f"{base_url}/api/epics/{epic_id}/client-name"
-    response_client_name = requests.get(api_client_name)
-    r = response_client_name.json()
-    client_name = r.get("name")
-    client_id = r.get("id_1")
-    option = html.option({"value": f"{client_id}"}, client_name)
-    selector_user_id = Selector(
-        set_value=set_user_id,
-        placeholder="select user",
-        dropdown_list=username_dropdown_list,
-    )
-
+    epic_name_dropdown = SelectorDropdownKeyValue(rows=epic_name_rows)
     selector_epic_id = Selector(
         set_value=set_epic_id,
         placeholder="select epic",
-        dropdown_list=epic_name_dropdown_list,
+        dropdown_list=epic_name_dropdown,
     )
+
+    api_client_name_id = f"{base_url}/api/epics/{epic_id}/client-name"
+    response_client_name_id = requests.get(api_client_name_id)
+    r = response_client_name_id.json()
+    client_name = r.get("name")
+    client_id = r.get("id_1")
+    option = html.option({"value": f"{client_id}"}, client_name)
     selector_client_id = AutoSelect(set_value=set_client_id, option=option)
 
+    year_month_dropdown = SelectorDropdownList(year_month_list)
     selector_year_month = Selector(
         set_value=set_year_month,
         placeholder="select a month",
-        dropdown_list=year_month_dropdown_list,
+        dropdown_list=year_month_dropdown,
     )
 
+    days_dropdown = SelectorDropdownList(forecast_days_list)
     selector_days = Selector(
         set_value=set_days,
         placeholder="select forecast days",
-        dropdown_list=days_dropdown_list,
+        dropdown_list=days_dropdown,
     )
 
     btn = html.button(
@@ -223,8 +209,9 @@ def list_forecasts(is_true, user_id, epic_id, year_month):
     Returns:
         _type_: _description_
     """
-    year = year_month[:4]
-    month = year_month[5:7]
+    ym = year_month
+    year = ym[:4]
+    month = ym[5:7]
     rows = []
     if user_id != "" and epic_id != "" and year != "" and month != "":
         api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}"
