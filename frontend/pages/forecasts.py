@@ -28,7 +28,7 @@ def page():
     user_id, set_user_id = use_state("")
     epic_id, set_epic_id = use_state("")
     client_id, set_client_id = use_state("")
-    deleted_forecst, set_deleted_forecast = use_state("")
+    deleted_forecast, set_deleted_forecast = use_state("")
     on_submit, set_on_submit = use_state(True)
     return Container(
         create_forecast_form(
@@ -70,15 +70,15 @@ def create_forecast_form(
     """Generates forecast form to submit forecasts and filter forecast by month user and epic
 
     Args:
-        year_month (_type_): the year_month combined for which the forecast is for
+        year_month (str): the year_month combined for which the forecast is for
         set_year_month (_type_): function to update year_month state
-        days (_type_): number of forecasted days
+        days (int): number of forecasted days
         set_days (_type_): function to update days state
-        user_id (_type_): the user id for which the forecast is for
+        user_id (int): the user id for which the forecast is for
         set_user_id (_type_): function to update user_id state
-        epic_id (_type_): the epic id for which the forecast is for
+        epic_id (str): the epic id for which the forecast is for
         set_epic_id (_type_): function to update epic_id state
-        client_id (_type_): the client id for which the forecast is for
+        client_id (int): the client id for which the forecast is for
         set_client_id (_type_): function to update client_id state
         on_submit (bool): to be switched on submit, triggering render by state change
         set_on_submit (_type_): function to update on_submit state
@@ -86,6 +86,7 @@ def create_forecast_form(
     Returns:
         _type_: _description_
     """
+    print(user_id)
 
     @event(prevent_default=True)
     async def handle_submit(event):
@@ -201,9 +202,9 @@ def forecasts_table(user_id, epic_id, year_month):
     """Generates a table component with forecast days by year and month
 
     Args:
-        user_id (_type_): the id of the user for which the forecast is for
-        epic_id (_type_): the id of the epic for which the forecast is for
-        year_month (_type_): the year_month combined for which the forecast is for
+        user_id (int): the id of the user for which the forecast is for
+        epic_id (int): the id of the epic for which the forecast is for
+        year_month (str): the year_month combined for which the forecast is for
 
     Returns:
         _type_: _description_
