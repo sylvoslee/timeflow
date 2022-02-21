@@ -34,7 +34,6 @@ def SimpleTable(rows: List[Any]):
         trs,
     )
     pages_total = math.ceil(len(rows) / number_of_visible_rows)
-    print(f"number of pages is {pages_total}")
     pg_range = range(1, pages_total + 1)
     list_pages_nr = []
     for n in pg_range:

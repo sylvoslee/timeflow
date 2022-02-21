@@ -6,15 +6,7 @@ import requests
 from sanic import Sanic, response
 from black import click
 
-from components.input import (
-    Input,
-    Selector,
-    Selector2,
-    SelectorDropdownList,
-    SelectorDropdownKeyValue,
-    AutoSelect,
-    DisplayValue,
-)
+from components.input import Input, Selector, Selector2, class_h3
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
@@ -26,6 +18,8 @@ from pages.data import (
     year_month_dict_list,
     forecast_days,
     to_forecast,
+    forecast_by_user_epic_year_month,
+    forecast_deletion,
 )
 
 from config import base_url
@@ -58,7 +52,7 @@ def page():
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
         ),
-        Row(delete_forecast_input(set_deleted_forecast)),
+        Row(delete_forecast(set_deleted_forecast)),
     )
 
 
@@ -96,7 +90,6 @@ def create_forecast_form(
     Returns:
         _type_: _description_
     """
-    print(user_id)
 
     @event(prevent_default=True)
     async def handle_submit(event):
@@ -105,7 +98,6 @@ def create_forecast_form(
         {
         "user_id": 0,
         "epic_id": 0,
-        "client_id": 0,
         "days": 0,
         "month": 0,
         "year": 0
@@ -119,7 +111,6 @@ def create_forecast_form(
         to_forecast(
             user_id=user_id,
             epic_id=epic_id,
-            client_id=client_id,
             days=days,
             month=month,
             year=year,
@@ -135,9 +126,7 @@ def create_forecast_form(
         set_value=set_epic_id,
         data=epics_names(),
     )
-
-    selector_client_id = display_value(epic_id, set_client_id)
-
+    display_client = display_value(epic_id)
     selector_year_month = Selector2(
         set_value=set_year_month,
         data=year_month_dict_list(),
@@ -160,7 +149,7 @@ def create_forecast_form(
         Row(
             selector_user_id,
             selector_epic_id,
-            selector_client_id,
+            display_client,
             selector_year_month,
             selector_days,
         ),
@@ -169,13 +158,13 @@ def create_forecast_form(
 
 
 @component
-def display_value(epic_id, set_client_id):
+def display_value(epic_id):
     client = client_name_by_epic_id(epic_id)
-    if epic_id == None:
-        return DisplayValue(display_value="123", value="234")
+    if epic_id == "":
+        return html.h3({"class": class_h3, "value": ""}, "client name")
     else:
-        return DisplayValue(
-            display_value=client["display_value"], value=client["value"]
+        return html.h3(
+            {"class": class_h3, "value": client["value"]}, client["display_value"]
         )
 
 
@@ -189,33 +178,21 @@ def forecasts_table(user_id, epic_id, year_month):
         year_month (str): the year_month combined for which the forecast is for
 
     Returns:
-        _type_: _description_
+        list of filtered forecasts
     """
     ym = year_month
     year = ym[:4]
     month = ym[5:7]
-    rows = []
-    if user_id != "" and epic_id != "" and year != "" and month != "":
-        api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}"
-        response = requests.get(api)
-        for item in response.json():
-            d = {
-                "year": item["year"],
-                "month": item["month"],
-                "days": item["days"],
-            }
-            rows.append(d)
+    rows = forecast_by_user_epic_year_month(user_id, epic_id, year, month)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
 @component
-def delete_forecast_input(set_deleted_forecast):
+def delete_forecast(set_deleted_forecast):
     forecast_to_delete, set_forecast_to_delete = use_state("")
 
     def handle_delete(event):
-        api = f"{base_url}/api/forecasts/?forecast_id={forecast_to_delete}"
-
-        response = requests.delete(api)
+        forecast_deletion(forecast_to_delete)
         set_deleted_forecast(forecast_to_delete)
 
     inp_forecast = Input(

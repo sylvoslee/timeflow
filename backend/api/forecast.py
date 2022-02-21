@@ -38,29 +38,6 @@ async def get_forecasts(session: Session = Depends(get_session)):
     return result
 
 
-@router.get("/{client_id}")
-async def get_forecasts_clients(
-    client_id: str = None, session: Session = Depends(get_session)
-):
-    if client_id != None:
-        statement = (
-            select(
-                Client.id,
-                Client.name,
-                Forecast.user_id,
-                Forecast.month,
-                Forecast.year,
-                Forecast.days,
-            )
-            .join(Client)
-            .where(Client.id == client_id)
-        )
-        results = session.exec(statement).all()
-        return results
-    else:
-        raise ValueError
-
-
 @router.get("/{user_id}")
 async def get_forecasts_users(
     user_id: str = None, session: Session = Depends(get_session)
@@ -119,7 +96,7 @@ async def get_forecasts_by_user_year_epic(
     user_id, epic_id, year, month, session: Session = Depends(get_session)
 ):
     statement = (
-        select(Forecast.month, Forecast.year, Forecast.days)
+        select(Forecast.id, Forecast.month, Forecast.year, Forecast.days)
         .where(Forecast.user_id == user_id)
         .where(Forecast.epic_id == epic_id)
         .where(Forecast.year == year)
