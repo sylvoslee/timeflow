@@ -9,15 +9,25 @@ from black import click
 from components.input import (
     Input,
     Selector,
+    Selector2,
     SelectorDropdownList,
     SelectorDropdownKeyValue,
     AutoSelect,
+    DisplayValue,
 )
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 
-from pages.utils import year_month_list, forecast_days_list, hours_list
+from pages.data import (
+    epics_names,
+    client_name_by_epic_id,
+    username,
+    year_month_dict_list,
+    forecast_days,
+    to_forecast,
+)
+
 from config import base_url
 
 
@@ -106,75 +116,36 @@ def create_forecast_form(
         year = ym[:4]
         month = ym[5:7]
 
-        data = {
-            "user_id": user_id,
-            "epic_id": epic_id,
-            "client_id": client_id,
-            "month": int(month),
-            "year": int(year),
-            "days": days,
-        }
-        print(data)
-        response = requests.post(
-            f"{base_url}/api/forecasts",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
+        to_forecast(
+            user_id=user_id,
+            epic_id=epic_id,
+            client_id=client_id,
+            days=days,
+            month=month,
+            year=year,
         )
         if on_submit:
             set_on_submit(False)
         else:
             set_on_submit(True)
 
-    api_username = f"{base_url}/api/users"
-    response_username = requests.get(api_username)
+    selector_user_id = Selector2(set_value=set_user_id, data=username())
 
-    username_rows = []
-    for item in response_username.json():
-        d = {item["username"]: item["id"]}
-        username_rows.append(d)
-
-    username_dropdown = SelectorDropdownKeyValue(rows=username_rows)
-    selector_user_id = Selector(
-        set_value=set_user_id,
-        placeholder="select user",
-        dropdown_list=username_dropdown,
-    )
-
-    api_epic_name = f"{base_url}/api/epics/active"
-    response_epic_name = requests.get(api_epic_name)
-
-    epic_name_rows = []
-    for item in response_epic_name.json():
-        d = {item["name"]: item["id"]}
-        epic_name_rows.append(d)
-
-    epic_name_dropdown = SelectorDropdownKeyValue(rows=epic_name_rows)
-    selector_epic_id = Selector(
+    selector_epic_id = Selector2(
         set_value=set_epic_id,
-        placeholder="select epic",
-        dropdown_list=epic_name_dropdown,
+        data=epics_names(),
     )
 
-    api_client_name_id = f"{base_url}/api/epics/{epic_id}/client-name"
-    response_client_name_id = requests.get(api_client_name_id)
-    r = response_client_name_id.json()
-    client_name = r.get("name")
-    client_id = r.get("id_1")
-    option = html.option({"value": f"{client_id}"}, client_name)
-    selector_client_id = AutoSelect(set_value=set_client_id, option=option)
+    selector_client_id = display_value(epic_id, set_client_id)
 
-    year_month_dropdown = SelectorDropdownList(year_month_list)
-    selector_year_month = Selector(
+    selector_year_month = Selector2(
         set_value=set_year_month,
-        placeholder="select a month",
-        dropdown_list=year_month_dropdown,
+        data=year_month_dict_list(),
     )
 
-    days_dropdown = SelectorDropdownList(forecast_days_list)
-    selector_days = Selector(
+    selector_days = Selector2(
         set_value=set_days,
-        placeholder="select forecast days",
-        dropdown_list=days_dropdown,
+        data=forecast_days(),
     )
 
     btn = html.button(
@@ -195,6 +166,17 @@ def create_forecast_form(
         ),
         Row(btn),
     )
+
+
+@component
+def display_value(epic_id, set_client_id):
+    client = client_name_by_epic_id(epic_id)
+    if epic_id == None:
+        return DisplayValue(display_value="123", value="234")
+    else:
+        return DisplayValue(
+            display_value=client["display_value"], value=client["value"]
+        )
 
 
 @component
