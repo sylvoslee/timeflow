@@ -204,6 +204,6 @@ def delete_forecast(set_deleted_forecast):
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
             "onClick": handle_delete,
         },
-        "Submit",
+        "Delete",
     )
     return Column(Row(inp_forecast), Row(btn))
