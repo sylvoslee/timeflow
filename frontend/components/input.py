@@ -101,10 +101,17 @@ def AutoSelect(
     )
 
 
+class_h3 = """text-primary-500 placeholder-secondary-400 w-full px-8 py-2 mt-2 
+                    text-base bg-secondary-300"""
+
+
 @component
 def DisplayValue(
     display_value: str,
     value: str,
-    _class: str = class_str,
+    class_h3: str = class_h3,
 ):
-    return html.h3({"class": "bg-white", "value": value}, display_value)
+    return html.h3(
+        {"class": class_h3, "value": value},
+        display_value,
+    )
