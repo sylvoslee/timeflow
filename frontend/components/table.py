@@ -8,7 +8,6 @@ import math
 def SimpleTable(rows: List[Any]):
     # input [{"a":aaa, "b":1}, {"a":bbb, "b":2}]
     page_number, set_page_number = use_state(1)
-    print(f"rows in SimpleTable are {rows}")
     trs = []
     p = page_number
     m = p - 1
@@ -35,7 +34,6 @@ def SimpleTable(rows: List[Any]):
         trs,
     )
     pages_total = math.ceil(len(rows) / number_of_visible_rows)
-    print(f"number of pages is {pages_total}")
     pg_range = range(1, pages_total + 1)
     list_pages_nr = []
     for n in pg_range:

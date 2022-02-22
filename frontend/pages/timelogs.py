@@ -185,7 +185,6 @@ def create_timelog_form(
         placeholder="select user",
         dropdown_list=username_dropdown_list,
     )
-
     selector_year_month = Selector(
         set_value=set_year_month,
         placeholder="select a month",

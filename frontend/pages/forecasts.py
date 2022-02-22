@@ -6,18 +6,22 @@ import requests
 from sanic import Sanic, response
 from black import click
 
-from components.input import (
-    Input,
-    Selector,
-    SelectorDropdownList,
-    SelectorDropdownKeyValue,
-    AutoSelect,
-)
+from components.input import Input, Selector, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 
-from pages.utils import year_month_list, forecast_days_list, hours_list
+from pages.data import (
+    epics_names,
+    client_name_by_epic_id,
+    username,
+    year_month_dict_list,
+    forecast_days,
+    to_forecast,
+    forecast_by_user_epic_year_month,
+    forecast_deletion,
+)
+
 from config import base_url
 
 
@@ -48,7 +52,7 @@ def page():
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
         ),
-        Row(delete_forecast_input(set_deleted_forecast)),
+        Row(delete_forecast(set_deleted_forecast)),
     )
 
 
@@ -86,7 +90,6 @@ def create_forecast_form(
     Returns:
         _type_: _description_
     """
-    print(user_id)
 
     @event(prevent_default=True)
     async def handle_submit(event):
@@ -95,7 +98,6 @@ def create_forecast_form(
         {
         "user_id": 0,
         "epic_id": 0,
-        "client_id": 0,
         "days": 0,
         "month": 0,
         "year": 0
@@ -106,75 +108,33 @@ def create_forecast_form(
         year = ym[:4]
         month = ym[5:7]
 
-        data = {
-            "user_id": user_id,
-            "epic_id": epic_id,
-            "client_id": client_id,
-            "month": int(month),
-            "year": int(year),
-            "days": days,
-        }
-        print(data)
-        response = requests.post(
-            f"{base_url}/api/forecasts",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
+        to_forecast(
+            user_id=user_id,
+            epic_id=epic_id,
+            days=days,
+            month=month,
+            year=year,
         )
         if on_submit:
             set_on_submit(False)
         else:
             set_on_submit(True)
 
-    api_username = f"{base_url}/api/users"
-    response_username = requests.get(api_username)
+    selector_user_id = Selector2(set_value=set_user_id, data=username())
 
-    username_rows = []
-    for item in response_username.json():
-        d = {item["username"]: item["id"]}
-        username_rows.append(d)
-
-    username_dropdown = SelectorDropdownKeyValue(rows=username_rows)
-    selector_user_id = Selector(
-        set_value=set_user_id,
-        placeholder="select user",
-        dropdown_list=username_dropdown,
-    )
-
-    api_epic_name = f"{base_url}/api/epics/active"
-    response_epic_name = requests.get(api_epic_name)
-
-    epic_name_rows = []
-    for item in response_epic_name.json():
-        d = {item["name"]: item["id"]}
-        epic_name_rows.append(d)
-
-    epic_name_dropdown = SelectorDropdownKeyValue(rows=epic_name_rows)
-    selector_epic_id = Selector(
+    selector_epic_id = Selector2(
         set_value=set_epic_id,
-        placeholder="select epic",
-        dropdown_list=epic_name_dropdown,
+        data=epics_names(),
     )
-
-    api_client_name_id = f"{base_url}/api/epics/{epic_id}/client-name"
-    response_client_name_id = requests.get(api_client_name_id)
-    r = response_client_name_id.json()
-    client_name = r.get("name")
-    client_id = r.get("id_1")
-    option = html.option({"value": f"{client_id}"}, client_name)
-    selector_client_id = AutoSelect(set_value=set_client_id, option=option)
-
-    year_month_dropdown = SelectorDropdownList(year_month_list)
-    selector_year_month = Selector(
+    display_client = display_value(epic_id)
+    selector_year_month = Selector2(
         set_value=set_year_month,
-        placeholder="select a month",
-        dropdown_list=year_month_dropdown,
+        data=year_month_dict_list(),
     )
 
-    days_dropdown = SelectorDropdownList(forecast_days_list)
-    selector_days = Selector(
+    selector_days = Selector2(
         set_value=set_days,
-        placeholder="select forecast days",
-        dropdown_list=days_dropdown,
+        data=forecast_days(),
     )
 
     btn = html.button(
@@ -189,12 +149,25 @@ def create_forecast_form(
         Row(
             selector_user_id,
             selector_epic_id,
-            selector_client_id,
+            display_client,
             selector_year_month,
             selector_days,
         ),
         Row(btn),
     )
+
+
+@component
+def display_value(epic_id):
+    client = client_name_by_epic_id(epic_id)
+    class_h3 = """text-primary-500  w-full px-4 py-2.5 mt-2 
+                        text-base bg-secondary-300"""
+    if epic_id == "":
+        return html.h3({"class": class_h3, "value": ""}, "client name")
+    else:
+        return html.h3(
+            {"class": class_h3, "value": client["value"]}, client["display_value"]
+        )
 
 
 @component
@@ -207,33 +180,21 @@ def forecasts_table(user_id, epic_id, year_month):
         year_month (str): the year_month combined for which the forecast is for
 
     Returns:
-        _type_: _description_
+        list of filtered forecasts
     """
     ym = year_month
     year = ym[:4]
     month = ym[5:7]
-    rows = []
-    if user_id != "" and epic_id != "" and year != "" and month != "":
-        api = f"{base_url}/api/forecasts/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}"
-        response = requests.get(api)
-        for item in response.json():
-            d = {
-                "year": item["year"],
-                "month": item["month"],
-                "days": item["days"],
-            }
-            rows.append(d)
+    rows = forecast_by_user_epic_year_month(user_id, epic_id, year, month)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
 @component
-def delete_forecast_input(set_deleted_forecast):
+def delete_forecast(set_deleted_forecast):
     forecast_to_delete, set_forecast_to_delete = use_state("")
 
     def handle_delete(event):
-        api = f"{base_url}/api/forecasts/?forecast_id={forecast_to_delete}"
-
-        response = requests.delete(api)
+        forecast_deletion(forecast_to_delete)
         set_deleted_forecast(forecast_to_delete)
 
     inp_forecast = Input(
@@ -245,6 +206,6 @@ def delete_forecast_input(set_deleted_forecast):
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
             "onClick": handle_delete,
         },
-        "Submit",
+        "Delete",
     )
     return Column(Row(inp_forecast), Row(btn))

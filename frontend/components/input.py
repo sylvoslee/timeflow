@@ -1,5 +1,6 @@
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Dict
 from idom import html, component
+from pages.data import Select
 
 class_str = """text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
                     text-base transition duration-500 ease-in-out transform 
@@ -42,6 +43,26 @@ def Selector(
         },
         html.option({"value": ""}, placeholder),
         dropdown_list,
+    )
+
+
+@component
+def Selector2(
+    set_value: Callable,
+    data: List[Select],
+    _class: str = class_str,
+):
+    options = []
+    for row in data:
+        option = html.option({"value": row["value"]}, row["display_value"])
+        options.append(option)
+
+    return html.select(
+        {
+            "class": _class,
+            "onChange": lambda event: set_value(event["target"]["value"]),
+        },
+        options,
     )
 
 

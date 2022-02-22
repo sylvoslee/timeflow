@@ -3,12 +3,13 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
 from backend.models.timelog import TimeLog
 from backend.models.calendar import Calendar
-from backend.utils import engine, create_db
+from backend.utils import engine, sqlite3_engine, create_db, tags_metadata
 from datetime import datetime
 from backend.api import user, timelog, forecast, epic, client, rate
-from .utils import tags_metadata
 import pandas as pd
 from pandas import Timestamp
+import csv
+import sqlite3
 
 app = FastAPI(title="timesheets app API", openapi_tags=tags_metadata)
 
@@ -32,10 +33,25 @@ def on_startup():
 
 @app.on_event("startup")
 def implement_calendar_table():
-    statement = select(Calendar).where(Calendar.id == 1)
     try:
+        statement = select(Calendar.year_name).where(Calendar.id == 1)
         result = session.exec(statement).one()
-    except:
-        calendar_from_excel = pd.read_excel("backend/calendar_id.xlsx")
-        calendar_change_index = calendar_from_excel.set_index("date")
-        calendar_change_index.to_sql("calendar", con=engine, if_exists="append")
+    except Exception as e:
+        print(e)
+        values_sql = f"""INSERT INTO calendar (date, year_number, year_name, quarter_number, quarter_name
+                    , month_number, month_name, week_number, week_name, week_day_number, week_day_name)
+                    VALUES """
+        with open("backend/calendar.csv") as csvfile:
+            reader = csv.reader(csvfile, delimiter=",", quotechar="|")
+            values_list = []
+            for index, row in enumerate(reader):
+                if index > 0 and row[0] != "":
+                    _row = [f"'{item}'" for item in row]
+                    row_sql = ", ".join(_row)
+                    values = f"({row_sql}),"
+                    values_sql += values
+            values_sql += f"({row_sql});"
+            cur = sqlite3_engine.cursor()
+            cur.execute(values_sql)
+            sqlite3_engine.commit()
+            sqlite3_engine.close()
