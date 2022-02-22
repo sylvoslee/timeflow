@@ -32,10 +32,5 @@ def on_startup():
 
 @app.on_event("startup")
 def implement_calendar_table():
-    statement = select(Calendar).where(Calendar.id == 1)
-    try:
-        result = session.exec(statement).one()
-    except:
-        calendar_from_excel = pd.read_excel("backend/calendar_id.xlsx")
-        calendar_change_index = calendar_from_excel.set_index("date")
-        calendar_change_index.to_sql("calendar", con=engine, if_exists="append")
+    calendar_from_csv = pd.read_csv("backend/calendar.csv")
+    calendar_from_csv.to_sql("calendar", con=engine, if_exists="replace")

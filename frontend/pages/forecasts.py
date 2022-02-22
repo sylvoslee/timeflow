@@ -6,7 +6,7 @@ import requests
 from sanic import Sanic, response
 from black import click
 
-from components.input import Input, Selector, Selector2, class_h3
+from components.input import Input, Selector, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
@@ -160,6 +160,8 @@ def create_forecast_form(
 @component
 def display_value(epic_id):
     client = client_name_by_epic_id(epic_id)
+    class_h3 = """text-primary-500  w-full px-4 py-2.5 mt-2 
+                        text-base bg-secondary-300"""
     if epic_id == "":
         return html.h3({"class": class_h3, "value": ""}, "client name")
     else:
