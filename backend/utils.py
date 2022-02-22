@@ -1,10 +1,12 @@
 import datetime
 from sqlmodel import Session, select, SQLModel, create_engine
 from backend.models.user import User
+import sqlite3
 
 
 con_str = f"sqlite:///backend/database.sqlite"
 engine = create_engine(con_str, echo=True)
+sqlite3_engine = sqlite3.connect("backend/database.sqlite")
 
 
 def get_session():
