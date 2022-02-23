@@ -1,2 +1,2 @@
 docker build . -f backend/Dockerfile -t fastapi:v1
-docker build . -f idom_frontend/Dockerfile -t idom:v1
+docker build . -f frontend/Dockerfile -t idom:v1
