@@ -10,9 +10,9 @@ services:
     image: fastapi:v1
     volumes:
       - ./backend/:/backend/
-    command: bash -c "uvicorn backend.main:app --reload --host 0.0.0.0"
+    command: bash -c "uvicorn backend.main:app --reload --port 8002 --host 0.0.0.0"
     ports:
-      - 8000:8000
+      - 8002:8002
     container_name: fastapi
     stdin_open: true # docker run -i
     tty: true        # docker run -t
