@@ -5,7 +5,7 @@ RUN npm install -g -D tailwindcss postcss autoprefixer
 RUN npx tailwindcss init
 
 FROM python:3.8
-COPY ./idom_frontend/ /idom_frontend/
+COPY ./frontend/ /frontend/
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt && \
     python -m pip install watchdog

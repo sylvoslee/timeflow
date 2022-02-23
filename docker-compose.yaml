@@ -23,8 +23,8 @@ services:
   idom:
     image: idom:v1
     volumes:
-      - ./idom_frontend/:/idom_frontend/
-    command: bash -c "cd idom_frontend && python3 -m run_reload.py"
+      - ./frontend/:/frontend/
+    command: bash -c "cd frontend && python3 -m run_reload.py"
     ports:
       - 8001:8001
     container_name: idom
