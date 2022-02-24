@@ -31,7 +31,6 @@ def page():
     days, set_days = use_state("")
     user_id, set_user_id = use_state("")
     epic_id, set_epic_id = use_state("")
-    client_id, set_client_id = use_state("")
     deleted_forecast, set_deleted_forecast = use_state("")
     on_submit, set_on_submit = use_state(True)
     return Container(
@@ -44,11 +43,10 @@ def page():
             set_user_id,
             epic_id,
             set_epic_id,
-            client_id,
-            set_client_id,
             on_submit,
             set_on_submit,
         ),
+        display_value(epic_id),
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
         ),
@@ -66,8 +64,6 @@ def create_forecast_form(
     set_user_id,
     epic_id,
     set_epic_id,
-    client_id,
-    set_client_id,
     on_submit,
     set_on_submit,
 ):
@@ -163,10 +159,11 @@ def display_value(epic_id):
     class_h3 = """text-primary-500  w-full px-4 py-2.5 mt-2 
                         text-base bg-secondary-300"""
     if epic_id == "":
-        return html.h3({"class": class_h3, "value": ""}, "client name")
+        return Column(Row(html.h3({"class": class_h3, "value": ""}, "client name")))
     else:
         return html.h3(
-            {"class": class_h3, "value": client["value"]}, client["display_value"]
+            {"class": class_h3, "value": client["value"]},
+            client["display_value"],
         )
 
 
