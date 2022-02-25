@@ -46,7 +46,6 @@ def page():
             on_submit,
             set_on_submit,
         ),
-        display_value(epic_id),
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
         ),
@@ -159,7 +158,7 @@ def display_value(epic_id):
     class_h3 = """text-primary-500  w-full px-4 py-2.5 mt-2 
                         text-base bg-secondary-300"""
     if epic_id == "":
-        return Column(Row(html.h3({"class": class_h3, "value": ""}, "client name")))
+        return html.h3({"class": class_h3, "value": ""}, "client name")
     else:
         return html.h3(
             {"class": class_h3, "value": client["value"]},
