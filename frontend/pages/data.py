@@ -1,7 +1,12 @@
 import requests
 from config import base_url
 from typing import List, Dict, TypedDict
-from pages.utils import year_month_list, forecast_days_list
+from pages.utils import (
+    year_month_list,
+    forecast_days_list,
+    timelog_days_list,
+    hours_list,
+)
 import json
 
 
@@ -16,6 +21,45 @@ class Forecast(TypedDict):
     month: int
     year: int
     days: int
+
+
+class Timelog(TypedDict):
+    start_time: str
+    end_time: str
+    user_id: int
+    epic_id: int
+    count_hours: float
+    count_days: float
+    month: int
+    year: int
+
+
+def to_timelog(
+    start_time: str,
+    end_time: str,
+    user_id: int,
+    epic_id: int,
+    count_hours: float,
+    count_days: float,
+    month: int,
+    year: int,
+) -> bool:
+    data = Timelog(
+        start_time=start_time,
+        end_time=end_time,
+        user_id=user_id,
+        epic_id=epic_id,
+        count_hours=0,
+        count_days=0,
+        month=str(month),
+        year=str(year),
+    )
+    response = requests.post(
+        f"{base_url}/api/timelogs",
+        data=json.dumps(dict(data)),
+        headers={"accept": "application/json", "Content-Type": "application/json"},
+    )
+    return True
 
 
 def to_forecast(user_id: int, epic_id: int, month: str, year: str, days: int) -> bool:
@@ -102,3 +146,19 @@ def forecast_deletion(forecast_to_delete) -> bool:
     api = f"{base_url}/api/forecasts/?forecast_id={forecast_to_delete}"
     response = requests.delete(api)
     return True
+
+
+def timelog_days() -> List[Dict]:
+    days = [Select(value="", display_value="select days")]
+    for item in timelog_days_list:
+        d = Select(value=item, display_value=item)
+        days.append(d)
+    return days
+
+
+def hours() -> List[Dict]:
+    hours = [Select(value="", display_value="select hour")]
+    for item in hours_list:
+        d = Select(value=item, display_value=item)
+        hours.append(d)
+    return hours
