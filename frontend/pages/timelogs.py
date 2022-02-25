@@ -58,7 +58,7 @@ def page():
             set_is_true,
         ),
         Column(
-            Row(list_timelogs(is_true)),
+            Row(timelogs_table(is_true)),
         ),
         Row(delete_timelog_input(set_deleted_timelog)),
     )
@@ -167,7 +167,7 @@ def create_timelog_form(
 
 
 @component
-def list_timelogs(is_true):
+def timelogs_table(is_true):
     api = f"{base_url}/api/timelogs"
     response = requests.get(api)
 
