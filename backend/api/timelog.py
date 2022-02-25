@@ -15,18 +15,30 @@ async def timelog(*, timelog: TimeLog, session: Session = Depends(get_session)):
     statement1 = (
         select(TimeLog)
         .where(TimeLog.user_id == timelog.user_id)
-        .where(TimeLog.start_time >= timelog.start_time)
-        .where(TimeLog.start_time <= timelog.end_time)
+        .where(Timelog.start_time < timelog.start_time)
+        .where(TimeLog.end_time < timelog.start_time)
     )
     statement2 = (
         select(TimeLog)
         .where(TimeLog.user_id == timelog.user_id)
-        .where(TimeLog.end_time >= timelog.start_time)
-        .where(TimeLog.end_time <= timelog.end_time)
+        .where(Timelog.start_time > timelog.end_time)
+        .where(TimeLog.end_time > timelog.end_time)
     )
+    # statement1 = (
+    #     select(TimeLog)
+    # .where(TimeLog.user_id == timelog.user_id)
+    #     .where(TimeLog.start_time >= timelog.start_time)
+    #     .where(TimeLog.start_time <= timelog.end_time)
+    # )
+    # statement2 = (
+    #     select(TimeLog)
+    #     .where(TimeLog.user_id == timelog.user_id)
+    #     .where(TimeLog.end_time >= timelog.start_time)
+    #     .where(TimeLog.end_time <= timelog.end_time)
+    # )
     results1 = session.exec(statement1).all()
     results2 = session.exec(statement2).all()
-    if results1 or results2:
+    if results1 != True or results2 != True:
         return "currently posted timelog overlaps another timelog"
     else:
         session.add(timelog)
