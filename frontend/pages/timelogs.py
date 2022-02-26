@@ -10,10 +10,22 @@ from components.input import (
     Selector,
     SelectorDropdownList,
     SelectorDropdownKeyValue,
+    Selector2,
 )
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
+
+from pages.data import (
+    Timelog,
+    to_timelog,
+    year_month_dict_list,
+    username,
+    epics_names,
+    timelog_days,
+    hours,
+)
+
 from config import base_url
 
 
@@ -46,7 +58,7 @@ def page():
             set_is_true,
         ),
         Column(
-            Row(list_timelogs(is_true)),
+            Row(timelogs_table(is_true)),
         ),
         Row(delete_timelog_input(set_deleted_timelog)),
     )
@@ -89,123 +101,48 @@ def create_timelog_form(
         year = a[:4]
         month = a[5:7]
 
-        year_int = int(year)
-        month_int = int(month)
+        # year_int = int(year)
+        # month_int = int(month)
         start_time_post = f"{year}-{month}-{day} {start_time}"
         end_time_post = f"{year}-{month}-{day} {end_time}"
-        data = {
-            "start_time": start_time_post,
-            "end_time": end_time_post,
-            "user_id": user,
-            "epic_id": epic_id,
-            "count_hours": 0,
-            "count_days": 0,
-            "month": month_int,
-            "year": year_int,
-        }
-        response = requests.post(
-            f"{base_url}/api/timelogs",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
+
+        to_timelog(
+            start_time=start_time_post,
+            end_time=end_time_post,
+            user_id=user,
+            epic_id=epic_id,
+            count_hours=0,
+            count_days=0,
+            month=month,
+            year=year,
         )
         if is_true:
             set_is_true(False)
         else:
             set_is_true(True)
 
-    # year and month dropdown list
-    year_month_dropdown_list = (
-        html.option({"value": "2022_01"}, "2022_01"),
-        html.option({"value": "2022_02"}, "2022_02"),
-        html.option({"value": "2022_03"}, "2022_03"),
-        html.option({"value": "2022_04"}, "2022_04"),
-        html.option({"value": "2022_05"}, "2022_05"),
-        html.option({"value": "2022_06"}, "2022_06"),
-        html.option({"value": "2022_07"}, "2022_07"),
-        html.option({"value": "2022_08"}, "2022_08"),
-        html.option({"value": "2022_09"}, "2022_09"),
-        html.option({"value": "2022_10"}, "2022_10"),
-        html.option({"value": "2022_11"}, "2022_11"),
-        html.option({"value": "2022_12"}, "2022_12"),
-    )
+    selector_user = Selector2(set_value=set_user, data=username())
 
-    # days dropdown list
-    month_days_nr = range(1, 32)
-    month_days_list = []
-    for n in month_days_nr:
-        month_days_list.append(n)
-
-    days_dropdown_list = SelectorDropdownList(month_days_list)
-
-    # hours dropdown list
-    # fmt: off
-    h = ["07", "08", "09", "10", "11", "12", "13", "14", "15", "16", 
-        "17", "18", "19", "20", "21", "22"]
-    q = ["00", "15", "30", "45"]
-    # fmt: on
-
-    hours_list = []
-    for n in h:
-        for m in q:
-            hours = f"{n}:{m}"
-            hours_list.append(hours)
-
-    hours_dropdown_list = SelectorDropdownList(hours_list)
-
-    # username dropdown list
-    api_username = f"{base_url}/api/users"
-    response_username = requests.get(api_username)
-
-    username_rows = []
-    for item in response_username.json():
-        d = {item["username"]: item["id"]}
-        username_rows.append(d)
-
-    username_dropdown_list = SelectorDropdownKeyValue(rows=username_rows)
-
-    # epic name dropdown list
-    api_epic_name = f"{base_url}/api/epics"
-    response_epic_name = requests.get(api_epic_name)
-
-    epic_name_rows = []
-    for item in response_epic_name.json():
-        d = {item["name"]: item["id"]}
-        epic_name_rows.append(d)
-
-    epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
-
-    selector_epic_id = Selector(
+    selector_epic_id = Selector2(
         set_value=set_epic_id,
-        placeholder="select epic",
-        dropdown_list=epic_name_dropdown_list,
+        data=epics_names(),
     )
-
-    selector_user = Selector(
-        set_value=set_user,
-        placeholder="select user",
-        dropdown_list=username_dropdown_list,
-    )
-    selector_year_month = Selector(
+    selector_year_month = Selector2(
         set_value=set_year_month,
-        placeholder="select a month",
-        dropdown_list=year_month_dropdown_list,
+        data=year_month_dict_list(),
     )
-
-    selector_days = Selector(
+    selector_days = Selector2(
         set_value=set_day,
-        placeholder="select a day",
-        dropdown_list=days_dropdown_list,
+        data=timelog_days(),
     )
 
-    selector_start_time = Selector(
+    selector_start_time = Selector2(
         set_value=set_start_time,
-        placeholder="select start time",
-        dropdown_list=hours_dropdown_list,
+        data=hours(),
     )
-    selector_end_time = Selector(
+    selector_end_time = Selector2(
         set_value=set_end_time,
-        placeholder="select end time",
-        dropdown_list=hours_dropdown_list,
+        data=hours(),
     )
 
     btn = html.button(
@@ -230,7 +167,7 @@ def create_timelog_form(
 
 
 @component
-def list_timelogs(is_true):
+def timelogs_table(is_true):
     api = f"{base_url}/api/timelogs"
     response = requests.get(api)
 
