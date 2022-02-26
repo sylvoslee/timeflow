@@ -7,9 +7,9 @@ from datetime import datetime
 
 class EpicArea(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-    work_area: str
     client_id: int = Field(foreign_key="client.id")
+    epic_id: int = Field(foreign_key="epic.id")
+    epic_area: str
     active: bool
     created_at: datetime
     updated_at: datetime
