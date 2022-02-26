@@ -13,7 +13,7 @@ class EpicArea(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     client_id: int = Field(foreign_key="client.id")
     epic_id: int = Field(foreign_key="epic.id")
-    epic_area: str
+    name: str
     active: bool
     created_at: datetime
     updated_at: datetime
