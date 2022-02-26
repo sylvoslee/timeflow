@@ -19,7 +19,6 @@ async def post_epic_area(
     statement1 = select(EpicArea).where(
         or_(EpicArea.name == epic_area.name, EpicArea.id == epic_area.id)
     )
-    statement2 = select(Client.name).where(Client.id == epic_area.client_id)
     try:
         result = session.exec(statement1).one()
         return False
