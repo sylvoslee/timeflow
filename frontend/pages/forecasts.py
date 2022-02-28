@@ -34,17 +34,19 @@ def page():
     deleted_forecast, set_deleted_forecast = use_state("")
     on_submit, set_on_submit = use_state(True)
     return Container(
-        create_forecast_form(
-            year_month,
-            set_year_month,
-            days,
-            set_days,
-            user_id,
-            set_user_id,
-            epic_id,
-            set_epic_id,
-            on_submit,
-            set_on_submit,
+        Row(
+            create_forecast_form(
+                year_month,
+                set_year_month,
+                days,
+                set_days,
+                user_id,
+                set_user_id,
+                epic_id,
+                set_epic_id,
+                on_submit,
+                set_on_submit,
+            )
         ),
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),

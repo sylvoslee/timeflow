@@ -24,16 +24,18 @@ def page():
     submitted_surname, set_submitted_surname = use_state("")
     deleted_user, set_deleted_user = use_state("")
     return Container(
-        create_user_form(
-            username,
-            set_username,
-            name,
-            set_name,
-            surname,
-            set_surname,
-            email,
-            set_email,
-            set_submitted_surname,
+        Row(
+            create_user_form(
+                username,
+                set_username,
+                name,
+                set_name,
+                surname,
+                set_surname,
+                email,
+                set_email,
+                set_submitted_surname,
+            )
         ),
         Column(
             Row(list_users(submitted_surname)),
