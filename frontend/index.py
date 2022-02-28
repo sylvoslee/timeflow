@@ -34,6 +34,6 @@ def page():
 
     return html.div(
         {"class": "flex w-full"},
-        Sidebar(current_page, set_current_page, pages=pages, title="Timesheets UI"),
+        Sidebar(current_page, set_current_page, pages=pages, title="timeflow UI"),
         FlexContainer(current_page_component),
     )
