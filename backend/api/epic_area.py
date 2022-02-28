@@ -27,3 +27,11 @@ async def post_epic_area(
         session.commit()
         session.refresh(epic_area)
         return epic_area
+
+
+# Get epic area list
+@router.get("/")
+async def get_epic_list(session: Session = Depends(get_session)):
+    statement = select(EpicArea)
+    results = session.exec(statement).all()
+    return results
