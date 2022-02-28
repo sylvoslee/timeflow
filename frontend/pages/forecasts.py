@@ -34,19 +34,17 @@ def page():
     deleted_forecast, set_deleted_forecast = use_state("")
     on_submit, set_on_submit = use_state(True)
     return Container(
-        Row(
-            create_forecast_form(
-                year_month,
-                set_year_month,
-                days,
-                set_days,
-                user_id,
-                set_user_id,
-                epic_id,
-                set_epic_id,
-                on_submit,
-                set_on_submit,
-            )
+        create_forecast_form(
+            year_month,
+            set_year_month,
+            days,
+            set_days,
+            user_id,
+            set_user_id,
+            epic_id,
+            set_epic_id,
+            on_submit,
+            set_on_submit,
         ),
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
@@ -134,13 +132,24 @@ def create_forecast_form(
         data=forecast_days(),
     )
 
+    # wrap this inside a Button component
+    button_is_active = True
+    if user_id == "" or epic_id == "" or year_month == "" or days == "":
+        button_is_active = False
+
+    button_status = "text-gray-50  border-secondary-200"
+    if button_is_active is False:
+        button_status = "text-gray-500  border-gray-500"
+
     btn = html.button(
         {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+            "class": f"relative w-fit h-fit px-2 py-1 text-lg border {button_status}",
             "onClick": handle_submit,
+            "disabled": True,
         },
         "Submit",
     )
+    # end of wrap
 
     return Column(
         Row(
