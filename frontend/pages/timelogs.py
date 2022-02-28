@@ -152,7 +152,6 @@ def create_timelog_form(
         },
         "Submit",
     )
-
     return Column(
         Row(
             selector_user,
