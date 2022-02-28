@@ -11,7 +11,7 @@ from pandas import Timestamp
 import csv
 import sqlite3
 
-app = FastAPI(title="timesheets app API", openapi_tags=tags_metadata)
+app = FastAPI(title="timeflow app API", openapi_tags=tags_metadata)
 
 session = Session(engine)
 app.include_router(timelog.router)
