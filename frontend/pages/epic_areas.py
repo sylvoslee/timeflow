@@ -81,7 +81,7 @@ def create_epic_area_form(
     epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
     selector_epic_name = Selector(
         set_value=set_epic_id,
-        placeholder="select epic",
+        placeholder="Select Epic",
         dropdown_list=epic_name_dropdown_list,
     )
 
@@ -105,14 +105,19 @@ def create_epic_area_form(
 
 @component
 def list_epic_areas(submitted_name):
+    """
+    Returns rows consisting of each epic area along with its epic
+    """
     api = f"{base_url}/api/epic_areas/active"
     response = requests.get(api)
 
     rows = []
     for item in response.json():
         d = {
-            "" "epic": item["epic"],
-            "name": item["name"],
+            # SQLModel automatically assigns duplicated column names with _#
+            "Epic": item["name_1"],
+            "Epic Area": item["name"],
+            "ID": item["id"],
         }
         rows.append(d)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
