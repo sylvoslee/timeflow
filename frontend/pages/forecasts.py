@@ -10,7 +10,7 @@ from components.input import Input, Selector, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
-
+from components.controls import SubmitButton
 from pages.data import (
     epics_names,
     client_name_by_epic_id,
@@ -133,23 +133,25 @@ def create_forecast_form(
     )
 
     # wrap this inside a Button component
-    button_is_active = True
-    if user_id == "" or epic_id == "" or year_month == "" or days == "":
-        button_is_active = False
+    # button_is_active = True
+    # if user_id == "" or epic_id == "" or year_month == "" or days == "":
+    #     button_is_active = False
 
-    button_status = "text-gray-50  border-secondary-200"
-    if button_is_active is False:
-        button_status = "text-gray-500  border-gray-500"
+    # button_status = "text-gray-50  border-secondary-200"
+    # if button_is_active is False:
+    #     button_status = "text-gray-500  border-gray-500"
 
-    btn = html.button(
-        {
-            "class": f"relative w-fit h-fit px-2 py-1 text-lg border {button_status}",
-            "onClick": handle_submit,
-            "disabled": True,
-        },
-        "Submit",
-    )
+    # btn = html.button(
+    #     {
+    #         "class": f"relative w-fit h-fit px-2 py-1 text-lg border {button_status}",
+    #         "onClick": handle_submit,
+    #         "disabled": True,
+    #     },
+    #     "Submit",
+    # )
     # end of wrap
+
+    btn = SubmitButton(handle_submit, user_id, epic_id, year_month, days)
 
     return Column(
         Row(
