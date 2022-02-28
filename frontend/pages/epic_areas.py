@@ -19,7 +19,8 @@ def page():
     epic_id, set_epic_id = use_state("")
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
-    delete_name, set_delete_name = use_state("")
+    _, set_delete_name = use_state("")
+    _, set_activ_name = use_state("")
     print(name)
 
     return Container(
@@ -33,7 +34,8 @@ def page():
         Column(
             Row(list_epic_areas(submitted_name)),
         ),
-        Row(delete_epic_area(set_delete_name)),
+        Row(deactivate_epic_area(set_delete_name)),
+        Row(activate_epic_area(set_activ_name)),
     )
 
 
@@ -124,10 +126,10 @@ def list_epic_areas(submitted_name):
 
 
 @component
-def delete_epic_area(set_delete_name):
+def deactivate_epic_area(set_delete_name):
     name_to_delete, set_name_to_delete = use_state("")
 
-    def handle_delete(event):
+    def handle_deactivation(event):
         api = f"{base_url}/api/epic_areas/{name_to_delete}/deactivate"
         response = requests.put(api)
         set_delete_name(name_to_delete)
@@ -137,8 +139,29 @@ def delete_epic_area(set_delete_name):
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": handle_delete,
+            "onClick": handle_deactivation,
         },
         "Submit",
     )
     return Column(Row(inp_delete_name), Row(btn))
+
+
+@component
+def activate_epic_area(set_activ_name):
+    name_to_activ, set_name_to_activ = use_state("")
+
+    def handle_deactivation(event):
+        api = f"{base_url}/api/epic_areas/{name_to_activ}/activate"
+        response = requests.put(api)
+        set_activ_name(name_to_activ)
+        return True
+
+    inp_activ_name = Input(set_value=set_name_to_activ, label="delete epic input")
+    btn = html.button(
+        {
+            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+            "onClick": handle_deactivation,
+        },
+        "Submit",
+    )
+    return Column(Row(inp_activ_name), Row(btn))
