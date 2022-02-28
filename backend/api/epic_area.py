@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends
 from ..utils import engine, get_session
 from sqlmodel import Session, select, SQLModel, or_
 from ..models.epic_area import EpicArea
-from ..models.client import Client
 from ..models.epic import Epic
 from sqlalchemy.exc import NoResultFound
 from datetime import datetime
