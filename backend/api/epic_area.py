@@ -4,6 +4,7 @@ from sqlmodel import Session, select, SQLModel, or_
 from ..models.epic_area import EpicArea
 from ..models.epic import Epic
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import Query as query
 from datetime import datetime
 
 router = APIRouter(prefix="/api/epic_areas", tags=["epic_area"])
@@ -40,7 +41,12 @@ async def get_epic_area_list(session: Session = Depends(get_session)):
 # Get list of active epic areas
 @router.get("/active")
 async def get_active_epic_list(session: Session = Depends(get_session)):
-    statement = select(EpicArea).where(EpicArea.active == True)
+    statement = (
+        select(EpicArea.id, EpicArea.epic_id, EpicArea.name, Epic.id, Epic.name)
+        .join(Epic)
+        .where(EpicArea.epic_id == Epic.id)
+        .where(EpicArea.active == True)
+    )
     results = session.exec(statement).all()
     return results
 
@@ -74,12 +80,12 @@ async def get_epic_name_by_epic_area_id(
 
 
 # Activate epic area
-@router.put("/{epic_area_id}/activate")
+@router.put("/{epic_area}/activate")
 async def activate_epic_area(
-    epic_area_id: str = None,
+    epic_area: str = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(EpicArea).where(EpicArea.id == epic_area_id)
+    statement = select(EpicArea).where(EpicArea.name == epic_area)
     epic_area_to_activate = session.exec(statement).one()
     epic_area_to_activate.active = True
     epic_area_to_activate.updated_at = datetime.now()
@@ -90,12 +96,12 @@ async def activate_epic_area(
 
 
 # Deactivate epic area
-@router.put("/{epic_area_id}/deactivate")
-async def deactivate_epic(
-    epic_area_id: str = None,
+@router.put("/{epic_area}/deactivate")
+async def deactivate_epic_area(
+    epic_area: str = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(EpicArea).where(EpicArea.id == epic_area_id)
+    statement = select(EpicArea).where(EpicArea.name == epic_area)
     epic_area_to_deactivate = session.exec(statement).one()
     epic_area_to_deactivate.active = False
     epic_area_to_deactivate.updated_at = datetime.now()
