@@ -46,7 +46,6 @@ def page():
             on_submit,
             set_on_submit,
         ),
-        display_value(epic_id),
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
         ),
@@ -133,13 +132,24 @@ def create_forecast_form(
         data=forecast_days(),
     )
 
+    # wrap this inside a Button component
+    button_is_active = True
+    if user_id == "" or epic_id == "" or year_month == "" or days == "":
+        button_is_active = False
+
+    button_status = "text-gray-50  border-secondary-200"
+    if button_is_active is False:
+        button_status = "text-gray-500  border-gray-500"
+
     btn = html.button(
         {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+            "class": f"relative w-fit h-fit px-2 py-1 text-lg border {button_status}",
             "onClick": handle_submit,
+            "disabled": True,
         },
         "Submit",
     )
+    # end of wrap
 
     return Column(
         Row(
@@ -159,7 +169,7 @@ def display_value(epic_id):
     class_h3 = """text-primary-500  w-full px-4 py-2.5 mt-2 
                         text-base bg-secondary-300"""
     if epic_id == "":
-        return Column(Row(html.h3({"class": class_h3, "value": ""}, "client name")))
+        return html.h3({"class": class_h3, "value": ""}, "client name")
     else:
         return html.h3(
             {"class": class_h3, "value": client["value"]},
