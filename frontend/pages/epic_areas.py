@@ -127,17 +127,17 @@ def list_epic_areas(submitted_name):
 def delete_epic_area(set_delete_name):
     name_to_delete, set_name_to_delete = use_state("")
 
-    def delete_epic(event):
-        api = f"{base_url}/api/epics/?epic_name={name_to_delete}"
-        response = requests.delete(api)
+    def handle_delete(event):
+        api = f"{base_url}/api/epic_areas/{name_to_delete}/deactivate"
+        response = requests.put(api)
         set_delete_name(name_to_delete)
-        print(name)
+        return True
 
     inp_delete_name = Input(set_value=set_name_to_delete, label="delete epic input")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": delete_epic,
+            "onClick": handle_delete,
         },
         "Submit",
     )
