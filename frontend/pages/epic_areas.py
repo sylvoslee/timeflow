@@ -16,7 +16,7 @@ from config import base_url
 
 @component
 def page():
-    epic, set_epic_id = use_state("")
+    epic_id, set_epic_id = use_state("")
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
     delete_name, set_delete_name = use_state("")
@@ -24,7 +24,7 @@ def page():
 
     return Container(
         create_epic_area_form(
-            epic,
+            epic_id,
             set_epic_id,
             name,
             set_name,
@@ -39,7 +39,7 @@ def page():
 
 @component
 def create_epic_area_form(
-    epic,
+    epic_id,
     set_epic_id,
     name,
     set_name,
@@ -59,7 +59,7 @@ def create_epic_area_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         data = {
-            "epic": epic,
+            "epic_id": epic_id,
             "name": name,
             "active": True,
             "created_at": str(datetime.now()),
@@ -111,9 +111,8 @@ def list_epic_areas(submitted_name):
     rows = []
     for item in response.json():
         d = {
+            "" "epic": item["epic"],
             "name": item["name"],
-            "work_area": item["work_area"],
-            "client_id": item["client_id"],
         }
         rows.append(d)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
