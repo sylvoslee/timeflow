@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../build/_tailwind.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <div class="flex w-full">
+            <div>
+                <link href="/static/_tailwind.css" rel="stylesheet">
+                <div class="md:flex flex-col md:flex-row md:min-h-screen w-2/12 h-screen justify-between">
+                    <div
+                        class="flex flex-col w-full md:w-64 text-gray-700 bg-white dark-mode:text-gray-200 dark-mode:bg-gray-800 flex-shrink-0">
+                        <div class="flex-shrink-0 px-8 py-4 flex flex-row items-center justify-between">
+                            <a class="text-lg font-semibold tracking-widest text-gray-900 uppercase rounded-lg dark-mode:text-white focus:outline-none focus:shadow-outline"
+                                href="#">
+                                timeflow UI
+                            </a>
+                        </div>
+                        <nav class="flex-grow md:block px-4 pb-4 md:pb-0 md:overflow-y-auto">
+                            <div>
+                                <button class="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg 
+                dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 
+                dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 
+                hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 
+                focus:outline-none focus:shadow-outline
+                " href="#Timelogs" value="Timelogs">
+                                    Timelogs
+                                </button>
+                                <button class="block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg 
+                dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 
+                dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 
+                hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 
+                focus:outline-none focus:shadow-outline
+                " href="#Forecasts" value="Forecasts">
+                                    Forecasts
+                                </button>
+                            </div>
+                            <div class="relative">
+                                <button class="flex flex-row items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent 
+                  rounded-lg dark-mode:bg-transparent dark-mode:focus:text-white dark-mode:hover:text-white 
+                  dark-mode:focus:bg-gray-600 dark-mode:hover:bg-gray-600 md:block hover:text-gray-900 
+                  focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">
+                                    <span>Admin</span>
+                                    <svg
+                                        class="inline w-4 h-4 mt-1 ml-1 transition-transform duration-200 transform md:-mt-1">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="flex w-full">
+                <div class="w-full">
+                    <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                        <div class="flex flex-col md:flex-row None space-x-4">
+                            <select class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
+                text-base transition duration-500 ease-in-out transform 
+                border-transparent bg-secondary-300 focus:border-blueGray-500 
+                focus:bg-white dark:focus:bg-secondary-400 focus:outline-none 
+                focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 
+                ring-gray-400">
+                                <option value="">Select Epic</option>
+                                <option value="1">Web development</option>
+                            </select>
+                            <input type="text" placeholder="Write here the name" class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
+                text-base transition duration-500 ease-in-out transform 
+                border-transparent bg-secondary-300 focus:border-blueGray-500 
+                focus:bg-white dark:focus:bg-secondary-400 focus:outline-none 
+                focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 
+                ring-gray-400">
+                        </div>
+                        <div class="flex flex-col md:flex-row None space-x-4">
+                            <button
+                                class="relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                        <div class="flex flex-col md:flex-row None space-x-4">
+                            <div class="flex w-full">
+                                <div class="flex flex-col w-full space-y-2">
+                                    <table class="text-left">
+                                        <thead class="flex bg-secondary-400 text-white w-full">
+                                            <tr class="flex w-full mb-4">
+                                                <th class="p-4 w-full">Epic</th>
+                                                <th class="p-4 w-full">Epic Area</th>
+                                                <th class="p-4 w-full">ID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody
+                                            class="flex flex-col bg-secondary-200 items-center justify-between overflow-y-scroll w-full">
+                                            <tr class="flex w-full mb-4">
+                                                <td class="p-4 w-full">Web development</td>
+                                                <td class="p-4 w-full">Layout</td>
+                                                <td class="p-4 w-full">1</td>
+                                            </tr>
+                                            <tr class="flex w-full mb-4">
+                                                <td class="p-4 w-full">Web development</td>
+                                                <td class="p-4 w-full">Tests</td>
+                                                <td class="p-4 w-full">2</td>
+                                            </tr>
+                                            <tr class="flex w-full mb-4">
+                                                <td class="p-4 w-full">Web development</td>
+                                                <td class="p-4 w-full">Graphic design</td>
+                                                <td class="p-4 w-full">3</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="flex flex-col md:flex-row justify-end space-x-4">
+                                        <div class="flex flex-col md:flex-row None space-x-4">
+                                            <button
+                                                class="flex px-4 py-2 text-black bg-white rounded-md hover:bg-black hover:text-white">1</button>
+                                            <button
+                                                class="flex px-4 py-2 text-black bg-white rounded-md hover:bg-black hover:text-white">2</button>
+                                            <button
+                                                class="flex px-4 py-2 text-black bg-white rounded-md hover:bg-black hover:text-white">3</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row None space-x-4">
+                        <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                            <div class="flex flex-col md:flex-row None space-x-4">
+                                <input type="text" placeholder="Write here the name of the epic area to be deactivated"
+                                    class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
+                text-base transition duration-500 ease-in-out transform 
+                border-transparent bg-secondary-300 focus:border-blueGray-500 
+                focus:bg-white dark:focus:bg-secondary-400 focus:outline-none 
+                focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 
+                ring-gray-400">
+                            </div>
+                            <div class="flex flex-col md:flex-row None space-x-4"><button
+                                    class="relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row None space-x-4">
+                        <div class="flex flex-col w-full space-y-2 pl-2 pr-4 mt-2">
+                            <div class="flex flex-col md:flex-row None space-x-4"><input type="text"
+                                    placeholder="Write here the name of the epic area to be activated" class="text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
+                text-base transition duration-500 ease-in-out transform 
+                border-transparent bg-secondary-300 focus:border-blueGray-500 
+                focus:bg-white dark:focus:bg-secondary-400 focus:outline-none 
+                focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 
+                ring-gray-400">
+                            </div>
+                            <div class="flex flex-col md:flex-row None space-x-4">
+                                <button
+                                    class="relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200">
+                                    Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { mount } from "./_snowpack/pkg/idom-app-react.js";
+        mount(document.getElementById("app"));
+    </script>
+</body>
+
+</html>
