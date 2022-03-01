@@ -50,8 +50,7 @@ def create_epic_area_form(
     """
     post endpoint: /api/epic_areas
     schema: {
-    "client_id": 0,
-    "epic": "string",
+    "epic_id": "int",
     "name": "string,
     "active": True
     "created_at": "2022-02-17T15:31:39.103Z",
@@ -60,6 +59,7 @@ def create_epic_area_form(
 
     @event(prevent_default=True)
     async def handle_submit(event):
+        """Calls a post request for the given epic area when event is triggered"""
         data = {
             "epic_id": epic_id,
             "name": name,
@@ -79,6 +79,7 @@ def create_epic_area_form(
     api_epic_name = f"{base_url}/api/epics/active"
     response_epic_name = requests.get(api_epic_name)
 
+    # Create dropdown of active epics which can then be selected
     epic_name_rows = [{item["name"]: item["id"]} for item in response_epic_name.json()]
     epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
     selector_epic_name = Selector(
@@ -107,9 +108,7 @@ def create_epic_area_form(
 
 @component
 def list_epic_areas(submitted_name):
-    """
-    Returns rows consisting of each epic area along with its epic
-    """
+    """Returns rows consisting of each epic area along with its epic"""
     api = f"{base_url}/api/epic_areas/active"
     response = requests.get(api)
 
@@ -126,9 +125,11 @@ def list_epic_areas(submitted_name):
 
 @component
 def deactivate_epic_area(set_deact_name):
+    """Deactivates an epic area without deleting it."""
     name_to_deact, set_name_to_deact = use_state("")
 
     def handle_deactivation(event):
+        """Sets the given epic area's active column to False"""
         api = f"{base_url}/api/epic_areas/{name_to_deact}/deactivate"
         response = requests.put(api)
         set_deact_name(name_to_deact)
@@ -147,9 +148,11 @@ def deactivate_epic_area(set_deact_name):
 
 @component
 def activate_epic_area(set_activ_name):
+    """Activates an epic area"""
     name_to_activ, set_name_to_activ = use_state("")
 
-    def handle_deactivation(event):
+    def handle_activation(event):
+        """Sets the given epic area's active column to True"""
         api = f"{base_url}/api/epic_areas/{name_to_activ}/activate"
         response = requests.put(api)
         set_activ_name(name_to_activ)
@@ -159,7 +162,7 @@ def activate_epic_area(set_activ_name):
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": handle_deactivation,
+            "onClick": handle_activation,
         },
         "Submit",
     )
