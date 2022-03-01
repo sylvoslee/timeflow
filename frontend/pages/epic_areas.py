@@ -116,8 +116,8 @@ def list_epic_areas(submitted_name):
     rows = []
     for item in response.json():
         d = {
-            "Epic": item["name"],
-            "Epic Area": item["ea_name"],
+            "Epic": item["epic_name"],
+            "Epic Area": item["epic_area_name"],
             "ID": item["id"],
         }
         rows.append(d)

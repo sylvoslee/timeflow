@@ -45,9 +45,9 @@ async def get_active_epic_list(session: Session = Depends(get_session)):
         select(
             EpicArea.id,
             EpicArea.epic_id,
-            EpicArea.name.label("ea_name"),
+            EpicArea.name.label("epic_area_name"),
             Epic.id,
-            Epic.name,
+            Epic.name.label("epic_name"),
         )
         .join(Epic)
         .where(EpicArea.epic_id == Epic.id)
