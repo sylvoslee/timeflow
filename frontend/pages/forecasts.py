@@ -134,11 +134,11 @@ def create_forecast_form(
         data=forecast_days(),
     )
 
-    button_is_disabled = True
+    is_disabled = True
     if user_id != "" and epic_id != "" and year_month != "" and days != "":
-        button_is_disabled = False
+        is_disabled = False
 
-    btn = SubmitButton(button_is_disabled, handle_submit)
+    btn = SubmitButton(is_disabled, handle_submit)
 
     return Column(
         Row(
