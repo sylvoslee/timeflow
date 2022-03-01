@@ -126,16 +126,16 @@ def list_epic_areas(submitted_name):
 
 
 @component
-def deactivate_epic_area(set_delete_name):
-    name_to_delete, set_name_to_delete = use_state("")
+def deactivate_epic_area(set_deact_name):
+    name_to_deact, set_name_to_deact = use_state("")
 
     def handle_deactivation(event):
-        api = f"{base_url}/api/epic_areas/{name_to_delete}/deactivate"
+        api = f"{base_url}/api/epic_areas/{name_to_deact}/deactivate"
         response = requests.put(api)
-        set_delete_name(name_to_delete)
+        set_deact_name(name_to_deact)
         return True
 
-    inp_delete_name = Input(set_value=set_name_to_delete, label="delete epic input")
+    inp_deact_name = Input(set_value=set_name_to_deact, label="delete epic input")
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
@@ -143,7 +143,7 @@ def deactivate_epic_area(set_delete_name):
         },
         "Submit",
     )
-    return Column(Row(inp_delete_name), Row(btn))
+    return Column(Row(inp_deact_name), Row(btn))
 
 
 @component
