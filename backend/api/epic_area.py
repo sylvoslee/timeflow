@@ -120,20 +120,19 @@ async def deactivate_epic_area(
 # Update epic areas
 @router.put("/")
 async def update_epic(
-    epic_area_id: str = None,
-    epic_area_name: str = None,
-    epic: str = None,
-    client_new_id: int = None,
+    id: str = None,
+    epic_id: str = None,
+    name: str = None,
+    active: bool = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(EpicArea).where(
-        or_(EpicArea.name == epic_area_name, EpicArea.id == epic_area_id)
-    )
-    epic_to_update = session.exec(statement).one()
-    epic_to_update.epic = epic
-    epic_to_update.client_id = client_new_id
-    session.add(epic_to_update)
-    epic_to_update.updated_at = datetime.now()
+    statement = select(EpicArea).where(or_(EpicArea.name == name, EpicArea.id == id))
+    epic_area_to_update = session.exec(statement).one()
+    epic_area_to_update.epic_id = epic_id
+    epic_area_to_update.name = name
+    epic_area_to_update.active = active
+    session.add(epic_area_to_update)
+    epic_area_to_update.updated_at = datetime.now()
     session.commit()
-    session.refresh(epic_to_update)
-    return epic_to_update
+    session.refresh(epic_area_to_update)
+    return epic_area_to_update
