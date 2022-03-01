@@ -48,14 +48,17 @@ def create_epic_area_form(
     set_submitted_name,
 ):
     """
+    Create a form that allows admin to add a new epic area.
+
     post endpoint: /api/epic_areas
     schema: {
-    "epic_id": "int",
-    "name": "string,
-    "active": True
-    "created_at": "2022-02-17T15:31:39.103Z",
-    "updated_at": "2022-02-17T15:31:39.103Z"
-    }"""
+        "epic_id": "int",
+        "name": "string,
+        "active": True
+        "created_at": "2022-02-17T15:31:39.103Z",
+        "updated_at": "2022-02-17T15:31:39.103Z"
+    }
+    """
 
     @event(prevent_default=True)
     async def handle_submit(event):
