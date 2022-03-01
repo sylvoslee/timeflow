@@ -59,7 +59,7 @@ def create_epic_area_form(
 
     @event(prevent_default=True)
     async def handle_submit(event):
-        """Calls a post request for the given epic area when event is triggered"""
+        """Call a post request for the given epic area when given event is triggered"""
         data = {
             "epic_id": epic_id,
             "name": name,
@@ -108,7 +108,7 @@ def create_epic_area_form(
 
 @component
 def list_epic_areas(submitted_name):
-    """Returns rows consisting of each epic area along with its epic"""
+    """Return rows consisting of each epic area along with its epic"""
     api = f"{base_url}/api/epic_areas/active"
     response = requests.get(api)
 
@@ -125,11 +125,11 @@ def list_epic_areas(submitted_name):
 
 @component
 def deactivate_epic_area(set_deact_name):
-    """Deactivates an epic area without deleting it."""
+    """Deactivate an epic area without deleting it."""
     name_to_deact, set_name_to_deact = use_state("")
 
     def handle_deactivation(event):
-        """Sets the given epic area's active column to False"""
+        """Set the given epic area's active column to False"""
         api = f"{base_url}/api/epic_areas/{name_to_deact}/deactivate"
         response = requests.put(api)
         set_deact_name(name_to_deact)
@@ -148,11 +148,11 @@ def deactivate_epic_area(set_deact_name):
 
 @component
 def activate_epic_area(set_activ_name):
-    """Activates an epic area"""
+    """Activate an epic area"""
     name_to_activ, set_name_to_activ = use_state("")
 
     def handle_activation(event):
-        """Sets the given epic area's active column to True"""
+        """Set the given epic area's active column to True"""
         api = f"{base_url}/api/epic_areas/{name_to_activ}/activate"
         response = requests.put(api)
         set_activ_name(name_to_activ)
