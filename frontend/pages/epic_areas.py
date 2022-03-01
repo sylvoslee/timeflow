@@ -116,9 +116,8 @@ def list_epic_areas(submitted_name):
     rows = []
     for item in response.json():
         d = {
-            # SQLModel automatically assigns duplicated column names with _#
-            "Epic": item["name_1"],
-            "Epic Area": item["name"],
+            "Epic": item["name"],
+            "Epic Area": item["ea_name"],
             "ID": item["id"],
         }
         rows.append(d)

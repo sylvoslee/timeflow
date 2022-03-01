@@ -42,7 +42,13 @@ async def get_epic_area_list(session: Session = Depends(get_session)):
 @router.get("/active")
 async def get_active_epic_list(session: Session = Depends(get_session)):
     statement = (
-        select(EpicArea.id, EpicArea.epic_id, EpicArea.name, Epic.id, Epic.name)
+        select(
+            EpicArea.id,
+            EpicArea.epic_id,
+            EpicArea.name.label("ea_name"),
+            Epic.id,
+            Epic.name,
+        )
         .join(Epic)
         .where(EpicArea.epic_id == Epic.id)
         .where(EpicArea.active == True)
