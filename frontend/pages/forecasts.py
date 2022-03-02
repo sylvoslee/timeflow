@@ -10,7 +10,7 @@ from components.input import Input, Selector, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
-
+from components.controls import SubmitButton
 from pages.data import (
     epics_names,
     client_name_by_epic_id,
@@ -34,17 +34,19 @@ def page():
     deleted_forecast, set_deleted_forecast = use_state("")
     on_submit, set_on_submit = use_state(True)
     return Container(
-        create_forecast_form(
-            year_month,
-            set_year_month,
-            days,
-            set_days,
-            user_id,
-            set_user_id,
-            epic_id,
-            set_epic_id,
-            on_submit,
-            set_on_submit,
+        Row(
+            create_forecast_form(
+                year_month,
+                set_year_month,
+                days,
+                set_days,
+                user_id,
+                set_user_id,
+                epic_id,
+                set_epic_id,
+                on_submit,
+                set_on_submit,
+            )
         ),
         Column(
             Row(forecasts_table(user_id, epic_id, year_month)),
@@ -132,24 +134,11 @@ def create_forecast_form(
         data=forecast_days(),
     )
 
-    # wrap this inside a Button component
-    button_is_active = True
-    if user_id == "" or epic_id == "" or year_month == "" or days == "":
-        button_is_active = False
+    is_disabled = True
+    if user_id != "" and epic_id != "" and year_month != "" and days != "":
+        is_disabled = False
 
-    button_status = "text-gray-50  border-secondary-200"
-    if button_is_active is False:
-        button_status = "text-gray-500  border-gray-500"
-
-    btn = html.button(
-        {
-            "class": f"relative w-fit h-fit px-2 py-1 text-lg border {button_status}",
-            "onClick": handle_submit,
-            "disabled": True,
-        },
-        "Submit",
-    )
-    # end of wrap
+    btn = SubmitButton(is_disabled, handle_submit)
 
     return Column(
         Row(
