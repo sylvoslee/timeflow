@@ -19,7 +19,7 @@ def page():
     epic_id, set_epic_id = use_state("")
     name, set_name = use_state("")
     submitted_name, set_submitted_name = use_state("")
-    _, set_delete_name = use_state("")
+    _, set_deact_name = use_state("")
     _, set_activ_name = use_state("")
     print(name)
 
@@ -34,7 +34,7 @@ def page():
         Column(
             Row(list_epic_areas(submitted_name)),
         ),
-        Row(deactivate_epic_area(set_delete_name)),
+        Row(deactivate_epic_area(set_deact_name)),
         Row(activate_epic_area(set_activ_name)),
     )
 
