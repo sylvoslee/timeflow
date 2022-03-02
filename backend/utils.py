@@ -1,10 +1,13 @@
 import datetime
 from sqlmodel import Session, select, SQLModel, create_engine
 from backend.models.user import User
+import sqlite3
 
+database_loc = "backend/database.sqlite"
+con_str = f"sqlite:///{database_loc}"
 
-con_str = f"sqlite:///backend/database.sqlite"
 engine = create_engine(con_str, echo=True)
+sqlite3_engine = sqlite3.connect(f"{database_loc}")
 
 
 def get_session():
@@ -47,7 +50,12 @@ tags_metadata = [
 
 
 def string_to_datetime(date_string):
-    date = datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+    date = datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M")
+    return date
+
+
+def string_to_datetime_hm(date_string):
+    date = datetime.datetime.strptime(date_string, "%H:%M")
     return date
 
 

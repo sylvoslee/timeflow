@@ -4,7 +4,7 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from ..models.client import Client
 from ..models.epic import Epic
-
+from datetime import datetime
 
 router = APIRouter(prefix="/api/clients", tags=["client"])
 session = Session(engine)
@@ -31,6 +31,13 @@ async def read_clients(session: Session = Depends(get_session)):
     return results
 
 
+@router.get("/active")
+async def read_clients(session: Session = Depends(get_session)):
+    statement = select(Client).where(Client.active == True)
+    results = session.exec(statement).all()
+    return results
+
+
 # Get client by id
 @router.get("/{client_id}")
 async def read_clients(
@@ -43,6 +50,15 @@ async def read_clients(
     except NoResultFound:
         msg = f"""There is no client with id = {client_id}"""
         return msg
+
+
+@router.get("/names/{name}")
+async def read_clients_by_name(
+    *, name: str = None, session: Session = Depends(get_session)
+):
+    statement = select(Client).where(Client.name == name)
+    result = session.exec(statement).one()
+    return result
 
 
 # Get all selected client's epics
@@ -60,6 +76,81 @@ async def read_clients_epics(
     return results
 
 
+# # Deactivate client
+# @router.put("/{client_id}/deactivate-client")
+# async def update_clients(
+#     *,
+#     client_id: int,
+#     session: Session = Depends(get_session),
+# ):
+#     statement = select(Client).where(Client.id == client_id)
+#     client_to_update = session.exec(statement).one()
+#     client_to_update.active = False
+#     statement2 = select(Epic).join(Clinet)
+#     client_to_update = session.exec(statement).one()
+#     client_to_update.active = False
+
+#     session.add(client_to_update)
+#     session.commit()
+#     session.refresh(client_to_update)
+#     return client_to_update
+
+# Activate client
+@router.put("/{client_id}/activate")
+async def activate_clients(
+    *,
+    client_id: int,
+    session: Session = Depends(get_session),
+):
+    statement = select(Client).where(Client.id == client_id)
+    client_to_update = session.exec(statement).one()
+    client_to_update.active = True
+    client_to_update.updated_at = datetime.now()
+    session.add(client_to_update)
+    session.commit()
+    session.refresh(client_to_update)
+    return client_to_update
+
+
+# Deactivate client
+@router.put("/{client_id}/deactivate")
+async def deactivate_clients(
+    *,
+    client_id: int,
+    session: Session = Depends(get_session),
+):
+    statement = select(Client).where(Client.id == client_id)
+    client_to_update = session.exec(statement).one()
+    client_to_update.active = False
+    client_to_update.updated_at = datetime.now()
+    session.add(client_to_update)
+
+    session.commit()
+    session.refresh(client_to_update)
+    return client_to_update
+
+
+# Deactivate client and it's epics
+@router.put("/{client_id}/deactivate-epics")
+async def update_clients_and_epics(
+    *,
+    client_id: int,
+    session: Session = Depends(get_session),
+):
+    statement1 = select(Client).where(Client.id == client_id)
+    client_to_update = session.exec(statement1).one()
+    client_to_update.active = False
+    client_to_update.updated_at = datetime.now()
+    session.add(client_to_update)
+    statement2 = select(Epic).where(Epic.client_id == client_id)
+    epics_to_update = session.exec(statement2).all()
+    for epic in epics_to_update:
+        epic.active = False
+        session.add(epic)
+    session.commit()
+    return True
+
+
 # Update client
 @router.put("/{client_id}/new-name")
 async def update_clients(
@@ -71,21 +162,8 @@ async def update_clients(
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
     client_to_update.name = new_client_name
+    client_to_update.updated_at = datetime.now()
     session.add(client_to_update)
     session.commit()
     session.refresh(client_to_update)
     return client_to_update
-
-
-# Delete clients
-@router.delete("/{client_id}")
-async def delete_clients(
-    *, client_id: int, client_name: str, session: Session = Depends(get_session)
-):
-    statement = (
-        select(Client).where(Client.name == client_name).where(Client.id == client_id)
-    )
-    client_to_delete = session.exec(statement).one()
-    session.delete(client_to_delete)
-    session.commit()
-    return True

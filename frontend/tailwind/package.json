@@ -1,0 +1,14 @@
+{
+  "devDependencies": {
+    "autoprefixer": "^10.4.2",
+    "postcss": "^8.4.5",
+    "tailwindcss": "^3.0.15"
+  },
+  "scripts": {
+    "build": "postcss css/tailwind.css -o build/_tailwind.css"
+  },
+  "dependencies": {
+    "daisyui": "^1.24.3",
+    "postcss-cli": "^9.1.0"
+  }
+}
