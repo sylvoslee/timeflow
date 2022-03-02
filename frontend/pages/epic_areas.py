@@ -144,7 +144,9 @@ def deactivate_epic_area(set_deact_name):
         set_deact_name(name_to_deact)
         return True
 
-    inp_deact_name = Input(set_value=set_name_to_deact, label="delete epic input")
+    inp_deact_name = Input(
+        set_value=set_name_to_deact, label="epic area to be deactivated"
+    )
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
@@ -167,7 +169,9 @@ def activate_epic_area(set_activ_name):
         set_activ_name(name_to_activ)
         return True
 
-    inp_activ_name = Input(set_value=set_name_to_activ, label="delete epic input")
+    inp_activ_name = Input(
+        set_value=set_name_to_activ, label="epic area to be activated"
+    )
     btn = html.button(
         {
             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
