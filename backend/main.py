@@ -5,7 +5,7 @@ from backend.models.timelog import TimeLog
 from backend.models.calendar import Calendar
 from backend.utils import engine, sqlite3_engine, create_db, tags_metadata
 from datetime import datetime
-from backend.api import user, timelog, forecast, epic, epic_area, client, rate
+from backend.api import user, timelog, forecast, epic, epic_area, client, rate, team
 import pandas as pd
 from pandas import Timestamp
 import csv
@@ -21,6 +21,7 @@ app.include_router(epic.router)
 app.include_router(epic_area.router)
 app.include_router(client.router)
 app.include_router(rate.router)
+app.include_router(team.router)
 
 
 @app.on_event("startup")
