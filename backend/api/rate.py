@@ -3,7 +3,7 @@ from ..utils import engine, get_session
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from ..models.rate import Rate
-from datetime import datetime
+from datetime import datetime, timedelta
 
 router = APIRouter(prefix="/api/rates", tags=["rate"])
 session = Session(engine)
@@ -17,18 +17,36 @@ async def rate(
 ):
     statement = (
         select(Rate)
-        .where(Rate.year == rate.year)
-        .where(Rate.month == rate.month)
         .where(Rate.user_id == rate.user_id)
         .where(Rate.client_id == rate.client_id)
+        .where(Rate.valid_from >= rate.valid_from)
+    )
+
+    far_date = datetime.strptime("9999-12-31", "%Y-%m-%d").date()
+    delta1 = timedelta(days=1)
+    new_date = rate.valid_from - delta1
+    statement2 = (
+        select(Rate)
+        .where(Rate.user_id == rate.user_id)
+        .where(Rate.client_id == rate.client_id)
+        .where(Rate.valid_to == far_date)
     )
     try:
         result = session.exec(statement).one()
         return False
     except NoResultFound:
-        session.add(rate)
-        session.commit()
-        return True
+        try:
+            rate_to_close = session.exec(statement2).one()
+            rate_to_close.valid_to = new_date
+            rate_to_close.updated_at = datetime.now()
+            session.add(rate_to_close)
+            session.add(rate)
+            session.commit()
+            return True
+        except NoResultFound:
+            session.add(rate)
+            session.commit()
+            return True
 
 
 # Get rate
