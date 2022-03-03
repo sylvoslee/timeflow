@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class EpicArea(SQLModel, table=True):
-    """Creates an SQLModel for epic areas"""
+    """Create an SQLModel for epic areas"""
 
     id: Optional[int] = Field(default=None, primary_key=True)
     epic_id: int = Field(foreign_key="epic.id")
