@@ -3,6 +3,7 @@ from idom.web import module_from_url, export
 from pages.users import page as users_page
 from pages.clients import page as clients_page
 from pages.epics import page as epics_page
+from pages.epic_areas import page as epic_areas_page
 from pages.timelogs import page as timelogs_page
 from pages.forecasts import page as forecasts_page
 
@@ -21,6 +22,8 @@ def page():
         current_page_component = users_page(key="users_page")
     elif current_page == "Epics":
         current_page_component = epics_page(key="epics_page")
+    elif current_page == "Epic Areas":
+        current_page_component = epic_areas_page(key="epic_areas_page")
     elif current_page == "Timelogs":
         current_page_component = timelogs_page(key="timelogs_page")
     elif current_page == "Clients":

@@ -30,6 +30,7 @@ tags_metadata = [
         "name": "epic",
         "description": "operations with epics",
     },
+    {"name": "epic_area", "description": "operations with epic areas"},
     {
         "name": "client",
         "description": "operations with clients",
