@@ -3,7 +3,7 @@ from ..utils import engine, get_session
 from sqlmodel import Session, select, or_
 from ..models.team import Team
 from ..models.user import User
-from sqlalchemy import NoResultFound
+from sqlalchemy.exc import NoResultFound
 from datetime import datetime
 
 router = APIRouter(prefix="/api/teams", tags=["team"])

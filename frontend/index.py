@@ -6,6 +6,7 @@ from pages.epics import page as epics_page
 from pages.epic_areas import page as epic_areas_page
 from pages.timelogs import page as timelogs_page
 from pages.forecasts import page as forecasts_page
+from pages.teams import page as teams_page
 
 from components.layout import Column, Row, FlexContainer
 from components.sidebar import Sidebar
@@ -30,6 +31,8 @@ def page():
         current_page_component = clients_page(key="clients_page")
     elif current_page == "Forecasts":
         current_page_component = forecasts_page(key="forecasts_page")
+    elif current_page == "Teams":
+        current_page_component = teams_page(key="teams_page")
     else:
         current_page_component = html.h1(
             {"class": "text-white"}, "Test Page, not implemented yet"
