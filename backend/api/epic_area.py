@@ -39,7 +39,7 @@ async def get_epic_area_list(session: Session = Depends(get_session)):
 
 # Get list of active epic areas
 @router.get("/active")
-async def get_active_epic_list(session: Session = Depends(get_session)):
+async def get_active_epic_area_list(session: Session = Depends(get_session)):
     statement = (
         select(
             EpicArea.id,
