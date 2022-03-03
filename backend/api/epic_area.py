@@ -85,12 +85,12 @@ async def get_epic_name_by_epic_area_id(
 
 
 # Activate epic area
-@router.put("/{epic_area}/activate")
+@router.put("/{epic_area_name}/activate")
 async def activate_epic_area(
-    epic_area: str = None,
+    epic_area_name: str = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(EpicArea).where(EpicArea.name == epic_area)
+    statement = select(EpicArea).where(EpicArea.name == epic_area_name)
     epic_area_to_activate = session.exec(statement).one()
     epic_area_to_activate.is_active = True
     epic_area_to_activate.updated_at = datetime.now()
@@ -101,12 +101,12 @@ async def activate_epic_area(
 
 
 # Deactivate epic area
-@router.put("/{epic_area}/deactivate")
+@router.put("/{epic_area_name}/deactivate")
 async def deactivate_epic_area(
-    epic_area: str = None,
+    epic_area_name: str = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(EpicArea).where(EpicArea.name == epic_area)
+    statement = select(EpicArea).where(EpicArea.name == epic_area_name)
     epic_area_to_deactivate = session.exec(statement).one()
     epic_area_to_deactivate.is_active = False
     epic_area_to_deactivate.updated_at = datetime.now()
