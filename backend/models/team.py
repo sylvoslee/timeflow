@@ -10,3 +10,6 @@ class Team(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     name: str
     short_name: str
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
