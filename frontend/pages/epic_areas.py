@@ -53,7 +53,7 @@ def create_epic_area_form(
     schema: {
         "epic_id": "int",
         "name": "string,
-        "active": True
+        "is_active": True
         "created_at": "2022-02-17T15:31:39.103Z",
         "updated_at": "2022-02-17T15:31:39.103Z"
     }
@@ -65,7 +65,7 @@ def create_epic_area_form(
         data = {
             "epic_id": epic_id,
             "name": name,
-            "active": True,
+            "is_active": True,
             "created_at": str(datetime.now()),
             "updated_at": str(datetime.now()),
         }
