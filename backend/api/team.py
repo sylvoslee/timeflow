@@ -1,4 +1,3 @@
-from os import stat
 from fastapi import APIRouter, Depends
 from ..utils import engine, get_session
 from sqlmodel import Session, select, or_
@@ -12,8 +11,12 @@ session = Session(engine)
 
 # Post new team
 @router.post("/")
-async def post_team(*, team: Team, session: Session = Depends(get_session)):
-    statement = select(Team).where(or_(Team.name == team.name, team.id == team.id))
+async def post_team(
+    *,
+    team: Team,
+    session: Session = Depends(get_session),
+):
+    statement = select(Team).where(or_(Team.name == team.name, Team.id == team.id))
     try:
         result = session.exec(statement).one()
         return False
@@ -35,7 +38,19 @@ async def get_team_list(session: Session = Depends(get_session)):
 # Get list of active teams
 @router.get("/active")
 async def get_active_team_list(session: Session = Depends(get_session)):
-    statement = select(Team).where(Team.is_active == True)
+    statement = (
+        select(
+            Team.id,
+            Team.user_id,
+            Team.name.label("team_name"),
+            Team.short_name.label("team_short_name"),
+            User.id,
+            User.name.label("user_name"),
+        )
+        .join(User)
+        .where(Team.user_id == User.id)
+        .where(Team.is_active == True)
+    )
     results = session.exec(statement).all()
     return results
 
