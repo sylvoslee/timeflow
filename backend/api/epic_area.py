@@ -37,7 +37,7 @@ async def get_epic_area_list(session: Session = Depends(get_session)):
     return results
 
 
-# Get list of active epic areas
+# Get list of active epic areas along with name of epic
 @router.get("/active")
 async def get_active_epic_area_list(session: Session = Depends(get_session)):
     statement = (
