@@ -4,7 +4,6 @@ from sqlmodel import Session, select, SQLModel, or_
 from ..models.epic_area import EpicArea
 from ..models.epic import Epic
 from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import Query as query
 from datetime import datetime
 
 router = APIRouter(prefix="/api/epic_areas", tags=["epic_area"])
