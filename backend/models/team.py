@@ -1,7 +1,3 @@
-# id
-# short_name
-# name
-# user_id
 from typing import Optional
 from sqlmodel import Field, SQLModel
 from datetime import datetime
