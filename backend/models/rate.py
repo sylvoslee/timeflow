@@ -11,4 +11,4 @@ class Rate(SQLModel, table=True):
     client_id: int = Field(foreign_key="client.id")
     year: int
     day: int
-    amount: float
+    amount: float  # currency: EUR
