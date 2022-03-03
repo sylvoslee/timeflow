@@ -10,5 +10,8 @@ class Rate(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     client_id: int = Field(foreign_key="client.id")
     year: int
-    day: int
+    month: int
     amount: float  # currency: EUR
+    created_at: datetime
+    updated_at: datetime
+    is_active: bool
