@@ -14,6 +14,10 @@ class Select(TypedDict):
 year_month_list = ["2022_01","2022_02","2022_03","2022_04","2022_05",
 "2022_06","2022_07","2022_08","2022_09","2022_10","2022_11", "2022_12"
 ]
+month_start_list = []
+for date in year_month_list:
+    month_start = date + "_01"
+    month_start_list.append(month_start)
 
 hours = ["07", "08", "09", "10", "11", "12", "13", "14", "15", "16", 
     "17", "18", "19", "20", "21", "22"]
