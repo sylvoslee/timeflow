@@ -15,11 +15,11 @@ def test_post_rate(client):
         json={
             "user_id": 1,
             "client_id": 1,
-            "year": 2022,
-            "month": 1,
+            "valid_from": "2022-01-01",
+            "valid_to": "2022-04-01",
             "amount": 300,
-            "created_at": "2022-03-03T11:06:08.053Z",
-            "updated_at": "2022-03-03T11:06:08.053Z",
+            "created_at": "2022-03-04T14:16:24.524Z",
+            "updated_at": "2022-03-04T14:16:24.524Z",
             "is_active": True,
         },
     )
@@ -31,11 +31,11 @@ def test_post_rate(client):
         json={
             "user_id": 1,
             "client_id": 1,
-            "year": 2022,
-            "month": 1,
+            "valid_from": "2022-01-01",
+            "valid_to": "2022-04-01",
             "amount": 300,
-            "created_at": "2022-03-03T11:06:08.053Z",
-            "updated_at": "2022-03-03T11:06:08.053Z",
+            "created_at": "2022-03-04T14:16:24.524Z",
+            "updated_at": "2022-03-04T14:16:24.524Z",
             "is_active": True,
         },
     )
@@ -49,15 +49,15 @@ def test_read_rates(client):
     data = response.json()
     assert data == [
         {
-            "id": 1,
-            "user_id": 1,
             "client_id": 1,
-            "year": 2022,
-            "month": 1,
-            "amount": 300.0,
-            "created_at": "2022-03-03T11:06:08.053000",
-            "updated_at": "2022-03-03T11:06:08.053000",
+            "valid_to": "2022-04-01",
+            "user_id": 1,
+            "created_at": "2022-03-04T14:16:24.524000",
             "is_active": True,
+            "valid_from": "2022-01-01",
+            "id": 1,
+            "amount": 300,
+            "updated_at": "2022-03-04T14:16:24.524000",
         }
     ]
 
@@ -70,3 +70,21 @@ def test_deactivate_rate(client):
 def test_activate_rate(client):
     response = client.put("/api/rates/1/activate")
     assert response.status_code == 200
+
+
+def test_read_active_rate(client):
+    response = client.get("/api/rates/users/1/clients/1/active")
+    data = response.json()
+    assert response.status_code == 200
+
+
+def test_rates_by_user_client_date(client):
+    response = client.get("/api/rates/users/1/clients/1/months/?date=2022-02-01")
+    assert response.status_code == 200
+
+
+def test_update_rates(client):
+    response = client.get("/api/rates/?user_id=1&client_id=1&new_amount=200")
+    data = response.json()
+    assert response.status_code == 200
+    assert data == True
