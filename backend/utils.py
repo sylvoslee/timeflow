@@ -39,6 +39,10 @@ tags_metadata = [
         "description": "operations with teams",
     },
     {
+        "name": "sponsor",
+        "description": "operations with sponsors",
+    },
+    {
         "name": "client",
         "description": "operations with clients",
     },
