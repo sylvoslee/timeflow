@@ -59,6 +59,22 @@ async def read_rates(
     return result
 
 
+@router.get("/users/{user_id}/clients/{client_id}/active")
+async def read_active_rate(
+    user_id: int,
+    client_id: int,
+    session: Session = Depends(get_session),
+):
+    statement = (
+        select(Rate)
+        .where(Rate.user_id == user_id)
+        .where(Rate.client_id == client_id)
+        .where(Rate.is_active == True)
+    )
+    result = session.exec(statement).all()
+    return result
+
+
 @router.get("/users/{user_id}/clients/{client_id}/months/")
 async def rates_by_user_client_date(
     user_id: int,

@@ -22,6 +22,8 @@ from pages.data import (
     forecast_deletion,
     months_start,
     rates_by_user_client_date,
+    rate_active_by_user_client,
+    rate_update,
 )
 
 from pages.utils import month_start_to_str, far_date, date_str_to_date
@@ -54,7 +56,7 @@ def page():
         Column(
             Row(rates_table(user_id, client_id, month_start)),
         ),
-        # Row(update_rate(set_updated_rate)),
+        Row(update_rate(set_updated_rate, user_id, client_id, month_start)),
     )
 
 
@@ -159,29 +161,43 @@ def rates_table(user_id, client_id, month_start):
     Returns:
         list of filtered forecasts
     """
+    # Get list of rates by selected user and client containing selected date
     ms_str = month_start_to_str(month_start)
-    rows = rates_by_user_client_date(user_id=user_id, client_id=client_id, date=ms_str)
-    return html.div({"class": "flex w-full"}, SimpleTable(rows))
+    if user_id != "" and client_id != "" and month_start != "":
+        rows = rates_by_user_client_date(
+            user_id=user_id, client_id=client_id, date=ms_str
+        )
+        return html.div({"class": "flex w-full"}, SimpleTable(rows))
+
+    # Get list of active rate by user and client
+    elif user_id != "" and client_id != "" and month_start == "":
+        rows = rate_active_by_user_client(user_id, client_id)
+        return html.div({"class": "flex w-full"}, SimpleTable(rows))
 
 
-# @component
-# def update_rate(set_updated_rate):
-#     rate_to_update, set_rate_to_update = ("")
-#     new_amount, set_new_amount = ("")
+@component
+def update_rate(set_updated_rate, user_id, client_id, month_start):
+    new_amount, set_new_amount = use_state("")
 
-#     def handle_delete(event):
-#         forecast_deletion(forecast_to_delete)
-#         set_deleted_forecast(forecast_to_delete)
+    def handle_submit(event):
+        rate_update(user_id, client_id, new_amount)
+        set_updated_rate(new_amount)
 
-#     inp_forecast = Input(
-#         set_value=set_new_amount,
-#         label="forecast id to delete",
-#     )
-#     btn = html.button(
-#         {
-#             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-#             "onClick": handle_delete,
-#         },
-#         "Delete",
-#     )
-#     return Column(Row(inp_forecast), Row(btn))
+    inp_rate = Input(
+        set_value=set_new_amount,
+        label="new amount for current rate",
+    )
+    is_disabled = True
+    if user_id != "" and client_id != "" and month_start == "":
+        is_disabled = False
+
+    btn = SubmitButton(is_disabled, handle_submit)
+
+    # html.button(
+    #     {
+    #         "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+    #         "onClick": handle_delete,
+    #     },
+    #     "Update",
+    # )
+    return Column(Row(inp_rate), Row(btn))
