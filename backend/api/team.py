@@ -48,7 +48,6 @@ async def get_active_team_list(session: Session = Depends(get_session)):
             User.name.label("user_name"),
         )
         .join(User)
-        .where(Team.user_id == User.id)
         .where(Team.is_active == True)
     )
     results = session.exec(statement).all()
