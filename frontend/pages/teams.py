@@ -1,5 +1,3 @@
-import asyncio
-from cProfile import label
 import json
 from idom import html, use_state, component, event
 import requests
