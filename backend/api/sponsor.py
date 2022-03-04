@@ -49,7 +49,6 @@ async def get_active_sponsor_list(session: Session = Depends(get_session)):
             Client.name.label("client_name"),
         )
         .join(Client)
-        .where(Sponsor.client_id == Client.id)
         .where(Sponsor.is_active == True)
     )
     results = session.exec(statement).all()
