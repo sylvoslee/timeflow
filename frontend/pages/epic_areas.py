@@ -17,7 +17,6 @@ from config import base_url
 def page():
     epic_id, set_epic_id = use_state("")
     name, set_name = use_state("")
-    submitted_name, set_submitted_name = use_state("")
     _, set_deact_name = use_state("")
     _, set_activ_name = use_state("")
     print(name)
@@ -28,10 +27,9 @@ def page():
             set_epic_id,
             name,
             set_name,
-            set_submitted_name,
         ),
         Column(
-            Row(list_epic_areas(submitted_name)),
+            Row(list_epic_areas()),
         ),
         Row(deactivate_epic_area(set_deact_name)),
         Row(activate_epic_area(set_activ_name)),
@@ -44,7 +42,6 @@ def create_epic_area_form(
     set_epic_id,
     name,
     set_name,
-    set_submitted_name,
 ):
     """
     Create a form that allows admin to add a new epic area.
@@ -75,7 +72,6 @@ def create_epic_area_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
-        set_submitted_name(name)
 
     # Connect to active epics endpoint
     api_epic_name = f"{base_url}/api/epics/active"
@@ -109,7 +105,7 @@ def create_epic_area_form(
 
 
 @component
-def list_epic_areas(submitted_name):
+def list_epic_areas():
     """
     Return rows consisting of each epic area along with its epic.
 
