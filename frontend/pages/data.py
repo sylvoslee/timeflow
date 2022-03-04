@@ -209,6 +209,21 @@ def forecast_deletion(forecast_to_delete) -> bool:
     return True
 
 
+def rates_by_user_client_date(user_id: int, client_id: int, date: str) -> List[Dict]:
+    if user_id != "" and client_id != "" and date != "":
+        api = f"{base_url}/api/rates/users/{user_id}/clients/{client_id}/months/?date={date}"
+        response = requests.get(api)
+        rows = []
+        for item in response.json():
+            d = {
+                "valid from": item["valid_from"],
+                "valid_to": item["valid_to"],
+                "amount": item["amount"],
+            }
+            rows.append(d)
+        return rows
+
+
 def timelog_days() -> List[Dict]:
     days = [Select(value="", display_value="select days")]
     for item in timelog_days_list:

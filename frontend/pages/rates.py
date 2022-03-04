@@ -21,8 +21,10 @@ from pages.data import (
     forecast_by_user_epic_year_month,
     forecast_deletion,
     months_start,
+    rates_by_user_client_date,
 )
 
+from pages.utils import month_start_to_str, far_date, date_str_to_date
 from config import base_url
 
 
@@ -32,6 +34,7 @@ def page():
     client_id, set_client_id = use_state("")
     month_start, set_month_start = use_state("")
     amount, set_amount = use_state("")
+    updated_rate, set_updated_rate = use_state("")
     on_submit, set_on_submit = use_state(True)
     return Container(
         Row(
@@ -51,6 +54,7 @@ def page():
         Column(
             Row(rates_table(user_id, client_id, month_start)),
         ),
+        # Row(update_rate(set_updated_rate)),
     )
 
 
@@ -102,13 +106,8 @@ def create_rates_form(
         "is_active": true
         }
         """
-        ms = month_start
-        year = ms[:4]
-        month = ms[5:7]
-        day = ms[8:10]
-        ms_str = year + "-" + month + "-" + day
-        selected_date = datetime.strptime(ms_str, "%Y-%m-%d").date()
-        far_date = datetime.strptime("9999-12-31", "%Y-%m-%d").date()
+        ms_str = month_start_to_str(month_start)
+        selected_date = date_str_to_date(ms_str)
         to_rate(
             user_id=user_id,
             client_id=client_id,
@@ -137,7 +136,7 @@ def create_rates_form(
     inp_amount = Input(set_amount, label="amount in EUR")
 
     is_disabled = True
-    if user_id != "" and client_id != "" and month_start != "":
+    if user_id != "" and client_id != "" and month_start != "" and amount != "":
         is_disabled = False
 
     btn = SubmitButton(is_disabled, handle_submit)
@@ -160,17 +159,29 @@ def rates_table(user_id, client_id, month_start):
     Returns:
         list of filtered forecasts
     """
-    api = f"{base_url}/api/rates"
-    response = requests.get(api)
+    ms_str = month_start_to_str(month_start)
+    rows = rates_by_user_client_date(user_id=user_id, client_id=client_id, date=ms_str)
+    return html.div({"class": "flex w-full"}, SimpleTable(rows))
 
-    rows = []
-    for item in response.json():
-        d = {
-            "user id": item["id"],
-            "client_id": item["client_id"],
-            "valid_from": item["valid_from"],
-            "valid_to": item["valid_to"],
-            "amount": item["amount"],
-        }
-        rows.append(d)
-    return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
+
+# @component
+# def update_rate(set_updated_rate):
+#     rate_to_update, set_rate_to_update = ("")
+#     new_amount, set_new_amount = ("")
+
+#     def handle_delete(event):
+#         forecast_deletion(forecast_to_delete)
+#         set_deleted_forecast(forecast_to_delete)
+
+#     inp_forecast = Input(
+#         set_value=set_new_amount,
+#         label="forecast id to delete",
+#     )
+#     btn = html.button(
+#         {
+#             "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
+#             "onClick": handle_delete,
+#         },
+#         "Delete",
+#     )
+#     return Column(Row(inp_forecast), Row(btn))
