@@ -55,7 +55,7 @@ async def get_active_team_list(session: Session = Depends(get_session)):
     return results
 
 
-# Failed get request
+# Read the contents of a given team
 @router.get("/{team_name}")
 async def read_teams(team_name: str = None, session: Session = Depends(get_session)):
     statement = select(Team).where(Team.name == team_name)
