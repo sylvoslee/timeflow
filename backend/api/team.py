@@ -114,7 +114,7 @@ async def deactivate_team(
     return team_to_deactivate
 
 
-# Update teams
+# Update team
 @router.put("/")
 async def update_team(
     id: str = None,
