@@ -3,6 +3,7 @@
 import requests
 from config import base_url
 from typing import TypedDict
+from datetime import datetime
 
 
 class Select(TypedDict):
@@ -40,3 +41,20 @@ for h in hours:
     for q in quarters:
         hours = f"{h}:{q}"
         hours_list.append(hours)
+
+
+def month_start_to_str(month_start):
+    ms = month_start
+    year = ms[:4]
+    month = ms[5:7]
+    day = ms[8:10]
+    ms_str = year + "-" + month + "-" + day
+    return ms_str
+
+
+def date_str_to_date(date: str):
+    date_date = datetime.strptime(date, "%Y-%m-%d").date()
+    return date_date
+
+
+far_date = date_str_to_date("9999-12-31")
