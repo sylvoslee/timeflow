@@ -15,7 +15,9 @@ from config import base_url
 @component
 def page():
     name, set_name = use_state("")
+    submitted_name, set_submitted_name = use_state("")
     short_name, set_short_name = use_state("")
+    submitted_short_name, set_submitted_short_name = use_state("")
     client_id, set_client_id = use_state("")
     _, set_deact_name = use_state("")
     _, set_activ_name = use_state("")
@@ -28,9 +30,11 @@ def page():
             set_short_name,
             client_id,
             set_client_id,
+            set_submitted_name,
+            set_submitted_short_name,
         ),
         Column(
-            Row(list_sponsors()),
+            Row(list_sponsors(submitted_name, submitted_short_name)),
         ),
         Row(deactivate_sponsor(set_deact_name)),
         Row(activate_sponsor(set_activ_name)),
@@ -45,6 +49,8 @@ def create_sponsor_form(
     set_short_name,
     client_id,
     set_client_id,
+    set_submitted_name,
+    set_submitted_short_name,
 ):
     """
     Create a form that allows admin to add a new sponsor.
@@ -76,6 +82,8 @@ def create_sponsor_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
+        set_submitted_name(name)
+        set_submitted_short_name(short_name)
 
     inp_name = Input(set_value=set_name, label="name of the sponsor")
     inp_short_name = Input(set_value=set_short_name, label="short name of the sponsor")
@@ -114,7 +122,7 @@ def create_sponsor_form(
 
 
 @component
-def list_sponsors():
+def list_sponsors(submitted_name, submitted_short_name):
     """
     Return rows consisting of each sponsor along with its client.
 
