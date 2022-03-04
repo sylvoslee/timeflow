@@ -14,7 +14,9 @@ from config import base_url
 @component
 def page():
     name, set_name = use_state("")
+    submitted_name, set_submitted_name = use_state("")
     short_name, set_short_name = use_state("")
+    submitted_short_name, set_submitted_short_name = use_state("")
     user_id, set_user_id = use_state("")
     _, set_deact_name = use_state("")
     _, set_activ_name = use_state("")
@@ -27,9 +29,11 @@ def page():
             set_short_name,
             user_id,
             set_user_id,
+            set_submitted_name,
+            set_submitted_short_name,
         ),
         Column(
-            Row(list_teams()),
+            Row(list_teams(submitted_name, submitted_short_name)),
         ),
         Row(deactivate_team(set_deact_name)),
         Row(activate_team(set_activ_name)),
@@ -44,6 +48,8 @@ def create_team_form(
     set_short_name,
     user_id,
     set_user_id,
+    set_submitted_name,
+    set_submitted_short_name,
 ):
     """
     Create a form that allows admin to add a new team.
@@ -75,6 +81,8 @@ def create_team_form(
             data=json.dumps(data),
             headers={"accept": "application/json", "Content-Type": "application/json"},
         )
+        set_submitted_name(name)
+        set_submitted_short_name(short_name)
 
     inp_name = Input(set_value=set_name, label="name of the team")
 
@@ -112,7 +120,7 @@ def create_team_form(
 
 
 @component
-def list_teams():
+def list_teams(submitted_name, submitted_short_name):
     """
     Return rows consisting of each team along with its leader (user).
 
