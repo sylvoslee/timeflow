@@ -1,4 +1,5 @@
 import datetime
+from datetime import datetime
 from sqlmodel import Session, select, SQLModel, create_engine
 from backend.models.user import User
 import sqlite3
@@ -87,3 +88,11 @@ def time_period(time_of_start, time_of_end):
     ending_time = string_to_datetime_work(time_of_end)
     working_time = ending_time - starting_time
     return working_time
+
+
+def date_str_to_date(date: str):
+    date_date = datetime.strptime(date, "%Y-%m-%d").date()
+    return date_date
+
+
+far_date = date_str_to_date("9999-12-31")
