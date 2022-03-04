@@ -45,7 +45,7 @@ async def get_active_sponsor_list(session: Session = Depends(get_session)):
             Sponsor.id,
             Sponsor.client_id,
             Sponsor.name.label("sponsor_name"),
-            Sponsor.short_name.label("sponsor_short_name")
+            Sponsor.short_name.label("sponsor_short_name"),
             Client.name.label("client_name"),
         )
         .join(Client)
