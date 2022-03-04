@@ -44,7 +44,7 @@ def Dropdown(current_page, set_current_page):
         anchors = []
         for item in ["Users", "Epics", "Epic Areas", "Clients", "Teams", "Rates"]:
             anchors.append(html.a({"class": aclass}, item))
-
+        pages = ["Users", "Epics", "Epic Areas", "Teams", "Clients", "Rates"]
         return html.div(
             {"class": "relative"},
             btn,
