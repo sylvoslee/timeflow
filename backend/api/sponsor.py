@@ -104,7 +104,7 @@ async def deactivate_sponsor(
     session: Session = Depends(get_session),
 ):
     statement = select(Sponsor).where(Sponsor.name == sponsor_name)
-    sponsor_to_deactivate = session.exec(statement).one9)
+    sponsor_to_deactivate = session.exec(statement).one()
     sponsor_to_deactivate.is_active = False
     sponsor_to_deactivate.updated_on = datetime.now()
     session.add(sponsor_to_deactivate)
