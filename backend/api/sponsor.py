@@ -27,3 +27,110 @@ async def post_sponsor(
         session.commit()
         session.refresh(sponsor)
         return sponsor
+
+
+# Get entire sponsor list (enabled and disabled)
+@router.get("/")
+async def get_sponsor_list(session: Session = Depends(get_session)):
+    statement = select(Sponsor)
+    results = session.exec(statement).all()
+    return results
+
+
+# Get list of active sponsors along with name of client
+@router.get("/active")
+async def get_active_sponsor_list(session: Session = Depends(get_session)):
+    statement = (
+        select(
+            Sponsor.id,
+            Sponsor.client_id,
+            Sponsor.name.label("sponsor_name"),
+            Client.name.label("client_name"),
+        )
+        .join(Client)
+        .where(Sponsor.client_id == Client.id)
+        .where(Sponsor.is_active == True)
+    )
+    results = session.exec(statement).all()
+    return results
+
+
+# Read the contents of a given sponsor
+@router.get("/{sponsor_name}")
+async def read_teams(sponsor_name: str = None, session: Session = Depends(get_session)):
+    statement = select(Sponsor).where(Sponsor.name == sponsor_name)
+    try:
+        result = session.exec(statement).one()
+        return result
+    except NoResultFound:
+        msg = f"""There is no sponsor named {sponsor_name}"""
+
+
+# Get client name by sponsor id
+@router.get("/{sponsor_id}/client-name")
+async def get_client_name_by_sponsor_id(
+    sponsor_id: int, session: Session = Depends(get_session)
+):
+    statement = (
+        select(Sponsor.id, Client.id, Client.name)
+        .join(Client)
+        .where(Sponsor.id == sponsor_id)
+        .where(Client.active == True)
+    )
+    result = session.exec(statement).one()
+    return result
+
+
+# Activate sponsor
+@router.put("/{sponsor_name}/activate")
+async def activate_sponsor(
+    sponsor_name: str = None,
+    session: Session = Depends(get_session),
+):
+    statement = select(Sponsor).where(Sponsor.name == sponsor_name)
+    sponsor_to_activate = session.exec(statement).one()
+    sponsor_to_activate.is_active = True
+    sponsor_to_activate.updated_at = datetime.now()
+    session.add(sponsor_to_activate)
+    session.commit()
+    session.refresh(sponsor_to_activate)
+    return sponsor_to_activate
+
+
+# Deactivate sponsor
+@router.put("/{sponsor_name}/deactivate")
+async def deactivate_sponsor(
+    sponsor_name: str = None,
+    session: Session = Depends(get_session),
+):
+    statement = select(Sponsor).where(Sponsor.name == sponsor_name)
+    sponsor_to_deactivate = session.exec(statement).one9)
+    sponsor_to_deactivate.is_active = False
+    sponsor_to_deactivate.updated_on = datetime.now()
+    session.add(sponsor_to_deactivate)
+    session.commit()
+    session.refresh(sponsor_to_deactivate)
+    return sponsor_to_deactivate
+
+
+# Update sponsor
+@router.put("/")
+async def update_sponsor(
+    id: int = None,
+    client_id: int = None,
+    name: str = None,
+    short_name: str = None,
+    is_active: bool = None,
+    session: Session = Depends(get_session),
+):
+    statement = select(Sponsor).where(or_(Sponsor.name == name, Sponsor.id == id))
+    sponsor_to_update = session.exec(statement).one()
+    sponsor_to_update.client_id = client_id
+    sponsor_to_update.name = name
+    sponsor_to_update.short_name = short_name
+    sponsor_to_update.is_active = is_active
+    session.add(sponsor_to_update)
+    sponsor_to_update.updated_at = datetime.now()
+    session.commit()
+    session.refresh(sponsor_to_update)
+    return sponsor_to_update
