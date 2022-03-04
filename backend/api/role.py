@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from ..utils import engine, get_session
-from sqlmodel import Session, select, SQLModel
+from sqlmodel import Session, select, SQLModel, or_
 from sqlalchemy.exc import NoResultFound
 from ..models.role import Role
 from datetime import datetime
@@ -73,17 +73,17 @@ async def deactivate_role(
 @router.put("/")
 async def update_role(
     id: str = None,
-    user_id: str = None,
     new_name: str = None,
     new_short_name: str = None,
     is_active: bool = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(Role).where(or_(Role.name == name, Role.id == id))
+    statement = select(Role).where(Role.id == id)
     role_to_update = session.exec(statement).one()
-    role_to_update.user_id = user_id
-    role_to_update.name = new_name
-    role_to_update.short_name = new_short_name
+    if new_name != None:
+        role_to_update.name = new_name
+    if new_short_name != None:
+        role_to_update.short_name = new_short_name
     role_to_update.is_active = is_active
     session.add(role_to_update)
     role_to_update.updated_at = datetime.now()
