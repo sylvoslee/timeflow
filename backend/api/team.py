@@ -67,7 +67,7 @@ async def read_teams(team_name: str = None, session: Session = Depends(get_sessi
         return msg
 
 
-# Get use name by team id
+# Get user name by team id
 @router.get("/{team_id}/user-name")
 async def get_user_name_by_team_id(
     team_id: int, session: Session = Depends(get_session)
