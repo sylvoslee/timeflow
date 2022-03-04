@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from ..utils import engine, get_session
+from ..utils import engine, get_session, far_date, date_str_to_date
 from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import NoResultFound
 from ..models.rate import Rate
@@ -15,16 +15,15 @@ async def rate(
     rate: Rate,
     session: Session = Depends(get_session),
 ):
-    statement = (
+    statement1 = (
         select(Rate)
         .where(Rate.user_id == rate.user_id)
         .where(Rate.client_id == rate.client_id)
         .where(Rate.valid_from >= rate.valid_from)
     )
 
-    far_date = datetime.strptime("9999-12-31", "%Y-%m-%d").date()
-    delta1 = timedelta(days=1)
-    new_date = rate.valid_from - delta1
+    one_day_delta = timedelta(days=1)
+    close_date = rate.valid_from - one_day_delta
     statement2 = (
         select(Rate)
         .where(Rate.user_id == rate.user_id)
@@ -32,13 +31,14 @@ async def rate(
         .where(Rate.valid_to == far_date)
     )
     try:
-        result = session.exec(statement).one()
+        result = session.exec(statement1).one()
         return False
     except NoResultFound:
         try:
             rate_to_close = session.exec(statement2).one()
-            rate_to_close.valid_to = new_date
+            rate_to_close.valid_to = close_date
             rate_to_close.updated_at = datetime.now()
+            rate_to_close.is_active = False
             session.add(rate_to_close)
             session.add(rate)
             session.commit()
@@ -55,6 +55,25 @@ async def read_rates(
     session: Session = Depends(get_session),
 ):
     statement = select(Rate)
+    result = session.exec(statement).all()
+    return result
+
+
+@router.get("/users/{user_id}/clients/{client_id}/months/")
+async def rates_by_user_client_date(
+    user_id: int,
+    client_id: int,
+    date: str,
+    session: Session = Depends(get_session),
+):
+    month_start_date = date_str_to_date(date)
+    statement = (
+        select(Rate)
+        .where(Rate.user_id == user_id)
+        .where(Rate.client_id == client_id)
+        .where(Rate.valid_from <= month_start_date)
+        .where(Rate.valid_to > month_start_date)
+    )
     result = session.exec(statement).all()
     return result
 
@@ -96,14 +115,17 @@ async def deactivate_rate_id(
 async def update_rates(
     user_id: str = None,
     client_id: str = None,
-    new_daily_value: str = None,
+    new_amount: str = None,
     session: Session = Depends(get_session),
 ):
     statement = (
-        select(Rate).where(Rate.user_id == user_id).where(Rate.client_id == client_id)
+        select(Rate)
+        .where(Rate.user_id == user_id)
+        .where(Rate.client_id == client_id)
+        .where(Rate.is_active == True)
     )
     rate_to_update = session.exec(statement).one()
-    rate_to_update.daily_value = new_daily_value
+    rate_to_update.amount = new_amount
     session.add(rate_to_update)
     session.commit()
     session.refresh(rate_to_update)
