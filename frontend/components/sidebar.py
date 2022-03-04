@@ -42,9 +42,9 @@ def Dropdown(current_page, set_current_page):
                     focus:outline-none focus:shadow-outline
                 """
         anchors = []
-        for item in ["Users", "Epics", "Epic Areas", "Teams", "Clients"]:
+        for item in ["Users", "Epics", "Epic Areas", "Teams", "Sponsors", "Clients"]:
             anchors.append(html.a({"class": aclass}, item))
-        pages = ["Users", "Epics", "Epic Areas", "Teams", "Clients"]
+        pages = ["Users", "Epics", "Epic Areas", "Teams", "Sponsors", "Clients"]
         return html.div(
             {"class": "relative"},
             btn,
