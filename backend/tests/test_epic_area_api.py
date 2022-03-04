@@ -14,7 +14,7 @@ def test_post_epic_area(client):
         json={
             "epic_id": 1,
             "name": "graphics",
-            "active": True,
+            "is_active": True,
         },
     )
     data = response.json()
@@ -23,7 +23,7 @@ def test_post_epic_area(client):
         "id": 1,
         "epic_id": 1,
         "name": "graphics",
-        "active": True,
+        "is_active": True,
     }
 
 
@@ -35,19 +35,19 @@ def test_read_epic_areas(client):
         "id": 1,
         "epic_id": 1,
         "name": "graphics",
-        "active": True,
+        "is_active": True,
     }
 
 
 def test_update_epic_area(client):
-    response = client.put("api/epics/?id=1&name=graphics&active=True&new_epic_id=2")
+    response = client.put("api/epics/?id=1&name=graphics&is_active=True&new_epic_id=2")
     data = response.json()
     assert response.status_code == 200
     assert data == {
         "id": 1,
         "epic_id": 2,
         "name": "graphics",
-        "active": True,
+        "is_active": True,
     }
 
 
@@ -60,7 +60,7 @@ def test_get_epic_list(client):
             "id": 1,
             "epic_id": 2,
             "name": "graphics",
-            "active": True,
+            "is_active": True,
         }
     ]
 

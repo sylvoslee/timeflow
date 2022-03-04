@@ -3,12 +3,13 @@ from sqlmodel import Field, SQLModel
 from datetime import datetime
 
 
-class EpicArea(SQLModel, table=True):
-    """Create an SQLModel for epic areas"""
+class Team(SQLModel, table=True):
+    """Create an SQLModel for teams"""
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    epic_id: int = Field(foreign_key="epic.id")
+    user_id: int = Field(foreign_key="user.id")
     name: str
+    short_name: str
     is_active: bool
     created_at: datetime
     updated_at: datetime
