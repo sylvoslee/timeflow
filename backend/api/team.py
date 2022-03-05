@@ -48,14 +48,13 @@ async def get_active_team_list(session: Session = Depends(get_session)):
             User.name.label("user_name"),
         )
         .join(User)
-        .where(Team.user_id == User.id)
         .where(Team.is_active == True)
     )
     results = session.exec(statement).all()
     return results
 
 
-# Failed get request
+# Read the contents of a given team
 @router.get("/{team_name}")
 async def read_teams(team_name: str = None, session: Session = Depends(get_session)):
     statement = select(Team).where(Team.name == team_name)
@@ -67,7 +66,7 @@ async def read_teams(team_name: str = None, session: Session = Depends(get_sessi
         return msg
 
 
-# Get use name by team id
+# Get user name by team id
 @router.get("/{team_id}/user-name")
 async def get_user_name_by_team_id(
     team_id: int, session: Session = Depends(get_session)
@@ -114,7 +113,7 @@ async def deactivate_team(
     return team_to_deactivate
 
 
-# Update teams
+# Update team
 @router.put("/")
 async def update_team(
     id: str = None,
