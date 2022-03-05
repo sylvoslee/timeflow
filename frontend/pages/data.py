@@ -6,8 +6,10 @@ from pages.utils import (
     forecast_days_list,
     timelog_days_list,
     hours_list,
+    month_start_list,
 )
 import json
+from datetime import datetime
 
 
 class Select(TypedDict):
@@ -32,6 +34,17 @@ class Timelog(TypedDict):
     count_days: float
     month: int
     year: int
+
+
+class Rate(TypedDict):
+    user_id: int
+    client_id: int
+    valid_from: str
+    valid_to: str
+    amount: float
+    created_at: datetime
+    updated_at: datetime
+    is_active: bool
 
 
 def to_timelog(
@@ -78,6 +91,44 @@ def to_forecast(user_id: int, epic_id: int, month: str, year: str, days: int) ->
     )
     return True
 
+    # user_id=user_id,
+    # client_id=client_id,
+    # valid_from=str(selected_date),
+    # valid_to=str(far_date),
+    # amount=amount,
+    # created_at=str(datetime.now()),
+    # updated_at=str(datetime.now()),
+    # is_active=True,
+
+
+def to_rate(
+    user_id: int,
+    client_id: int,
+    valid_from: str,
+    valid_to: str,
+    amount: float,
+    created_at: str,
+    updated_at: str,
+    is_active: bool,
+) -> bool:
+    data = Rate(
+        user_id=user_id,
+        client_id=client_id,
+        valid_from=valid_from,
+        valid_to=valid_to,
+        amount=amount,
+        created_at=created_at,
+        updated_at=updated_at,
+        is_active=True,
+    )
+    print(data)
+    response = requests.post(
+        f"{base_url}/api/rates",
+        data=json.dumps(dict(data)),
+        headers={"accept": "application/json", "Content-Type": "application/json"},
+    )
+    return True
+
 
 def username() -> List[Select]:
     api_username = f"{base_url}/api/users"
@@ -97,6 +148,16 @@ def epics_names() -> List[Select]:
         d = Select(value=item["id"], display_value=item["name"])
         epic_name_rows.append(d)
     return epic_name_rows
+
+
+def clients_names() -> List[Select]:
+    api_client_name = f"{base_url}/api/clients/active"
+    response_client_name = requests.get(api_client_name)
+    client_name_rows = [Select(value="", display_value="select client")]
+    for item in response_client_name.json():
+        d = Select(value=item["id"], display_value=item["name"])
+        client_name_rows.append(d)
+    return client_name_rows
 
 
 def client_name_by_epic_id(epic_id) -> Select:
@@ -148,6 +209,43 @@ def forecast_deletion(forecast_to_delete) -> bool:
     return True
 
 
+def rates_by_user_client_date(user_id: int, client_id: int, date: str) -> List[Dict]:
+    if user_id != "" and client_id != "" and date != "":
+        api = f"{base_url}/api/rates/users/{user_id}/clients/{client_id}/months/?date={date}"
+        response = requests.get(api)
+        rows = []
+        for item in response.json():
+            d = {
+                "valid from": item["valid_from"],
+                "valid_to": item["valid_to"],
+                "amount": item["amount"],
+            }
+            rows.append(d)
+        return rows
+
+
+def rate_active_by_user_client(user_id: int, client_id: int) -> List[Dict]:
+    api = f"{base_url}/api/rates/users/{user_id}/clients/{client_id}/active"
+    print(api)
+    response = requests.get(api)
+    print(response)
+    rows = []
+    for item in response.json():
+        d = {
+            "valid from": item["valid_from"],
+            "valid_to": item["valid_to"],
+            "amount": item["amount"],
+        }
+        rows.append(d)
+    return rows
+
+
+def rate_update(user_id: int, client_id: int, new_amount: float):
+    api = f"{base_url}/api/rates/?user_id={user_id}&client_id={client_id}&new_amount={new_amount}"
+    response = requests.put(api)
+    return True
+
+
 def timelog_days() -> List[Dict]:
     days = [Select(value="", display_value="select days")]
     for item in timelog_days_list:
@@ -162,3 +260,11 @@ def hours() -> List[Dict]:
         d = Select(value=item, display_value=item)
         hours.append(d)
     return hours
+
+
+def months_start() -> List[Dict]:
+    months = [Select(value="", display_value="select start date")]
+    for item in month_start_list:
+        d = Select(value=item, display_value=item)
+        months.append(d)
+    return months
