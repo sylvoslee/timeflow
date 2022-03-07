@@ -8,12 +8,12 @@ router = APIRouter(prefix="/api/users", tags=["user"])
 session = Session(engine)
 
 
-# Post new user
 @router.post("/")
 async def post_user(
     user: User,
     session: Session = Depends(get_session),
 ):
+    """Post new user"""
     statement = select(User).where(
         or_(User.username == user.username, User.id == user.id)
     )
@@ -27,29 +27,29 @@ async def post_user(
         return user
 
 
-# get all users list
 @router.get("/")
 async def get_users(session: Session = Depends(get_session)):
+    """Get list of all users"""
     statement = select(User)
     result = session.exec(statement).all()
     return result
 
 
-# get user by id
 @router.get("/{user_id}")
 async def get_users(user_id, session: Session = Depends(get_session)):
+    """Get user by id"""
     statement = select(User).where(User.id == user_id)
     result = session.exec(statement).one()
     return result
 
 
-# Update user email
 @router.put("/")
 async def update_user(
     username: str = None,
     email: str = None,
     session: Session = Depends(get_session),
 ):
+    """Update user email"""
     statement = select(User).where(User.username == username)
     user_to_update = session.exec(statement).one()
     user_to_update.email = email
@@ -59,9 +59,9 @@ async def update_user(
     return user_to_update
 
 
-# Delete users
 @router.delete("/")
 async def delete_user(username: str = None, session: Session = Depends(get_session)):
+    """Delete users"""
     statement = select(User).where(User.username == username)
     results = session.exec(statement)
     user_to_delete = results.one()

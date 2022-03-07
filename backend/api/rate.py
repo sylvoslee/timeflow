@@ -9,12 +9,12 @@ router = APIRouter(prefix="/api/rates", tags=["rate"])
 session = Session(engine)
 
 
-# Post new rate
 @router.post("/")
 async def rate(
     rate: Rate,
     session: Session = Depends(get_session),
 ):
+    """Post new rate"""
     statement1 = (
         select(Rate)
         .where(Rate.user_id == rate.user_id)
@@ -49,11 +49,11 @@ async def rate(
             return True
 
 
-# Get rate
 @router.get("/")
 async def read_rates(
     session: Session = Depends(get_session),
 ):
+    """Get all rates"""
     statement = select(Rate)
     result = session.exec(statement).all()
     return result
@@ -65,6 +65,7 @@ async def read_active_rate(
     client_id: int,
     session: Session = Depends(get_session),
 ):
+    """Get an active rate from a given user_id and client_id"""
     statement = (
         select(Rate)
         .where(Rate.user_id == user_id)
@@ -82,6 +83,7 @@ async def rates_by_user_client_date(
     date: str,
     session: Session = Depends(get_session),
 ):
+    """Get rates from a certain date."""
     month_start_date = date_str_to_date(date)
     statement = (
         select(Rate)
@@ -94,12 +96,12 @@ async def rates_by_user_client_date(
     return result
 
 
-# Activate rate
 @router.put("/{rate_id}/activate")
 async def activate_rate(
     rate_id: str,
     session: Session = Depends(get_session),
 ):
+    """Activate a rate from a given rate_id."""
     statement = select(Rate).where(Rate.id == rate_id)
     rate_to_activate = session.exec(statement).one()
     rate_to_activate.is_active = True
@@ -110,12 +112,12 @@ async def activate_rate(
     return rate_to_activate
 
 
-# Deactivate rate
 @router.put("/{rate_id}/deactivate")
 async def deactivate_rate_id(
     rate_id: str = None,
     session: Session = Depends(get_session),
 ):
+    """Deactivate a rate from a given rate_id."""
     statement = select(Rate).where(Rate.id == rate_id)
     rate_id_to_deactivate = session.exec(statement).one()
     rate_id_to_deactivate.is_active = False
@@ -126,7 +128,6 @@ async def deactivate_rate_id(
     return rate_id_to_deactivate
 
 
-# Update rates
 @router.put("/")
 async def update_rates(
     user_id: str = None,
@@ -134,6 +135,7 @@ async def update_rates(
     new_amount: str = None,
     session: Session = Depends(get_session),
 ):
+    """Update a rate."""
     statement = (
         select(Rate)
         .where(Rate.user_id == user_id)

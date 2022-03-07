@@ -16,9 +16,7 @@ async def post_team(
     team: Team,
     session: Session = Depends(get_session),
 ):
-    """
-    Post new team
-    """
+    """Post new team"""
     statement = select(Team).where(or_(Team.name == team.name, Team.id == team.id))
     try:
         result = session.exec(statement).one()
@@ -32,9 +30,7 @@ async def post_team(
 
 @router.get("/")
 async def get_team_list(session: Session = Depends(get_session)):
-    """
-    Get team list
-    """
+    """Get team list"""
     statement = select(Team)
     results = session.exec(statement).all()
     return results
@@ -42,9 +38,7 @@ async def get_team_list(session: Session = Depends(get_session)):
 
 @router.get("/active")
 async def get_active_team_list(session: Session = Depends(get_session)):
-    """
-    Get list of active teams
-    """
+    """Get list of active teams"""
     statement = (
         select(
             Team.id,
@@ -63,9 +57,7 @@ async def get_active_team_list(session: Session = Depends(get_session)):
 
 @router.get("/{team_name}")
 async def read_teams(team_name: str = None, session: Session = Depends(get_session)):
-    """
-    Read the contents of a given team
-    """
+    """Read the contents of a given team"""
     statement = select(Team).where(Team.name == team_name)
     try:
         result = session.exec(statement).one()
@@ -79,9 +71,7 @@ async def read_teams(team_name: str = None, session: Session = Depends(get_sessi
 async def get_user_name_by_team_id(
     team_id: int, session: Session = Depends(get_session)
 ):
-    """
-    Get user name by team id
-    """
+    """Get user name by team id"""
     statement = (
         select(Team.id, User.id, User.name)
         .join(User)
@@ -97,9 +87,7 @@ async def activate_team(
     team_name: str = None,
     session: Session = Depends(get_session),
 ):
-    """
-    Activate team
-    """
+    """Activate team"""
     statement = select(Team).where(Team.name == team_name)
     team_to_activate = session.exec(statement).one()
     team_to_activate.is_active = True
@@ -115,9 +103,7 @@ async def deactivate_team(
     team_name: str = None,
     session: Session = Depends(get_session),
 ):
-    """
-    Deactivate team
-    """
+    """Deactivate team"""
     statement = select(Team).where(Team.name == team_name)
     team_to_deactivate = session.exec(statement).one()
     team_to_deactivate.is_active = False
@@ -128,7 +114,6 @@ async def deactivate_team(
     return team_to_deactivate
 
 
-# Update team
 @router.put("/")
 async def update_team(
     id: str = None,
@@ -137,9 +122,7 @@ async def update_team(
     is_active: bool = None,
     session: Session = Depends(get_session),
 ):
-    """
-    Update team
-    """
+    """Update team"""
     statement = select(Team).where(or_(Team.name == name, Team.id == id))
     team_to_update = session.exec(statement).one()
     team_to_update.user_id = user_id

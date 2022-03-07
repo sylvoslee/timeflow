@@ -16,9 +16,7 @@ async def post_epic_area(
     epic_area: EpicArea,
     session: Session = Depends(get_session),
 ):
-    """
-    Post new epic area
-    """
+    """Post new epic area"""
     statement1 = select(EpicArea).where(
         or_(EpicArea.name == epic_area.name, EpicArea.id == epic_area.id)
     )
@@ -34,9 +32,7 @@ async def post_epic_area(
 
 @router.get("/")
 async def get_epic_area_list(session: Session = Depends(get_session)):
-    """
-    Get epic area list
-    """
+    """Get epic area list"""
     statement = select(EpicArea)
     results = session.exec(statement).all()
     return results
@@ -44,9 +40,7 @@ async def get_epic_area_list(session: Session = Depends(get_session)):
 
 @router.get("/active")
 async def get_active_epic_area_list(session: Session = Depends(get_session)):
-    """
-    Get list of active epic areas along with name of epic
-    """
+    """Get list of active epic areas along with name of epic"""
     statement = (
         select(
             EpicArea.id,
@@ -66,9 +60,7 @@ async def get_active_epic_area_list(session: Session = Depends(get_session)):
 async def read_epic_areas(
     epic_area_name: str = None, session: Session = Depends(get_session)
 ):
-    """
-    Read a single epic area using a given epic area name.
-    """
+    """Read a single epic area using a given epic area name."""
     statement = select(EpicArea).where(EpicArea.name == epic_area_name)
     try:
         result = session.exec(statement).one()
@@ -82,9 +74,7 @@ async def read_epic_areas(
 async def get_epic_name_by_epic_area_id(
     epic_area_id: int, session: Session = Depends(get_session)
 ):
-    """
-    Get epic name by epic area id
-    """
+    """Get epic name by epic area id"""
     statement = (
         select(EpicArea.id, Epic.id, Epic.name)
         .join(Epic)
@@ -100,9 +90,7 @@ async def activate_epic_area(
     epic_area_name: str = None,
     session: Session = Depends(get_session),
 ):
-    """
-    Activate epic area
-    """
+    """Activate epic area"""
     statement = select(EpicArea).where(EpicArea.name == epic_area_name)
     epic_area_to_activate = session.exec(statement).one()
     epic_area_to_activate.is_active = True
@@ -118,9 +106,7 @@ async def deactivate_epic_area(
     epic_area_name: str = None,
     session: Session = Depends(get_session),
 ):
-    """
-    Deactivate epic area
-    """
+    """Deactivate epic area"""
     statement = select(EpicArea).where(EpicArea.name == epic_area_name)
     epic_area_to_deactivate = session.exec(statement).one()
     epic_area_to_deactivate.is_active = False
@@ -139,9 +125,7 @@ async def update_epic(
     is_active: bool = None,
     session: Session = Depends(get_session),
 ):
-    """
-    Update an epic area
-    """
+    """Update an epic area"""
     statement = select(EpicArea).where(or_(EpicArea.name == name, EpicArea.id == id))
     epic_area_to_update = session.exec(statement).one()
     epic_area_to_update.epic_id = epic_id
