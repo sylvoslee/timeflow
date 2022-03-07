@@ -15,6 +15,7 @@ from backend.api import (
     rate,
     team,
     role,
+    sponsor,
 )
 import pandas as pd
 from pandas import Timestamp
@@ -33,6 +34,7 @@ app.include_router(client.router)
 app.include_router(rate.router)
 app.include_router(team.router)
 app.include_router(role.router)
+app.include_router(sponsor.router)
 
 
 @app.on_event("startup")

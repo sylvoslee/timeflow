@@ -1,4 +1,3 @@
-import datetime
 from datetime import datetime
 from sqlmodel import Session, select, SQLModel, create_engine
 from backend.models.user import User
@@ -40,6 +39,10 @@ tags_metadata = [
         "description": "operations with teams",
     },
     {
+        "name": "sponsor",
+        "description": "operations with sponsors",
+    },
+    {
         "name": "client",
         "description": "operations with clients",
     },
@@ -59,22 +62,22 @@ tags_metadata = [
 
 
 def string_to_datetime(date_string):
-    date = datetime.datetime.strptime(date_string, "%Y-%m-%d %H:%M")
+    date = datetime.strptime(date_string, "%Y-%m-%d %H:%M")
     return date
 
 
 def string_to_datetime_hm(date_string):
-    date = datetime.datetime.strptime(date_string, "%H:%M")
+    date = datetime.strptime(date_string, "%H:%M")
     return date
 
 
 def string_to_datetime_GMT(date_string):
-    date = datetime.datetime.strptime(date_string, "%a %b %d %Y %H:%M:%S %Z%z")
+    date = datetime.strptime(date_string, "%a %b %d %Y %H:%M:%S %Z%z")
     return date
 
 
 def string_to_datetime_work(date_string):
-    date = datetime.datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
+    date = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%S.%fZ")
     return date
 
 

@@ -14,16 +14,12 @@ from components.table import SimpleTable
 from components.controls import SubmitButton
 from pages.data import (
     clients_names,
-    client_name_by_epic_id,
-    username,
-    year_month_dict_list,
     to_rate,
-    forecast_by_user_epic_year_month,
-    forecast_deletion,
     months_start,
     rates_by_user_client_date,
     rate_active_by_user_client,
     rate_update,
+    username,
 )
 
 from pages.utils import month_start_to_str, far_date, date_str_to_date
@@ -73,26 +69,6 @@ def create_rates_form(
     on_submit,
     set_on_submit,
 ):
-    """Generates forecast form to submit forecasts and filter forecast by month user and epic
-
-    Args:
-        year_month (str): the year_month combined for which the forecast is for
-        set_year_month (_type_): function to update year_month state
-        days (int): number of forecasted days
-        set_days (_type_): function to update days state
-        user_id (int): the user id for which the forecast is for
-        set_user_id (_type_): function to update user_id state
-        epic_id (str): the epic id for which the forecast is for
-        set_epic_id (_type_): function to update epic_id state
-        client_id (int): the client id for which the forecast is for
-        set_client_id (_type_): function to update client_id state
-        on_submit (bool): to be switched on submit, triggering render by state change
-        set_on_submit (_type_): function to update on_submit state
-
-    Returns:
-        _type_: _description_
-    """
-
     @event(prevent_default=True)
     async def handle_submit(event):
         """
@@ -151,16 +127,6 @@ def create_rates_form(
 
 @component
 def rates_table(user_id, client_id, month_start):
-    """Generates a table component with forecast days by year and month
-
-    Args:
-        user_id (int): the id of the user for which the forecast is for
-        epic_id (int): the id of the epic for which the forecast is for
-        year_month (str): the year_month combined for which the forecast is for
-
-    Returns:
-        list of filtered forecasts
-    """
     # Get list of rates by selected user and client containing selected date
     ms_str = month_start_to_str(month_start)
     if user_id != "" and client_id != "" and month_start != "":
