@@ -16,7 +16,7 @@ def team_activation(name_to_activ) -> bool:
     return True
 
 
-def to_team(name: str, short_name: str, user_id: int):
+def post_team(name: str, short_name: str, user_id: int):
     data = {
         "name": name,
         "short_name": short_name,

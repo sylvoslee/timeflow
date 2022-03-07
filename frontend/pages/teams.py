@@ -7,7 +7,12 @@ from components.layout import Row, Column, Container
 from components.table import SimpleTable
 
 from data.common import submit_button
-from data.teams import team_deactivation, team_activation, to_team, get_active_team_rows
+from data.teams import (
+    team_deactivation,
+    team_activation,
+    post_team,
+    get_active_team_rows,
+)
 from data.users import user_dropdown
 
 
@@ -67,7 +72,7 @@ def create_team_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         """Call a post request for the given team when given event is triggered."""
-        to_team(name, short_name, user_id)
+        post_team(name, short_name, user_id)
 
         # Change the states
         set_submitted_name(name)
@@ -82,6 +87,7 @@ def create_team_form(
     # Create a dropdown of users which can then be selected
     selector_user_name = user_dropdown(set_user_id)
 
+    # Create submit button
     btn = submit_button(event_handler=handle_submit)
 
     return Column(
