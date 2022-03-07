@@ -12,7 +12,6 @@ from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import SubmitButton
 from pages.data.data import (
-    epics_names,
     client_name_by_epic_id,
     username,
     year_month_dict_list,
@@ -24,6 +23,8 @@ from pages.data.forecasts import (
     to_forecast,
     forecast_deletion,
 )
+
+from pages.data.epics import epics_names
 
 from config import base_url
 

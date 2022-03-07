@@ -25,16 +25,6 @@ def username() -> List[Select]:
     return username_rows
 
 
-def epics_names() -> List[Select]:
-    api_epic_name = f"{base_url}/api/epics/active"
-    response_epic_name = requests.get(api_epic_name)
-    epic_name_rows = [Select(value="", display_value="select epic")]
-    for item in response_epic_name.json():
-        d = Select(value=item["id"], display_value=item["name"])
-        epic_name_rows.append(d)
-    return epic_name_rows
-
-
 def clients_names() -> List[Select]:
     api_client_name = f"{base_url}/api/clients/active"
     response_client_name = requests.get(api_client_name)

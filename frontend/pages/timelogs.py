@@ -19,11 +19,11 @@ from components.table import SimpleTable
 from pages.data.data import (
     year_month_dict_list,
     username,
-    epics_names,
     hours,
 )
 
 from pages.data.timelogs import Timelog, timelog_days, to_timelog
+from pages.data.epics import epics_names
 
 from config import base_url
 
