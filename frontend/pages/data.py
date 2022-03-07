@@ -47,6 +47,14 @@ class Rate(TypedDict):
     is_active: bool
 
 
+class Role(TypedDict):
+    short_name: str
+    name: str
+    created_at: datetime
+    updated_at: datetime
+    is_active: bool
+
+
 def to_timelog(
     start_time: str,
     end_time: str,
@@ -91,15 +99,6 @@ def to_forecast(user_id: int, epic_id: int, month: str, year: str, days: int) ->
     )
     return True
 
-    # user_id=user_id,
-    # client_id=client_id,
-    # valid_from=str(selected_date),
-    # valid_to=str(far_date),
-    # amount=amount,
-    # created_at=str(datetime.now()),
-    # updated_at=str(datetime.now()),
-    # is_active=True,
-
 
 def to_rate(
     user_id: int,
@@ -121,9 +120,30 @@ def to_rate(
         updated_at=updated_at,
         is_active=True,
     )
-    print(data)
     response = requests.post(
         f"{base_url}/api/rates",
+        data=json.dumps(dict(data)),
+        headers={"accept": "application/json", "Content-Type": "application/json"},
+    )
+    return True
+
+
+def to_role(
+    short_name: str,
+    name: str,
+    created_at: datetime,
+    updated_at: datetime,
+    is_active: bool,
+) -> bool:
+    data = Role(
+        short_name=short_name,
+        name=name,
+        created_at=created_at,
+        updated_at=updated_at,
+        is_active=is_active,
+    )
+    response = requests.post(
+        f"{base_url}/api/roles",
         data=json.dumps(dict(data)),
         headers={"accept": "application/json", "Content-Type": "application/json"},
     )
@@ -244,6 +264,21 @@ def rate_update(user_id: int, client_id: int, new_amount: float):
     api = f"{base_url}/api/rates/?user_id={user_id}&client_id={client_id}&new_amount={new_amount}"
     response = requests.put(api)
     return True
+
+
+def roles_active():
+    """Calls a get request which returns rows of roles with column is_active = True"""
+    api = f"{base_url}/api/roles/active"
+    response = requests.get(api)
+    rows = []
+    for item in response.json():
+        d = {
+            "Role id": item["id"],
+            "Role short name": item["short_name"],
+            "Role full name": item["name"],
+        }
+        rows.append(d)
+    return rows
 
 
 def timelog_days() -> List[Dict]:
