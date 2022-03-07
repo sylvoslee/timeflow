@@ -20,11 +20,9 @@ def page():
     submitted_name, set_submitted_name = use_state("")
     short_name, set_short_name = use_state("")
     submitted_short_name, set_submitted_short_name = use_state("")
-    # updated_role, set_updated_role = use_state("")
     is_updated, set_is_updated = use_state(False)
-    _, set_deact_name = use_state("")
-    _, set_activ_name = use_state("")
-
+    deact_role, set_deact_role = use_state("")
+    activ_role, set_activ_role = use_state("")
     return Container(
         create_role_form(
             name,
@@ -36,9 +34,8 @@ def page():
         Column(
             Row(list_roles(submitted_name, submitted_short_name)),
         ),
-        Row(update_role(is_updated, set_is_updated))
-        # Row(deactivate_sponsor(set_deact_name)),
-        # Row(activate_sponsor(set_activ_name)),
+        Row(update_role(is_updated, set_is_updated)),
+        Row(deactivate_role(set_deact_role), activate_role(set_activ_role)),
     )
 
 
@@ -53,7 +50,7 @@ def create_role_form(
     """
     Create a form that allows admin to add a new role.
 
-    post endpoint: /api/sponsors
+    post endpoint: /api/roles
     schema: {
         "short_name": "string",
         "name": "string",
@@ -114,7 +111,7 @@ def update_role(is_updated, set_is_updated):
         """
         Create a form that allows admin to update a new role
 
-        put endpoint: /api/sponsors
+        put endpoint: /api/roles
         """
         role_update(
             id=role_id, new_name=name_to_update, new_short_name=short_name_to_update
@@ -129,7 +126,9 @@ def update_role(is_updated, set_is_updated):
     inp_short_name_update = Input(
         set_short_name_to_update, label="short name to update"
     )
-    is_disabled = False
+    is_disabled = True
+    if role_id != "" and (name_to_update != "" or short_name_to_update != ""):
+        is_disabled = False
     btn_update = Button(is_disabled, handle_submit=handle_update, label="Update")
     return Column(
         Row(inp_role_id, inp_name_update, inp_short_name_update), Row(btn_update)
@@ -137,48 +136,42 @@ def update_role(is_updated, set_is_updated):
 
 
 @component
-def deactivate_sponsor(set_deact_name):
-    """Deactivate a sponsor without deleting it."""
-    name_to_deact, set_name_to_deact = use_state("")
+def deactivate_role(set_deact_role):
+    """Deactivate a role without deleting it."""
+    role_to_deact, set_role_to_deact = use_state("")
 
     def handle_deactivation(event):
-        """Set the given sponsor's active column to False."""
-        api = f"{base_url}/api/sponsors/{name_to_deact}/deactivate"
+        """Set the given role's is_active column to False."""
+        api = f"{base_url}/api/roles/{role_to_deact}/deactivate"
         response = requests.put(api)
-        set_deact_name(name_to_deact)
+        set_deact_role(role_to_deact)
         return True
 
-    inp_deact_name = Input(
-        set_value=set_name_to_deact, label="sponsor to be deactivated"
+    inp_deact_role = Input(
+        set_value=set_role_to_deact, label="role id to be deactivated"
     )
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_deactivation,
-        },
-        "Submit",
-    )
-    return Column(Row(inp_deact_name), Row(btn))
+    is_disabled = True
+    if role_to_deact != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+    return Column(Row(inp_deact_role), Row(btn))
 
 
 @component
-def activate_sponsor(set_activ_name):
-    """Activate a sponsor."""
-    name_to_activ, set_name_to_activ = use_state("")
+def activate_role(set_activ_role):
+    """Activate an inactivated role"""
+    role_to_activ, set_role_to_activ = use_state("")
 
     def handle_activation(event):
-        """Set the given sponsor's active column to True."""
-        api = f"{base_url}/api/sponsors/{name_to_activ}/activate"
+        """Set the given role's is_active column to True."""
+        api = f"{base_url}/api/roles/{role_to_activ}/activate"
         response = requests.put(api)
-        set_activ_name(name_to_activ)
+        set_activ_role(role_to_activ)
         return True
 
-    inp_deact_name = Input(set_value=set_name_to_activ, label="sponsor to be activated")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_activation,
-        },
-        "Submit",
-    )
-    return Column(Row(inp_deact_name), Row(btn))
+    inp_activ_role = Input(set_value=set_role_to_activ, label="role id to be activated")
+    is_disabled = True
+    if role_to_activ != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+    return Column(Row(inp_activ_role), Row(btn))

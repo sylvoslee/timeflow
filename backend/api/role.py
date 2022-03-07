@@ -78,16 +78,21 @@ async def update_role(
     is_active: bool = None,
     session: Session = Depends(get_session),
 ):
-    statement = select(Role).where(Role.id == id)
-    role_to_update = session.exec(statement).one()
-    if new_name != None:
-        role_to_update.name = new_name
-    if new_short_name != None:
-        role_to_update.short_name = new_short_name
-    if is_active != None:
-        role_to_update.is_active = is_active
-    session.add(role_to_update)
-    role_to_update.updated_at = datetime.now()
-    session.commit()
-    session.refresh(role_to_update)
-    return role_to_update
+    statement = select(Role.is_active).where(Role.id == id)
+    result = session.exec(statement).first()
+    if result == True:
+        statement = select(Role).where(Role.id == id)
+        role_to_update = session.exec(statement).one()
+        if new_name != None:
+            role_to_update.name = new_name
+        if new_short_name != None:
+            role_to_update.short_name = new_short_name
+        if is_active != None:
+            role_to_update.is_active = is_active
+        session.add(role_to_update)
+        role_to_update.updated_at = datetime.now()
+        session.commit()
+        session.refresh(role_to_update)
+        return role_to_update
+    else:
+        return False
