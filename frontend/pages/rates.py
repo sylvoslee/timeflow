@@ -13,7 +13,6 @@ from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import SubmitButton
 from pages.data.data import (
-    clients_names,
     months_start,
     username,
 )
@@ -24,6 +23,8 @@ from pages.data.rates import (
     rate_update,
     to_rate,
 )
+
+from pages.data.clients import clients_names
 
 from pages.utils import month_start_to_str, far_date, date_str_to_date
 from config import base_url
