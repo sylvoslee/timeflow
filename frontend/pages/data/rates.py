@@ -1,6 +1,18 @@
 import requests
 from config import base_url
-from typing import List, Dict
+from typing import List, Dict, TypedDict
+from datetime import datetime
+
+
+class Rate(TypedDict):
+    user_id: int
+    client_id: int
+    valid_from: str
+    valid_to: str
+    amount: float
+    created_at: datetime
+    updated_at: datetime
+    is_active: bool
 
 
 def rate_active_by_user_client(user_id: int, client_id: int) -> List[Dict]:

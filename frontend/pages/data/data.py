@@ -16,17 +16,6 @@ class Select(TypedDict):
     dispay_value: str
 
 
-class Rate(TypedDict):
-    user_id: int
-    client_id: int
-    valid_from: str
-    valid_to: str
-    amount: float
-    created_at: datetime
-    updated_at: datetime
-    is_active: bool
-
-
 def to_rate(
     user_id: int,
     client_id: int,
