@@ -49,14 +49,3 @@ def months_start() -> List[Dict]:
         d = Select(value=item, display_value=item)
         months.append(d)
     return months
-
-
-def submit_button(event_handler):
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": event_handler,
-        },
-        "Submit",
-    )
-    return btn
