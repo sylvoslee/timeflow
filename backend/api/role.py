@@ -32,8 +32,8 @@ async def read_roles(session: Session = Depends(get_session)):
 
 # Get list of active roles
 @router.get("/active")
-async def read_clients(session: Session = Depends(get_session)):
-    statement = select(Client).where(Client.active == True)
+async def read_roles(session: Session = Depends(get_session)):
+    statement = select(Role).where(Role.is_active == True)
     results = session.exec(statement).all()
     return results
 
