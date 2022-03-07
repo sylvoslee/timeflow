@@ -25,16 +25,6 @@ def username() -> List[Select]:
     return username_rows
 
 
-def client_name_by_epic_id(epic_id) -> Select:
-    api_client_name_id = f"{base_url}/api/epics/{epic_id}/client-name"
-    response_client_name_id = requests.get(api_client_name_id)
-    r = response_client_name_id.json()
-    client_name = r.get("name")
-    client_id = r.get("id_1")
-    d = Select(value=client_id, display_value=client_name)
-    return d
-
-
 def year_month_dict_list() -> List[Dict]:
     ym_dict_list = [Select(value="", display_value="select month")]
     for item in year_month_list:
