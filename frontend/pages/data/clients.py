@@ -1,7 +1,7 @@
 import requests
 from config import base_url
 from typing import List
-from pages.data.data import Select
+from pages.data.common import Select
 
 
 def clients_names() -> List[Select]:

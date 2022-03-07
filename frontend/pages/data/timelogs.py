@@ -2,7 +2,7 @@ import requests
 import json
 from typing import List, Dict, TypedDict
 from pages.utils import timelog_days_list
-from pages.data.data import Select
+from pages.data.common import Select
 from config import base_url
 
 

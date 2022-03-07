@@ -16,7 +16,7 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 
-from pages.data.data import (
+from pages.data.common import (
     year_month_dict_list,
     username,
     hours,
