@@ -2,9 +2,17 @@ import requests
 import json
 
 from config import base_url
-from typing import List, Dict
+from typing import List, Dict, TypedDict
 from pages.data.data import Select, Forecast
 from pages.utils import forecast_days_list
+
+
+class Forecast(TypedDict):
+    user_id: int
+    epic_id: int
+    month: int
+    year: int
+    days: int
 
 
 def forecast_by_user_epic_year_month(user_id, epic_id, year, month) -> List[Dict]:

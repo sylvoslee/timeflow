@@ -16,14 +16,6 @@ class Select(TypedDict):
     dispay_value: str
 
 
-class Forecast(TypedDict):
-    user_id: int
-    epic_id: int
-    month: int
-    year: int
-    days: int
-
-
 class Rate(TypedDict):
     user_id: int
     client_id: int
