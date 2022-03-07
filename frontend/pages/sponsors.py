@@ -3,11 +3,11 @@ import requests
 from sanic import response
 from black import click
 
-from components.input import Input, SelectorDropdownKeyValue, Selector
+from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
+from components.controls import Button
 from config import base_url
-from data.common import submit_button
 from data.sponsors import post_sponsor
 from data.clients import client_dropdown
 
@@ -85,7 +85,10 @@ def create_sponsor_form(
     selector_client_name = client_dropdown(set_client_id)
 
     # Create submit button
-    btn = submit_button(event_handler=handle_submit)
+    is_disabled = True
+    if [name, short_name, client_id] != ["", "", ""]:
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(
