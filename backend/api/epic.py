@@ -10,13 +10,13 @@ router = APIRouter(prefix="/api/epics", tags=["epic"])
 session = Session(engine)
 
 
-# Post new epic
 @router.post("/")
 async def post_epic(
     *,
     epic: Epic,
     session: Session = Depends(get_session),
 ):
+    """Post new epic"""
     statement1 = select(Epic).where(or_(Epic.name == epic.name, Epic.id == epic.id))
     statement2 = select(Client.name).where(Client.id == epic.client_id)
     try:
@@ -29,20 +29,17 @@ async def post_epic(
         return epic
 
 
-# Get epic by name
-
-
-# Get epics list
 @router.get("/")
 async def get_epic_list(session: Session = Depends(get_session)):
+    """Get list of epics"""
     statement = select(Epic)
     results = session.exec(statement).all()
     return results
 
 
-# Get list of active epics
 @router.get("/active")
 async def get_active_epic_list(session: Session = Depends(get_session)):
+    """Get list of active epics"""
     statement = select(Epic).where(Epic.active == True)
     results = session.exec(statement).all()
     return results
@@ -50,6 +47,7 @@ async def get_active_epic_list(session: Session = Depends(get_session)):
 
 @router.get("/{epic_name}")
 async def read_epics(epic_name: str = None, session: Session = Depends(get_session)):
+    """Read a single epic from an epic_name"""
     statement = select(Epic).where(Epic.name == epic_name)
     try:
         result = session.exec(statement).one()
@@ -59,11 +57,11 @@ async def read_epics(epic_name: str = None, session: Session = Depends(get_sessi
         return msg
 
 
-# get client name by epic id
 @router.get("/{epic_id}/client-name")
 async def get_client_name_by_epic_id(
     epic_id: int, session: Session = Depends(get_session)
 ):
+    """Get client name from epic_id"""
     statement = (
         select(Epic.id, Client.id, Client.name)
         .join(Client)
@@ -74,12 +72,12 @@ async def get_client_name_by_epic_id(
     return result
 
 
-# Activate epic
 @router.put("/{epic_id}/activate")
 async def activate_epic(
     epic_id: str = None,
     session: Session = Depends(get_session),
 ):
+    """Activate an epic"""
     statement = select(Epic).where(Epic.id == epic_id)
     epic_to_activate = session.exec(statement).one()
     epic_to_activate.active = True
@@ -90,12 +88,12 @@ async def activate_epic(
     return epic_to_activate
 
 
-# Deactivate epic
 @router.put("/{epic_id}/deactivate")
 async def deactivate_epic(
     epic_id: str = None,
     session: Session = Depends(get_session),
 ):
+    """Deactivate an epic"""
     statement = select(Epic).where(Epic.id == epic_id)
     epic_to_deactivate = session.exec(statement).one()
     epic_to_deactivate.active = False
@@ -106,7 +104,6 @@ async def deactivate_epic(
     return epic_to_deactivate
 
 
-# Update epics
 @router.put("/")
 async def update_epic(
     epic_id: str = None,
@@ -115,6 +112,7 @@ async def update_epic(
     client_new_id: int = None,
     session: Session = Depends(get_session),
 ):
+    """Update an epic"""
     statement = select(Epic).where(or_(Epic.name == epic_name, Epic.id == epic_id))
     epic_to_update = session.exec(statement).one()
     epic_to_update.work_area = work_area

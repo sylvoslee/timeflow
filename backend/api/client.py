@@ -9,9 +9,10 @@ from datetime import datetime
 router = APIRouter(prefix="/api/clients", tags=["client"])
 session = Session(engine)
 
-# Post new client
+
 @router.post("/")
 async def post_client(*, client: Client, session: Session = Depends(get_session)):
+    """Post a new client"""
     statement = select(Client).where(Client.name == client.name)
     try:
         result = session.exec(statement).one()
@@ -23,9 +24,9 @@ async def post_client(*, client: Client, session: Session = Depends(get_session)
         return client
 
 
-# Get list of all clients
 @router.get("/")
 async def read_clients(session: Session = Depends(get_session)):
+    """Get a list of all clients"""
     statement = select(Client)
     results = session.exec(statement).all()
     return results
@@ -33,16 +34,17 @@ async def read_clients(session: Session = Depends(get_session)):
 
 @router.get("/active")
 async def read_clients(session: Session = Depends(get_session)):
+    """Get a list of all active clients"""
     statement = select(Client).where(Client.active == True)
     results = session.exec(statement).all()
     return results
 
 
-# Get client by id
 @router.get("/{client_id}")
 async def read_clients(
     *, client_id: int = None, session: Session = Depends(get_session)
 ):
+    """Get a client by client_id"""
     statement = select(Client).where(Client.id == client_id)
     try:
         result = session.exec(statement).one()
@@ -56,16 +58,17 @@ async def read_clients(
 async def read_clients_by_name(
     *, name: str = None, session: Session = Depends(get_session)
 ):
+    """Get a client by client_name"""
     statement = select(Client).where(Client.name == name)
     result = session.exec(statement).one()
     return result
 
 
-# Get all selected client's epics
 @router.get("/{client_id}/epics/")
 async def read_clients_epics(
     client_id: int = None, session: Session = Depends(get_session)
 ):
+    """Get epics from a client_id"""
     statement = (
         select(Client.id, Client.name, Epic.name)
         .select_from(Client)
@@ -76,13 +79,13 @@ async def read_clients_epics(
     return results
 
 
-# # Deactivate client
 # @router.put("/{client_id}/deactivate-client")
 # async def update_clients(
 #     *,
 #     client_id: int,
 #     session: Session = Depends(get_session),
 # ):
+#     """Deactivate a client"""
 #     statement = select(Client).where(Client.id == client_id)
 #     client_to_update = session.exec(statement).one()
 #     client_to_update.active = False
@@ -95,13 +98,14 @@ async def read_clients_epics(
 #     session.refresh(client_to_update)
 #     return client_to_update
 
-# Activate client
+
 @router.put("/{client_id}/activate")
 async def activate_clients(
     *,
     client_id: int,
     session: Session = Depends(get_session),
 ):
+    """Activate a client"""
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
     client_to_update.active = True
@@ -112,13 +116,13 @@ async def activate_clients(
     return client_to_update
 
 
-# Deactivate client
 @router.put("/{client_id}/deactivate")
 async def deactivate_clients(
     *,
     client_id: int,
     session: Session = Depends(get_session),
 ):
+    """Deactivate a client"""
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
     client_to_update.active = False
@@ -130,13 +134,13 @@ async def deactivate_clients(
     return client_to_update
 
 
-# Deactivate client and it's epics
 @router.put("/{client_id}/deactivate-epics")
 async def update_clients_and_epics(
     *,
     client_id: int,
     session: Session = Depends(get_session),
 ):
+    """Deactivate a client and its epics"""
     statement1 = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement1).one()
     client_to_update.active = False
@@ -151,7 +155,6 @@ async def update_clients_and_epics(
     return True
 
 
-# Update client
 @router.put("/{client_id}/new-name")
 async def update_clients(
     *,
@@ -159,6 +162,7 @@ async def update_clients(
     new_client_name: str = None,
     session: Session = Depends(get_session),
 ):
+    """Update a client from a client_id"""
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
     client_to_update.name = new_client_name
