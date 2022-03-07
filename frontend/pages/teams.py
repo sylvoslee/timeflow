@@ -10,7 +10,7 @@ from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from config import base_url
 
-from data.teams import team_deactivation
+from data.teams import team_deactivation, team_activation
 
 
 @component
@@ -172,10 +172,8 @@ def activate_team(set_activ_name):
 
     def handle_activation(event):
         """Set the given epic are'a active column to True."""
-        api = f"{base_url}/api/teams/{name_to_activ}/activate"
-        response = requests.put(api)
+        team_activation(name_to_activ)
         set_activ_name(name_to_activ)
-        return True
 
     inp_deact_name = Input(set_value=set_name_to_activ, label="team to be activated")
     btn = html.button(
