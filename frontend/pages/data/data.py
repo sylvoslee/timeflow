@@ -24,17 +24,6 @@ class Forecast(TypedDict):
     days: int
 
 
-class Timelog(TypedDict):
-    start_time: str
-    end_time: str
-    user_id: int
-    epic_id: int
-    count_hours: float
-    count_days: float
-    month: int
-    year: int
-
-
 class Rate(TypedDict):
     user_id: int
     client_id: int
@@ -149,14 +138,6 @@ def year_month_dict_list() -> List[Dict]:
         d = Select(value=item, display_value=item)
         ym_dict_list.append(d)
     return ym_dict_list
-
-
-def timelog_days() -> List[Dict]:
-    days = [Select(value="", display_value="select days")]
-    for item in timelog_days_list:
-        d = Select(value=item, display_value=item)
-        days.append(d)
-    return days
 
 
 def hours() -> List[Dict]:
