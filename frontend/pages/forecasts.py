@@ -16,9 +16,12 @@ from pages.data.data import (
     client_name_by_epic_id,
     username,
     year_month_dict_list,
+)
+
+from pages.data.forecasts import (
+    forecast_by_user_epic_year_month,
     forecast_days,
     to_forecast,
-    forecast_by_user_epic_year_month,
     forecast_deletion,
 )
 
