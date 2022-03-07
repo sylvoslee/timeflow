@@ -1,15 +1,15 @@
-from cProfile import label
-import json
 from idom import html, use_state, component, event
 import requests
 from sanic import response
 from black import click
-from datetime import datetime
 
 from components.input import Input, SelectorDropdownKeyValue, Selector
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from config import base_url
+from data.common import submit_button
+from data.sponsors import post_sponsor
+from data.clients import client_dropdown
 
 
 @component
@@ -69,47 +69,23 @@ def create_sponsor_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         """Call a post request for the given sponsor when given event is triggered."""
-        data = {
-            "name": name,
-            "short_name": short_name,
-            "client_id": client_id,
-            "is_active": True,
-            "created_at": str(datetime.now()),
-            "updated_at": str(datetime.now()),
-        }
-        response = requests.post(
-            f"{base_url}/api/sponsors",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
-        )
+        post_sponsor(name, short_name, client_id)
+
+        # Change the states
         set_submitted_name(name)
         set_submitted_short_name(short_name)
 
+    # Create input field for the name of the sponsor
     inp_name = Input(set_value=set_name, label="name of the sponsor")
+
+    # Create input field for the short name of the sponsor
     inp_short_name = Input(set_value=set_short_name, label="short name of the sponsor")
 
-    # Connect to clients list endpoint
-    api_client_name = f"{base_url}/api/clients"
-    response_client_name = requests.get(api_client_name)
-
     # Create a dropdown of clients which can then be selected
-    client_name_rows = [
-        {item["name"]: item["id"]} for item in response_client_name.json()
-    ]
-    client_name_dropdown_list = SelectorDropdownKeyValue(rows=client_name_rows)
-    selector_client_name = Selector(
-        set_value=set_client_id,
-        placeholder="Select Client",
-        dropdown_list=client_name_dropdown_list,
-    )
+    selector_client_name = client_dropdown(set_client_id)
 
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_submit,
-        },
-        "Submit",
-    )
+    # Create submit button
+    btn = submit_button(event_handler=handle_submit)
 
     return Column(
         Row(
