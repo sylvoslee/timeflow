@@ -9,13 +9,14 @@ from datetime import datetime
 router = APIRouter(prefix="/api/teams", tags=["team"])
 session = Session(engine)
 
-# Post new team
+
 @router.post("/")
 async def post_team(
     *,
     team: Team,
     session: Session = Depends(get_session),
 ):
+    """Post new team"""
     statement = select(Team).where(or_(Team.name == team.name, Team.id == team.id))
     try:
         result = session.exec(statement).one()
@@ -27,17 +28,17 @@ async def post_team(
         return team
 
 
-# Get team list
 @router.get("/")
 async def get_team_list(session: Session = Depends(get_session)):
+    """Get team list"""
     statement = select(Team)
     results = session.exec(statement).all()
     return results
 
 
-# Get list of active teams
 @router.get("/active")
 async def get_active_team_list(session: Session = Depends(get_session)):
+    """Get list of active teams"""
     statement = (
         select(
             Team.id,
@@ -54,9 +55,9 @@ async def get_active_team_list(session: Session = Depends(get_session)):
     return results
 
 
-# Read the contents of a given team
 @router.get("/{team_name}")
 async def read_teams(team_name: str = None, session: Session = Depends(get_session)):
+    """Read the contents of a given team"""
     statement = select(Team).where(Team.name == team_name)
     try:
         result = session.exec(statement).one()
@@ -66,11 +67,11 @@ async def read_teams(team_name: str = None, session: Session = Depends(get_sessi
         return msg
 
 
-# Get user name by team id
 @router.get("/{team_id}/user-name")
 async def get_user_name_by_team_id(
     team_id: int, session: Session = Depends(get_session)
 ):
+    """Get user name by team id"""
     statement = (
         select(Team.id, User.id, User.name)
         .join(User)
@@ -81,12 +82,12 @@ async def get_user_name_by_team_id(
     return result
 
 
-# Activate team
 @router.put("/{team_name}/activate")
 async def activate_team(
     team_name: str = None,
     session: Session = Depends(get_session),
 ):
+    """Activate team"""
     statement = select(Team).where(Team.name == team_name)
     team_to_activate = session.exec(statement).one()
     team_to_activate.is_active = True
@@ -97,12 +98,12 @@ async def activate_team(
     return team_to_activate
 
 
-# Deactivate team
 @router.put("/{team_name}/deactivate")
 async def deactivate_team(
     team_name: str = None,
     session: Session = Depends(get_session),
 ):
+    """Deactivate team"""
     statement = select(Team).where(Team.name == team_name)
     team_to_deactivate = session.exec(statement).one()
     team_to_deactivate.is_active = False
@@ -113,7 +114,6 @@ async def deactivate_team(
     return team_to_deactivate
 
 
-# Update team
 @router.put("/")
 async def update_team(
     id: str = None,
@@ -122,6 +122,7 @@ async def update_team(
     is_active: bool = None,
     session: Session = Depends(get_session),
 ):
+    """Update team"""
     statement = select(Team).where(or_(Team.name == name, Team.id == id))
     team_to_update = session.exec(statement).one()
     team_to_update.user_id = user_id
