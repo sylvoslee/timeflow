@@ -107,7 +107,7 @@ async def deactivate_team(
     statement = select(Team).where(Team.name == team_name)
     team_to_deactivate = session.exec(statement).one()
     team_to_deactivate.is_active = False
-    team_to_deactivate.updated_on = datetime.now()
+    team_to_deactivate.updated_at = datetime.now()
     session.add(team_to_deactivate)
     session.commit()
     session.refresh(team_to_deactivate)

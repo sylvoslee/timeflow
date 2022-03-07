@@ -12,6 +12,7 @@ from components.input import Input
 from components.layout import Row, Column, Container, FlexContainer
 from components.lists import ListSimple
 from components.table import SimpleTable, SubmitTable
+from components.controls import Button
 
 from config import base_url
 
@@ -64,13 +65,10 @@ def create_client_form(name, set_name, set_submitted_name):
         set_submitted_name(name)
 
     inp_name = Input(set_value=set_name, label="name")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": handle_submit,
-        },
-        "Submit",
-    )
+    is_disabled = True
+    if name != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(
