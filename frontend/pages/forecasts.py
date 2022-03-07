@@ -11,9 +11,7 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import Button
-from pages.data import (
-    epics_names,
-    client_name_by_epic_id,
+from data.common import (
     username,
     year_month_dict_list,
 )
