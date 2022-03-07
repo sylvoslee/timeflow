@@ -10,8 +10,10 @@ from components.input import Input, Selector, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
-from components.controls import SubmitButton
-from data.common import (
+from components.controls import Button
+from pages.data import (
+    epics_names,
+    client_name_by_epic_id,
     username,
     year_month_dict_list,
 )
@@ -142,7 +144,7 @@ def create_forecast_form(
     if user_id != "" and epic_id != "" and year_month != "" and days != "":
         is_disabled = False
 
-    btn = SubmitButton(is_disabled, handle_submit)
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(

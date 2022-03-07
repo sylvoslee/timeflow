@@ -11,8 +11,10 @@ from components.input import Input, Selector, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
-from components.controls import SubmitButton
-from data.common import (
+from components.controls import Button
+from pages.data import (
+    clients_names,
+    to_rate,
     months_start,
     username,
 )
@@ -121,7 +123,7 @@ def create_rates_form(
     if user_id != "" and client_id != "" and month_start != "" and amount != "":
         is_disabled = False
 
-    btn = SubmitButton(is_disabled, handle_submit)
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(selector_user_id, selector_client_id, selector_month_start, inp_amount),
@@ -161,7 +163,7 @@ def update_rate(set_updated_rate, user_id, client_id, month_start):
     if user_id != "" and client_id != "" and month_start == "":
         is_disabled = False
 
-    btn = SubmitButton(is_disabled, handle_submit)
+    btn = Button(is_disabled, handle_submit, label="Update")
 
     # html.button(
     #     {
