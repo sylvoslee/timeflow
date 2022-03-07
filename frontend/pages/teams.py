@@ -1,16 +1,13 @@
-import json
 from idom import html, use_state, component, event
-import requests
 from sanic import response
 from black import click
 
-from components.input import Input, SelectorDropdownKeyValue, Selector
+from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
-from config import base_url
 
 from data.common import submit_button
-from data.teams import team_deactivation, team_activation, to_team
+from data.teams import team_deactivation, team_activation, to_team, get_active_team_rows
 from data.users import user_dropdown
 
 
@@ -106,17 +103,7 @@ def list_teams(submitted_name, submitted_short_name):
     Store in rows the names of the user and team, along with the id.
     Return an HTML div that contains the rows in a table.
     """
-    api = f"{base_url}/api/teams/active"
-    response = requests.get(api)
-
-    rows = []
-    for item in response.json():
-        d = {
-            "Team name": item["team_name"],
-            "Team short name": item["team_short_name"],
-            "User lead": item["user_name"],
-        }
-        rows.append(d)
+    rows = get_active_team_rows()
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
