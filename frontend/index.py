@@ -43,10 +43,6 @@ def page():
         current_page_component = teams_page(key="teams_page")
     elif current_page == "Sponsors":
         current_page_component = sponsors_page(key="sponsors_page")
-    else:
-        current_page_component = html.h1(
-            {"class": "text-white"}, "Test Page, not implemented yet"
-        )
 
     return html.div(
         {"class": "flex w-full"},

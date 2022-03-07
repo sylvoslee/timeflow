@@ -43,8 +43,19 @@ def roles_active():
     for item in data:
         d = {
             "id": item["id"],
-            "short_name": item["short_name"],
             "full name": item["name"],
+            "short_name": item["short_name"],
         }
         rows.append(d)
     return rows
+
+
+def role_update(id: int, new_name: str = None, new_short_name: str = None) -> bool:
+    if new_name != "" and new_short_name != "":
+        api = f"{base_url}/api/roles/?id={id}&new_name={new_name}&new_short_name={new_short_name}"
+    elif new_name != "" and new_short_name == "":
+        api = f"{base_url}/api/roles/?id={id}&new_name={new_name}"
+    elif new_name == "" and new_short_name != "":
+        api = f"{base_url}/api/roles/?id={id}&new_short_name={new_short_name}"
+    response = requests.put(api)
+    return True

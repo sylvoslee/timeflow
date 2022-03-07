@@ -84,7 +84,8 @@ async def update_role(
         role_to_update.name = new_name
     if new_short_name != None:
         role_to_update.short_name = new_short_name
-    role_to_update.is_active = is_active
+    if is_active != None:
+        role_to_update.is_active = is_active
     session.add(role_to_update)
     role_to_update.updated_at = datetime.now()
     session.commit()

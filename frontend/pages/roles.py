@@ -11,7 +11,7 @@ from components.table import SimpleTable
 from components.controls import Button
 from config import base_url
 
-from data.roles import to_role, roles_active
+from data.roles import to_role, roles_active, role_update
 
 
 @component
@@ -20,6 +20,8 @@ def page():
     submitted_name, set_submitted_name = use_state("")
     short_name, set_short_name = use_state("")
     submitted_short_name, set_submitted_short_name = use_state("")
+    # updated_role, set_updated_role = use_state("")
+    is_updated, set_is_updated = use_state(False)
     _, set_deact_name = use_state("")
     _, set_activ_name = use_state("")
 
@@ -34,6 +36,7 @@ def page():
         Column(
             Row(list_roles(submitted_name, submitted_short_name)),
         ),
+        Row(update_role(is_updated, set_is_updated))
         # Row(deactivate_sponsor(set_deact_name)),
         # Row(activate_sponsor(set_activ_name)),
     )
@@ -97,6 +100,40 @@ def list_roles(submitted_name, submitted_short_name):
     rows = roles_active()
 
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
+
+
+@component
+def update_role(is_updated, set_is_updated):
+    """Updates name or/and short_name of a role by required id"""
+    role_id, set_role_id = use_state("")
+    name_to_update, set_name_to_update = use_state("")
+    short_name_to_update, set_short_name_to_update = use_state("")
+
+    @event(prevent_default=True)
+    async def handle_update(event):
+        """
+        Create a form that allows admin to update a new role
+
+        put endpoint: /api/sponsors
+        """
+        role_update(
+            id=role_id, new_name=name_to_update, new_short_name=short_name_to_update
+        )
+        if is_updated:
+            set_is_updated(False)
+        elif is_updated == False:
+            set_is_updated(True)
+
+    inp_role_id = Input(set_role_id, label="role id to update")
+    inp_name_update = Input(set_name_to_update, label="full name to update")
+    inp_short_name_update = Input(
+        set_short_name_to_update, label="short name to update"
+    )
+    is_disabled = False
+    btn_update = Button(is_disabled, handle_submit=handle_update, label="Update")
+    return Column(
+        Row(inp_role_id, inp_name_update, inp_short_name_update), Row(btn_update)
+    )
 
 
 @component
