@@ -8,10 +8,10 @@ from datetime import datetime
 from components.input import Input, SelectorDropdownKeyValue, Selector
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
-from components.controls import SubmitButton
+from components.controls import Button
 from config import base_url
 
-from pages.data import to_role, roles_active
+from data.roles import to_role, roles_active
 
 
 @component
@@ -75,8 +75,10 @@ def create_role_form(
     inp_name = Input(set_value=set_name, label="name of the role")
     inp_short_name = Input(set_value=set_short_name, label="short name of the role")
 
-    is_disabled = False
-    btn = SubmitButton(is_disabled, handle_submit)
+    is_disabled = True
+    if name != "" and short_name != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(inp_name, inp_short_name),
