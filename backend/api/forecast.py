@@ -12,6 +12,7 @@ session = Session(engine)
 
 @router.post("/")
 async def post_forecast(*, forecast: Forecast, session: Session = Depends(get_session)):
+    """Post a forecast."""
     statement = select(Forecast).where(
         and_(
             Forecast.epic_id == forecast.epic_id,
@@ -33,6 +34,7 @@ async def post_forecast(*, forecast: Forecast, session: Session = Depends(get_se
 
 @router.get("/")
 async def get_forecasts(session: Session = Depends(get_session)):
+    """Get all forecasts."""
     statement = select(Forecast)
     result = session.exec(statement).all()
     return result
@@ -42,6 +44,7 @@ async def get_forecasts(session: Session = Depends(get_session)):
 async def get_forecasts_users(
     user_id: str = None, session: Session = Depends(get_session)
 ):
+    """Get forecasts from a given user."""
     if user_id != None:
         statement = (
             select(
@@ -60,11 +63,11 @@ async def get_forecasts_users(
         raise ValueError
 
 
-# get forecast by user and epic
 @router.get("/users/{user_id}/epics/{epic_id}")
 async def get_forecasts_by_user_year_epic(
     user_id, epic_id, session: Session = Depends(get_session)
 ):
+    """Get forecast by user and epic"""
     statement = (
         select(Forecast.month, Forecast.days)
         .where(Forecast.user_id == user_id)
@@ -74,11 +77,11 @@ async def get_forecasts_by_user_year_epic(
     return results
 
 
-# get forecast by user and month_year
 @router.get("/users/{user_id}/epics/year/{year}/month/{month}")
 async def get_forecasts_by_user_year_epic(
     user_id, year, month, session: Session = Depends(get_session)
 ):
+    """Get forecast by user and month_year"""
     statement = (
         select(Epic.name, Forecast.year, Forecast.month, Forecast.days)
         .where(Forecast.user_id == user_id)
@@ -90,11 +93,11 @@ async def get_forecasts_by_user_year_epic(
     return results
 
 
-# get forecast by user, epic, year, month
 @router.get("/users/{user_id}/epics/{epic_id}/year/{year}/month/{month}")
 async def get_forecasts_by_user_year_epic(
     user_id, epic_id, year, month, session: Session = Depends(get_session)
 ):
+    """Get forecast by user, epic, year, month"""
     statement = (
         select(Forecast.id, Forecast.month, Forecast.year, Forecast.days)
         .where(Forecast.user_id == user_id)
@@ -115,6 +118,7 @@ async def update_forecasts(
     days: float = None,
     session: Session = Depends(get_session),
 ):
+    """Update a forecast"""
     statement = select(Forecast).where(
         and_(
             Forecast.user_id == user_id,
@@ -136,6 +140,7 @@ async def delete_forecasts(
     forecast_id: str = None,
     session: Session = Depends(get_session),
 ):
+    """Delete a forecast"""
     statement = select(Forecast).where(
         Forecast.id == forecast_id,
     )
