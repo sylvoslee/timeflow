@@ -12,7 +12,7 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import SubmitButton
-from pages.data import (
+from pages.data.data import (
     clients_names,
     to_rate,
     months_start,
