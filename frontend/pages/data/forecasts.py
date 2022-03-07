@@ -3,7 +3,7 @@ import json
 
 from config import base_url
 from typing import List, Dict, TypedDict
-from pages.data.data import Select
+from pages.data.common import Select
 from pages.utils import forecast_days_list
 
 
