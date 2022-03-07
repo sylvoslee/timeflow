@@ -3,7 +3,6 @@ from config import base_url
 from typing import List, Dict, TypedDict
 from pages.utils import (
     year_month_list,
-    timelog_days_list,
     hours_list,
     month_start_list,
 )
