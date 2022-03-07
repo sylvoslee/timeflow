@@ -5,8 +5,8 @@ from black import click
 from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
+from components.controls import Button
 
-from data.common import submit_button
 from data.teams import (
     team_deactivation,
     team_activation,
@@ -88,7 +88,10 @@ def create_team_form(
     selector_user_name = user_dropdown(set_user_id)
 
     # Create submit button
-    btn = submit_button(event_handler=handle_submit)
+    is_disabled = True
+    if [name, short_name, user_id] != ["", "", ""]:
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(
