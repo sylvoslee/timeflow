@@ -10,6 +10,8 @@ from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from config import base_url
 
+from data.teams import team_deactivation
+
 
 @component
 def page():
@@ -148,11 +150,9 @@ def deactivate_team(set_deact_name):
     name_to_deact, set_name_to_deact = use_state("")
 
     def handle_deactivation(event):
-        """Set the given epic are'a active column to False."""
-        api = f"{base_url}/api/teams/{name_to_deact}/deactivate"
-        response = requests.put(api)
+        """Set the given team's active column to False."""
+        team_deactivation(name_to_deact)
         set_deact_name(name_to_deact)
-        return True
 
     inp_deact_name = Input(set_value=set_name_to_deact, label="team to be deactivated")
     btn = html.button(
