@@ -1,13 +1,15 @@
 import requests
+import json
+
 from config import base_url
 from typing import List, Dict, TypedDict
+from datetime import datetime
 from pages.utils import (
     year_month_list,
     hours_list,
     month_start_list,
 )
-import json
-from datetime import datetime
+from idom import html
 
 
 class Select(TypedDict):
@@ -47,3 +49,14 @@ def months_start() -> List[Dict]:
         d = Select(value=item, display_value=item)
         months.append(d)
     return months
+
+
+def submit_button(event_handler):
+    btn = html.button(
+        {
+            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
+            "onClick": event_handler,
+        },
+        "Submit",
+    )
+    return btn

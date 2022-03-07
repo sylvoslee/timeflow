@@ -18,3 +18,4 @@ def user_dropdown(set_user_id):
         placeholder="Select Leader (User)",
         dropdown_list=user_name_dropdown_list,
     )
+    return selector_user_name

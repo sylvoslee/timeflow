@@ -3,14 +3,15 @@ from idom import html, use_state, component, event
 import requests
 from sanic import response
 from black import click
-from datetime import datetime
 
 from components.input import Input, SelectorDropdownKeyValue, Selector
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from config import base_url
 
-from data.teams import team_deactivation, team_activation
+from data.common import submit_button
+from data.teams import team_deactivation, team_activation, to_team
+from data.users import user_dropdown
 
 
 @component
@@ -69,47 +70,22 @@ def create_team_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         """Call a post request for the given team when given event is triggered."""
-        data = {
-            "name": name,
-            "short_name": short_name,
-            "user_id": user_id,
-            "is_active": True,
-            "created_at": str(datetime.now()),
-            "updated_at": str(datetime.now()),
-        }
-        print("here", data)
-        response = requests.post(
-            f"{base_url}/api/teams",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
-        )
+        to_team(name, short_name, user_id)
+
+        # Change the states
         set_submitted_name(name)
         set_submitted_short_name(short_name)
 
+    # Create input field for the name of the team
     inp_name = Input(set_value=set_name, label="name of the team")
 
+    # Create input field for the short name of the team
     inp_short_name = Input(set_value=set_short_name, label="short name of the team")
 
-    # Connect to active users list endpoint
-    api_user_name = f"{base_url}/api/users"
-    response_user_name = requests.get(api_user_name)
-
     # Create a dropdown of users which can then be selected
-    user_name_rows = [{item["name"]: item["id"]} for item in response_user_name.json()]
-    user_name_dropdown_list = SelectorDropdownKeyValue(rows=user_name_rows)
-    selector_user_name = Selector(
-        set_value=set_user_id,
-        placeholder="Select Leader (User)",
-        dropdown_list=user_name_dropdown_list,
-    )
+    selector_user_name = user_dropdown(set_user_id)
 
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_submit,
-        },
-        "Submit",
-    )
+    btn = submit_button(event_handler=handle_submit)
 
     return Column(
         Row(
