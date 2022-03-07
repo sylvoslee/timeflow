@@ -1,6 +1,6 @@
 from typing import Any, Callable, List, Dict
 from idom import html, component
-from pages.data import Select
+from pages.data.data import Select
 
 class_str = """text-primary-500 placeholder-secondary-400 w-full px-4 py-2.5 mt-2 
                     text-base transition duration-500 ease-in-out transform 
