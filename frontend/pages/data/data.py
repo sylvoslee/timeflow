@@ -35,34 +35,6 @@ class Rate(TypedDict):
     is_active: bool
 
 
-def to_timelog(
-    start_time: str,
-    end_time: str,
-    user_id: int,
-    epic_id: int,
-    count_hours: float,
-    count_days: float,
-    month: int,
-    year: int,
-) -> bool:
-    data = Timelog(
-        start_time=start_time,
-        end_time=end_time,
-        user_id=user_id,
-        epic_id=epic_id,
-        count_hours=0,
-        count_days=0,
-        month=str(month),
-        year=str(year),
-    )
-    response = requests.post(
-        f"{base_url}/api/timelogs",
-        data=json.dumps(dict(data)),
-        headers={"accept": "application/json", "Content-Type": "application/json"},
-    )
-    return True
-
-
 def to_rate(
     user_id: int,
     client_id: int,

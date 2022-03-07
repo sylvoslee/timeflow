@@ -17,17 +17,13 @@ from components.lists import ListSimple
 from components.table import SimpleTable
 
 from pages.data.data import (
-    to_timelog,
     year_month_dict_list,
     username,
     epics_names,
     hours,
 )
 
-from pages.data.timelogs import (
-    Timelog,
-    timelog_days,
-)
+from pages.data.timelogs import Timelog, timelog_days, to_timelog
 
 from config import base_url
 
