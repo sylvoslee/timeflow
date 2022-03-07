@@ -11,16 +11,20 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import SubmitButton
-from pages.data import (
-    epics_names,
-    client_name_by_epic_id,
+from data.common import (
     username,
     year_month_dict_list,
+)
+
+from data.forecasts import (
+    forecast_by_user_epic_year_month,
     forecast_days,
     to_forecast,
-    forecast_by_user_epic_year_month,
     forecast_deletion,
 )
+from data.epics import client_name_by_epic_id
+
+from data.epics import epics_names
 
 from config import base_url
 
