@@ -16,35 +16,6 @@ class Select(TypedDict):
     dispay_value: str
 
 
-def to_rate(
-    user_id: int,
-    client_id: int,
-    valid_from: str,
-    valid_to: str,
-    amount: float,
-    created_at: str,
-    updated_at: str,
-    is_active: bool,
-) -> bool:
-    data = Rate(
-        user_id=user_id,
-        client_id=client_id,
-        valid_from=valid_from,
-        valid_to=valid_to,
-        amount=amount,
-        created_at=created_at,
-        updated_at=updated_at,
-        is_active=True,
-    )
-    print(data)
-    response = requests.post(
-        f"{base_url}/api/rates",
-        data=json.dumps(dict(data)),
-        headers={"accept": "application/json", "Content-Type": "application/json"},
-    )
-    return True
-
-
 def username() -> List[Select]:
     api_username = f"{base_url}/api/users"
     response_username = requests.get(api_username)

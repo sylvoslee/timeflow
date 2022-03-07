@@ -14,7 +14,6 @@ from components.table import SimpleTable
 from components.controls import SubmitButton
 from pages.data.data import (
     clients_names,
-    to_rate,
     months_start,
     username,
 )
@@ -23,6 +22,7 @@ from pages.data.rates import (
     rates_by_user_client_date,
     rate_active_by_user_client,
     rate_update,
+    to_rate,
 )
 
 from pages.utils import month_start_to_str, far_date, date_str_to_date
