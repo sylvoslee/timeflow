@@ -11,7 +11,7 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import SubmitButton
-from pages.data import (
+from pages.data.data import (
     epics_names,
     client_name_by_epic_id,
     username,
