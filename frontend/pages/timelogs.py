@@ -16,14 +16,14 @@ from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 
-from pages.data.common import (
+from data.common import (
     year_month_dict_list,
     username,
     hours,
 )
 
-from pages.data.timelogs import Timelog, timelog_days, to_timelog
-from pages.data.epics import epics_names
+from data.timelogs import Timelog, timelog_days, to_timelog
+from data.epics import epics_names
 
 from config import base_url
 

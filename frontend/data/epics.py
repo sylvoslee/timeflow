@@ -1,7 +1,7 @@
 import requests
 from typing import List
 from config import base_url
-from pages.data.common import Select
+from data.common import Select
 
 
 def epics_names() -> List[Select]:
