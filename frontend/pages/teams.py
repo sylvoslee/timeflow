@@ -6,7 +6,6 @@ from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from components.controls import Button
-<<<<<<< HEAD
 
 from data.teams import (
     team_deactivation,
@@ -15,9 +14,6 @@ from data.teams import (
     get_active_team_rows,
 )
 from data.users import user_dropdown
-=======
-from config import base_url
->>>>>>> dev
 
 
 @component
