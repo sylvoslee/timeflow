@@ -87,6 +87,7 @@ def create_team_form(
     # Create a dropdown of users which can then be selected
     selector_user_name = user_dropdown(set_user_id)
 
+    # Create submit button
     is_disabled = True
     if name != "" and short_name != "" and user_id != "":
         is_disabled = False
