@@ -6,6 +6,7 @@ from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from components.controls import Button
+<<<<<<< HEAD
 
 from data.teams import (
     team_deactivation,
@@ -14,6 +15,9 @@ from data.teams import (
     get_active_team_rows,
 )
 from data.users import user_dropdown
+=======
+from config import base_url
+>>>>>>> dev
 
 
 @component
@@ -87,12 +91,10 @@ def create_team_form(
     # Create a dropdown of users which can then be selected
     selector_user_name = user_dropdown(set_user_id)
 
-    # Create submit button
     is_disabled = True
-    if [name, short_name, user_id] != ["", "", ""]:
+    if name != "" and short_name != "" and user_id != "":
         is_disabled = False
     btn = Button(is_disabled, handle_submit, label="Submit")
-
     return Column(
         Row(
             inp_name,
@@ -127,13 +129,11 @@ def deactivate_team(set_deact_name):
         set_deact_name(name_to_deact)
 
     inp_deact_name = Input(set_value=set_name_to_deact, label="team to be deactivated")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_deactivation,
-        },
-        "Submit",
-    )
+    is_disabled = True
+    if name_to_deact != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+
     return Column(Row(inp_deact_name), Row(btn))
 
 
@@ -148,11 +148,8 @@ def activate_team(set_activ_name):
         set_activ_name(name_to_activ)
 
     inp_deact_name = Input(set_value=set_name_to_activ, label="team to be activated")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_activation,
-        },
-        "Submit",
-    )
+    is_disabled = True
+    if name_to_activ != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
     return Column(Row(inp_deact_name), Row(btn))

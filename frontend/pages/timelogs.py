@@ -15,6 +15,7 @@ from components.input import (
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
+from components.controls import Button
 
 from data.common import (
     year_month_dict_list,
@@ -143,14 +144,18 @@ def create_timelog_form(
         set_value=set_end_time,
         data=hours(),
     )
+    is_disabled = True
+    if (
+        user != ""
+        and epic_id != ""
+        and year_month != ""
+        and day != ""
+        and start_time != ""
+        and end_time != ""
+    ):
+        is_disabled = False
 
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": handle_submit,
-        },
-        "Submit",
-    )
+    btn = Button(is_disabled, handle_submit, label="Submit")
     return Column(
         Row(
             selector_user,

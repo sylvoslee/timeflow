@@ -86,7 +86,8 @@ def create_sponsor_form(
 
     # Create submit button
     is_disabled = True
-    if [name, short_name, client_id] != ["", "", ""]:
+    if name != "" and short_name != "" and client_id != "":
+
         is_disabled = False
     btn = Button(is_disabled, handle_submit, label="Submit")
 
@@ -138,13 +139,10 @@ def deactivate_sponsor(set_deact_name):
     inp_deact_name = Input(
         set_value=set_name_to_deact, label="sponsor to be deactivated"
     )
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_deactivation,
-        },
-        "Submit",
-    )
+    is_disabled = True
+    if name_to_deact != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
     return Column(Row(inp_deact_name), Row(btn))
 
 
@@ -161,11 +159,9 @@ def activate_sponsor(set_activ_name):
         return True
 
     inp_deact_name = Input(set_value=set_name_to_activ, label="sponsor to be activated")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50 border-secondary-200",
-            "onClick": handle_activation,
-        },
-        "Submit",
-    )
+    is_disabled = True
+    if name_to_activ != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+
     return Column(Row(inp_deact_name), Row(btn))

@@ -11,6 +11,7 @@ from components.input import Input, SelectorDropdownKeyValue, Selector
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
+from components.controls import Button
 from config import base_url
 
 
@@ -97,13 +98,11 @@ def create_epic_form(
 
     inp_name = Input(set_value=set_name, label="name")
     inp_work_area = Input(set_value=set_work_area, label="work_area")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": handle_submit,
-        },
-        "Submit",
-    )
+    is_disabled = True
+    if name != "" and work_area != "" and client_id != "":
+        is_disabled = False
+
+    btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
         Row(
