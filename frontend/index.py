@@ -9,6 +9,7 @@ from pages.forecasts import page as forecasts_page
 from pages.rates import page as rates_page
 from pages.teams import page as teams_page
 from pages.sponsors import page as sponsors_page
+from pages.roles import page as roles_page
 
 
 from components.layout import Column, Row, FlexContainer
@@ -24,6 +25,8 @@ def page():
     print("here", current_page)
     if current_page == "Users":
         current_page_component = users_page(key="users_page")
+    if current_page == "Roles":
+        current_page_component = roles_page(key="roles_page")
     elif current_page == "Epics":
         current_page_component = epics_page(key="epics_page")
     elif current_page == "Epic Areas":
@@ -40,10 +43,6 @@ def page():
         current_page_component = teams_page(key="teams_page")
     elif current_page == "Sponsors":
         current_page_component = sponsors_page(key="sponsors_page")
-    else:
-        current_page_component = html.h1(
-            {"class": "text-white"}, "Test Page, not implemented yet"
-        )
 
     return html.div(
         {"class": "flex w-full"},
