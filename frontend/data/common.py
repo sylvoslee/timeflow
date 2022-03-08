@@ -1,15 +1,12 @@
 import requests
-import json
 
 from config import base_url
 from typing import List, Dict, TypedDict
-from datetime import datetime
 from pages.utils import (
     year_month_list,
     hours_list,
     month_start_list,
 )
-from idom import html
 from components.controls import Button
 
 

@@ -5,7 +5,6 @@ from black import click
 from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
-from components.controls import Button
 
 from data.common import activation_button, deactivation_button, submit_button
 from data.teams import (
