@@ -12,7 +12,7 @@ class Epic(SQLModel, table=True):
     short_name: str
     name: str
     team_id: int
-    sponsor_id: int
+    sponsor_id: int = Field(foreign_key="sponsor.id")
     start_date: date
     is_active: bool
     created_at: datetime

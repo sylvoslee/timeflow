@@ -3,6 +3,7 @@ from ..utils import engine, get_session
 from sqlmodel import Session, select, SQLModel, or_
 from ..models.epic import Epic
 from ..models.client import Client
+from ..models.sponsor import Sponsor
 from sqlalchemy.exc import NoResultFound
 from datetime import datetime
 
@@ -50,10 +51,12 @@ async def get_client_name_by_epic_id(
 ):
     """Get client name from epic_id"""
     statement = (
-        select(Epic.id, Client.id, Client.name)
-        .join(Client)
+        select(Client.name.label("client_name"), Client.id.label("client_id"))
+        .select_from(Epic)
+        .join(Sponsor, isouter=True)
+        .join(Client, isouter=True)
         .where(Epic.id == epic_id)
-        .where(Client.active == True)
+        .where(Client.is_active == True)
     )
     result = session.exec(statement).one()
     return result
