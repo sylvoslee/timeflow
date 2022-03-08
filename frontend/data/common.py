@@ -10,11 +10,20 @@ from pages.utils import (
     month_start_list,
 )
 from idom import html
+from components.controls import Button
 
 
 class Select(TypedDict):
     value: str
     dispay_value: str
+
+
+def deactivation_button(name_to_deact, handle_deactivation):
+    is_disabled = True
+    if name_to_deact != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+    return btn
 
 
 def username() -> List[Select]:

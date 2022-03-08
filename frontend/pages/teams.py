@@ -7,6 +7,7 @@ from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from components.controls import Button
 
+from data.common import deactivation_button
 from data.teams import (
     team_deactivation,
     team_activation,
@@ -126,10 +127,9 @@ def deactivate_team(set_deact_name):
         set_deact_name(name_to_deact)
 
     inp_deact_name = Input(set_value=set_name_to_deact, label="team to be deactivated")
-    is_disabled = True
-    if name_to_deact != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+
+    # Create the deactivation button
+    btn = deactivation_button(name_to_deact, handle_deactivation)
 
     return Column(Row(inp_deact_name), Row(btn))
 
