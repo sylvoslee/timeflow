@@ -35,7 +35,7 @@ async def read_clients(session: Session = Depends(get_session)):
 @router.get("/active")
 async def read_clients(session: Session = Depends(get_session)):
     """Get a list of all active clients"""
-    statement = select(Client).where(Client.active == True)
+    statement = select(Client).where(Client.is_active == True)
     results = session.exec(statement).all()
     return results
 
