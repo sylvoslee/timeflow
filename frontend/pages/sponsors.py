@@ -8,7 +8,13 @@ from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from components.controls import Button
 from config import base_url
-from data.sponsors import post_sponsor
+from data.common import activation_button, deactivation_button, submit_button
+from data.sponsors import (
+    get_active_sponsor_rows,
+    post_sponsor,
+    sponsor_activation,
+    sponsor_deactivation,
+)
 from data.clients import client_dropdown
 
 
@@ -85,11 +91,7 @@ def create_sponsor_form(
     selector_client_name = client_dropdown(set_client_id)
 
     # Create submit button
-    is_disabled = True
-    if name != "" and short_name != "" and client_id != "":
-
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit, label="Submit")
+    btn = submit_button(handle_submit, name, short_name, client_id)
 
     return Column(
         Row(
@@ -110,17 +112,7 @@ def list_sponsors(submitted_name, submitted_short_name):
     Store in rows the names of the client and sponsor, along with the id.
     Return an HTML div that contains the rows in a table.
     """
-    api = f"{base_url}/api/sponsors/active"
-    response = requests.get(api)
-
-    rows = []
-    for item in response.json():
-        d = {
-            "Sponsor name": item["sponsor_name"],
-            "Sponsor short name": item["sponsor_short_name"],
-            "Client name": item["client_name"],
-        }
-        rows.append(d)
+    rows = get_active_sponsor_rows()
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
@@ -131,18 +123,17 @@ def deactivate_sponsor(set_deact_name):
 
     def handle_deactivation(event):
         """Set the given sponsor's active column to False."""
-        api = f"{base_url}/api/sponsors/{name_to_deact}/deactivate"
-        response = requests.put(api)
+        sponsor_deactivation(name_to_deact)
         set_deact_name(name_to_deact)
-        return True
 
+    # Create input field for name of sponsor to be deactivated
     inp_deact_name = Input(
         set_value=set_name_to_deact, label="sponsor to be deactivated"
     )
-    is_disabled = True
-    if name_to_deact != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+
+    # Create the deactivation button
+    btn = deactivation_button(name_to_deact, handle_deactivation)
+
     return Column(Row(inp_deact_name), Row(btn))
 
 
@@ -153,15 +144,13 @@ def activate_sponsor(set_activ_name):
 
     def handle_activation(event):
         """Set the given sponsor's active column to True."""
-        api = f"{base_url}/api/sponsors/{name_to_activ}/activate"
-        response = requests.put(api)
+        sponsor_activation(name_to_activ)
         set_activ_name(name_to_activ)
-        return True
 
-    inp_deact_name = Input(set_value=set_name_to_activ, label="sponsor to be activated")
-    is_disabled = True
-    if name_to_activ != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+    # Create input field for name of sponsor to be activated
+    inp_activ_name = Input(set_value=set_name_to_activ, label="sponsor to be activated")
 
-    return Column(Row(inp_deact_name), Row(btn))
+    # Create the activation button
+    btn = activation_button(name_to_activ, handle_activation)
+
+    return Column(Row(inp_activ_name), Row(btn))

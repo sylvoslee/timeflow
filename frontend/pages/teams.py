@@ -7,7 +7,7 @@ from components.layout import Row, Column, Container
 from components.table import SimpleTable
 from components.controls import Button
 
-from data.common import deactivation_button
+from data.common import activation_button, deactivation_button, submit_button
 from data.teams import (
     team_deactivation,
     team_activation,
@@ -89,10 +89,8 @@ def create_team_form(
     selector_user_name = user_dropdown(set_user_id)
 
     # Create submit button
-    is_disabled = True
-    if name != "" and short_name != "" and user_id != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit, label="Submit")
+    btn = submit_button(handle_submit, name, short_name, user_id)
+
     return Column(
         Row(
             inp_name,
@@ -126,6 +124,7 @@ def deactivate_team(set_deact_name):
         team_deactivation(name_to_deact)
         set_deact_name(name_to_deact)
 
+    # Create input field for name of team to be deactivated
     inp_deact_name = Input(set_value=set_name_to_deact, label="team to be deactivated")
 
     # Create the deactivation button
@@ -144,9 +143,10 @@ def activate_team(set_activ_name):
         team_activation(name_to_activ)
         set_activ_name(name_to_activ)
 
-    inp_deact_name = Input(set_value=set_name_to_activ, label="team to be activated")
-    is_disabled = True
-    if name_to_activ != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
-    return Column(Row(inp_deact_name), Row(btn))
+    # Create input field for name of team to be activated
+    inp_activ_name = Input(set_value=set_name_to_activ, label="team to be activated")
+
+    # Create the activation button
+    btn = activation_button(name_to_activ, handle_activation)
+
+    return Column(Row(inp_activ_name), Row(btn))

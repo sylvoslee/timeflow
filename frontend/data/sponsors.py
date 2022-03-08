@@ -5,6 +5,23 @@ from config import base_url
 from datetime import datetime
 
 
+def get_active_sponsor_rows():
+    """Get all active sponsor and store them in a list."""
+    api = f"{base_url}/api/sponsors/active"
+    response = requests.get(api)
+
+    rows = []
+    for item in response.json():
+        d = {
+            "Sponsor name": item["sponsor_name"],
+            "Sponsor short name": item["sponsor_short_name"],
+            "Client name": item["client_name"],
+        }
+        rows.append(d)
+
+    return rows
+
+
 def post_sponsor(name: str, short_name: str, client_id: int):
     data = {
         "name": name,
@@ -19,3 +36,15 @@ def post_sponsor(name: str, short_name: str, client_id: int):
         data=json.dumps(data),
         headers={"accept": "application/json", "Content-Type": "application/json"},
     )
+
+
+def sponsor_activation(name_to_activ) -> bool:
+    api = f"{base_url}/api/sponsors/{name_to_activ}/activate"
+    response = requests.put(api)
+    return True
+
+
+def sponsor_deactivation(name_to_deact) -> bool:
+    api = f"{base_url}/api/sponsors/{name_to_deact}/deactivate"
+    response = requests.put(api)
+    return True
