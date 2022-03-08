@@ -1,15 +1,19 @@
-import json
 from idom import html, use_state, component, event
-import requests
 from sanic import response
 from black import click
-from datetime import datetime
 
-from components.input import Input, SelectorDropdownKeyValue, Selector
+from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
-from components.controls import Button
-from config import base_url
+
+from data.common import activation_button, deactivation_button, submit_button
+from data.teams import (
+    team_deactivation,
+    team_activation,
+    post_team,
+    get_active_team_rows,
+)
+from data.users import user_dropdown
 
 
 @component
@@ -68,44 +72,24 @@ def create_team_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         """Call a post request for the given team when given event is triggered."""
-        data = {
-            "name": name,
-            "short_name": short_name,
-            "user_id": user_id,
-            "is_active": True,
-            "created_at": str(datetime.now()),
-            "updated_at": str(datetime.now()),
-        }
-        print("here", data)
-        response = requests.post(
-            f"{base_url}/api/teams",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
-        )
+        post_team(name, short_name, user_id)
+
+        # Change the states
         set_submitted_name(name)
         set_submitted_short_name(short_name)
 
+    # Create input field for the name of the team
     inp_name = Input(set_value=set_name, label="name of the team")
 
+    # Create input field for the short name of the team
     inp_short_name = Input(set_value=set_short_name, label="short name of the team")
 
-    # Connect to active users list endpoint
-    api_user_name = f"{base_url}/api/users"
-    response_user_name = requests.get(api_user_name)
-
     # Create a dropdown of users which can then be selected
-    user_name_rows = [{item["name"]: item["id"]} for item in response_user_name.json()]
-    user_name_dropdown_list = SelectorDropdownKeyValue(rows=user_name_rows)
-    selector_user_name = Selector(
-        set_value=set_user_id,
-        placeholder="Select Leader (User)",
-        dropdown_list=user_name_dropdown_list,
-    )
+    selector_user_name = user_dropdown(set_user_id)
 
-    is_disabled = True
-    if name != "" and short_name != "" and user_id != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit, label="Submit")
+    # Create submit button
+    btn = submit_button(handle_submit, name, short_name, user_id)
+
     return Column(
         Row(
             inp_name,
@@ -125,17 +109,7 @@ def list_teams(submitted_name, submitted_short_name):
     Store in rows the names of the user and team, along with the id.
     Return an HTML div that contains the rows in a table.
     """
-    api = f"{base_url}/api/teams/active"
-    response = requests.get(api)
-
-    rows = []
-    for item in response.json():
-        d = {
-            "Team name": item["team_name"],
-            "Team short name": item["team_short_name"],
-            "User lead": item["user_name"],
-        }
-        rows.append(d)
+    rows = get_active_team_rows()
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
@@ -145,17 +119,15 @@ def deactivate_team(set_deact_name):
     name_to_deact, set_name_to_deact = use_state("")
 
     def handle_deactivation(event):
-        """Set the given epic are'a active column to False."""
-        api = f"{base_url}/api/teams/{name_to_deact}/deactivate"
-        response = requests.put(api)
+        """Set the given team's active column to False."""
+        team_deactivation(name_to_deact)
         set_deact_name(name_to_deact)
-        return True
 
+    # Create input field for name of team to be deactivated
     inp_deact_name = Input(set_value=set_name_to_deact, label="team to be deactivated")
-    is_disabled = True
-    if name_to_deact != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+
+    # Create the deactivation button
+    btn = deactivation_button(name_to_deact, handle_deactivation)
 
     return Column(Row(inp_deact_name), Row(btn))
 
@@ -167,14 +139,13 @@ def activate_team(set_activ_name):
 
     def handle_activation(event):
         """Set the given epic are'a active column to True."""
-        api = f"{base_url}/api/teams/{name_to_activ}/activate"
-        response = requests.put(api)
+        team_activation(name_to_activ)
         set_activ_name(name_to_activ)
-        return True
 
-    inp_deact_name = Input(set_value=set_name_to_activ, label="team to be activated")
-    is_disabled = True
-    if name_to_activ != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
-    return Column(Row(inp_deact_name), Row(btn))
+    # Create input field for name of team to be activated
+    inp_activ_name = Input(set_value=set_name_to_activ, label="team to be activated")
+
+    # Create the activation button
+    btn = activation_button(name_to_activ, handle_activation)
+
+    return Column(Row(inp_activ_name), Row(btn))

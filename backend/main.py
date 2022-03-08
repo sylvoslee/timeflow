@@ -14,6 +14,7 @@ from backend.api import (
     client,
     rate,
     team,
+    role,
     sponsor,
 )
 import pandas as pd
@@ -32,6 +33,7 @@ app.include_router(epic_area.router)
 app.include_router(client.router)
 app.include_router(rate.router)
 app.include_router(team.router)
+app.include_router(role.router)
 app.include_router(sponsor.router)
 
 

@@ -1,4 +1,5 @@
 import requests
+
 from config import base_url
 from typing import List, Dict, TypedDict
 from pages.utils import (
@@ -6,13 +7,38 @@ from pages.utils import (
     hours_list,
     month_start_list,
 )
-import json
-from datetime import datetime
+from components.controls import Button
 
 
 class Select(TypedDict):
     value: str
     dispay_value: str
+
+
+def activation_button(name_to_activ, handle_activation):
+    is_disabled = True
+    if name_to_activ != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+    return btn
+
+
+def deactivation_button(name_to_deact, handle_deactivation):
+    is_disabled = True
+    if name_to_deact != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+    return btn
+
+
+def submit_button(handle_submit, *fields):
+    """Create a submit button that is active when all given fields are filled out"""
+    is_disabled = False
+    for field in fields:
+        if field == "":
+            is_disabled = True
+    btn = Button(is_disabled, handle_submit, label="Submit")
+    return btn
 
 
 def username() -> List[Select]:

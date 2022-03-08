@@ -2,6 +2,24 @@ import requests
 from typing import List
 from config import base_url
 from data.common import Select
+from components.input import Selector, SelectorDropdownKeyValue
+
+
+def epic_dropdown(set_epic_id):
+    """Return a dropdown list that allows for the selection of a single epic"""
+    # Connect to active epics endpoint
+    api_epic_name = f"{base_url}/api/epics/active"
+    response_epic_name = requests.get(api_epic_name)
+
+    # Create dropdown of active epics which can then be selected
+    epic_name_rows = [{item["name"]: item["id"]} for item in response_epic_name.json()]
+    epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
+    selector_epic_name = Selector(
+        set_value=set_epic_id,
+        placeholder="Select Epic",
+        dropdown_list=epic_name_dropdown_list,
+    )
+    return selector_epic_name
 
 
 def epics_names() -> List[Select]:

@@ -1,17 +1,19 @@
-import asyncio
-from cProfile import label
-import json
 from idom import html, use_state, component, event
-import requests
 from sanic import response
 from black import click
-from datetime import datetime
 
-from components.input import Input, SelectorDropdownKeyValue, Selector
+from components.input import Input
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
-from components.controls import Button
-from config import base_url
+
+from data.common import activation_button, deactivation_button, submit_button
+from data.epics import epic_dropdown
+from data.epic_areas import (
+    epic_area_activation,
+    epic_area_deactivation,
+    get_active_epic_area_rows,
+    post_epic_area,
+)
 
 
 @component
@@ -63,39 +65,19 @@ def create_epic_area_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         """Call a post request for the given epic area when given event is triggered."""
-        data = {
-            "epic_id": epic_id,
-            "name": name,
-            "is_active": True,
-            "created_at": str(datetime.now()),
-            "updated_at": str(datetime.now()),
-        }
-        print("here", data)
-        response = requests.post(
-            f"{base_url}/api/epic_areas",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
-        )
+        post_epic_area(epic_id, name)
+
+        # Change the states
         set_submitted_name(name)
 
-    # Connect to active epics endpoint
-    api_epic_name = f"{base_url}/api/epics/active"
-    response_epic_name = requests.get(api_epic_name)
-
     # Create dropdown of active epics which can then be selected
-    epic_name_rows = [{item["name"]: item["id"]} for item in response_epic_name.json()]
-    epic_name_dropdown_list = SelectorDropdownKeyValue(rows=epic_name_rows)
-    selector_epic_name = Selector(
-        set_value=set_epic_id,
-        placeholder="Select Epic",
-        dropdown_list=epic_name_dropdown_list,
-    )
+    selector_epic_name = epic_dropdown(set_epic_id)
 
+    # Create input field for the name of the epic area
     inp_name = Input(set_value=set_name, label="name")
-    is_disabled = True
-    if epic_id != "" and name != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit, label="Submit")
+
+    # Create submit button
+    btn = submit_button(handle_submit, epic_id, name)
 
     return Column(
         Row(
@@ -115,17 +97,7 @@ def list_epic_areas(submitted_name):
     Store in rows the names of the epic and epic area, along with the id.
     Return an HTML div that contains the rows in a table.
     """
-    api = f"{base_url}/api/epic_areas/active"
-    response = requests.get(api)
-
-    rows = []
-    for item in response.json():
-        d = {
-            "Epic": item["epic_name"],
-            "Epic Area": item["epic_area_name"],
-            "ID": item["id"],
-        }
-        rows.append(d)
+    rows = get_active_epic_area_rows()
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
@@ -136,18 +108,17 @@ def deactivate_epic_area(set_deact_name):
 
     def handle_deactivation(event):
         """Set the given epic area's active column to False."""
-        api = f"{base_url}/api/epic_areas/{name_to_deact}/deactivate"
-        response = requests.put(api)
+        epic_area_deactivation(name_to_deact)
         set_deact_name(name_to_deact)
-        return True
 
+    # Create input field for name of epic area to be deactivated
     inp_deact_name = Input(
         set_value=set_name_to_deact, label="epic area to be deactivated"
     )
-    is_disabled = True
-    if name_to_deact != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+
+    # Create the deactivation button
+    btn = deactivation_button(name_to_deact, handle_deactivation)
+
     return Column(Row(inp_deact_name), Row(btn))
 
 
@@ -158,16 +129,15 @@ def activate_epic_area(set_activ_name):
 
     def handle_activation(event):
         """Set the given epic area's active column to True."""
-        api = f"{base_url}/api/epic_areas/{name_to_activ}/activate"
-        response = requests.put(api)
+        epic_area_activation(name_to_activ)
         set_activ_name(name_to_activ)
-        return True
 
+    # Create input field for name of epic area to be activated
     inp_activ_name = Input(
         set_value=set_name_to_activ, label="epic area to be activated"
     )
-    is_disabled = True
-    if name_to_activ != "":
-        is_disabled = False
-    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+
+    # Create the activation button
+    btn = activation_button(name_to_activ, handle_activation)
+
     return Column(Row(inp_activ_name), Row(btn))
