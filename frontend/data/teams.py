@@ -16,7 +16,6 @@ def post_team(name: str, short_name: str, user_id: int):
         "created_at": str(datetime.now()),
         "updated_at": str(datetime.now()),
     }
-    print("here", data)
     response = requests.post(
         f"{base_url}/api/teams",
         data=json.dumps(data),
@@ -44,7 +43,7 @@ def get_active_team_rows():
 def teams_id_name() -> List[Select]:
     """Gets list of teams by short_name and id
 
-    api get: /api/teams/active
+    get endpoint: /api/teams/active
     Returns:
         List[Select]: list of dictionaries
     """

@@ -32,9 +32,6 @@ def page():
     deact_epic, set_deact_epic = use_state("")
     activ_epic, set_activ_epic = use_state("")
 
-    # is_changed, set_is_changed = use_state(False)
-    # delete_name, set_delete_name = use_state("")
-
     return Container(
         create_epic_form(
             short_name,
@@ -55,7 +52,6 @@ def page():
             Row(list_epics(team_id, sponsor_id, submitted_name)),
         ),
         Row(deactivate_epic(set_deact_epic), activate_epic(set_activ_epic)),
-        # Row(delete_epic(set_delete_name)),
     )
 
 
@@ -75,7 +71,7 @@ def create_epic_form(
     set_day,
     set_submitted_name,
 ):
-    """
+    """Create a form that allows the admin to create a new epic
     post endpoint: /api/epics
     schema: {
       "id": 0,
@@ -91,6 +87,7 @@ def create_epic_form(
 
     @event(prevent_default=True)
     async def handle_submit(event):
+        """Calls a post request for the given epic when given event is triggered."""
         ym = year_month
         year = ym[:4]
         month = ym[5:7]
@@ -105,6 +102,7 @@ def create_epic_form(
             created_at=str(datetime.now()),
             updated_at=str(datetime.now()),
         )
+        # Triggers state change
         set_submitted_name(name)
 
     inp_short_name = Input(set_short_name, "epics short name")
@@ -142,6 +140,7 @@ def create_epic_form(
 
 @component
 def list_epics(team_id, sponsor_id, submitted_name):
+    """Calls a list of epics filtered by selected team id and sponsor id"""
     rows = epics_by_team_sponsor(team_id, sponsor_id)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 

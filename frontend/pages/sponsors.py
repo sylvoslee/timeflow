@@ -79,7 +79,7 @@ def create_sponsor_form(
         set_submitted_short_name(short_name)
 
     # Create input field for the name of the sponsor
-    inp_name = Input(set_value=set_name, label="name of the sponsor")
+    inp_name = Input(set_value=set_name, label="full name of the sponsor")
 
     # Create input field for the short name of the sponsor
     inp_short_name = Input(set_value=set_short_name, label="short name of the sponsor")
