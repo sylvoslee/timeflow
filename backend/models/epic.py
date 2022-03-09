@@ -11,7 +11,7 @@ class Epic(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     short_name: str
     name: str
-    team_id: int
+    team_id: int = Field(foreign_key="team.id")
     sponsor_id: int = Field(foreign_key="sponsor.id")
     start_date: date
     is_active: bool

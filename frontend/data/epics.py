@@ -1,8 +1,21 @@
 import requests
-from typing import List
+from typing import List, TypedDict
+from datetime import datetime, date
+
 from config import base_url
 from data.common import Select
 from components.input import Selector, SelectorDropdownKeyValue
+
+
+class Epic(TypedDict):
+    short_name: str
+    name: str
+    team_id: int
+    sponsor_id: int
+    start_date: date
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
 
 
 def epic_dropdown(set_epic_id):
