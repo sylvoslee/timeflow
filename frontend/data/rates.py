@@ -73,7 +73,6 @@ def to_rate(
         updated_at=updated_at,
         is_active=True,
     )
-    print(data)
     response = requests.post(
         f"{base_url}/api/rates",
         data=json.dumps(dict(data)),
