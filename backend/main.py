@@ -4,7 +4,6 @@ from sqlalchemy.exc import OperationalError
 from backend.models.timelog import TimeLog
 from backend.models.calendar import Calendar
 from backend.utils import engine, sqlite3_engine, create_db, tags_metadata
-from datetime import datetime
 from backend.api import (
     user,
     timelog,
@@ -17,10 +16,7 @@ from backend.api import (
     role,
     sponsor,
 )
-import pandas as pd
-from pandas import Timestamp
 import csv
-import sqlite3
 
 app = FastAPI(title="timeflow app API", openapi_tags=tags_metadata)
 
