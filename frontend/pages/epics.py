@@ -16,7 +16,7 @@ from config import base_url
 
 from data.teams import teams_id_name
 from data.sponsors import sponsors_id_name
-from data.epics import to_epic
+from data.epics import to_epic, epics_by_team_sponsor
 from data.common import year_month_dict_list, days_in_month
 
 
@@ -29,6 +29,9 @@ def page():
     year_month, set_year_month = use_state("")
     day, set_day = use_state("")
     submitted_name, set_submitted_name = use_state("")
+    deact_epic, set_deact_epic = use_state("")
+    activ_epic, set_activ_epic = use_state("")
+
     # is_changed, set_is_changed = use_state(False)
     # delete_name, set_delete_name = use_state("")
 
@@ -48,9 +51,10 @@ def page():
             set_day,
             set_submitted_name,
         ),
-        # Column(
-        #     Row(list_epics(submitted_name)),
-        # ),
+        Column(
+            Row(list_epics(team_id, sponsor_id, submitted_name)),
+        ),
+        Row(deactivate_epic(set_deact_epic), activate_epic(set_activ_epic)),
         # Row(delete_epic(set_delete_name)),
     )
 
@@ -111,9 +115,16 @@ def create_epic_form(
         set_year_month, year_month_dict_list(label="select start month")
     )
     selector_start_day = Selector2(set_day, days_in_month(label="select start day"))
-    # is_disabled = True
-    # if name != "" and  != "" and  != "":
-    is_disabled = False
+    is_disabled = True
+    if (
+        short_name != ""
+        and name != ""
+        and team_id != ""
+        and sponsor_id != ""
+        and year_month != ""
+        and day != ""
+    ):
+        is_disabled = False
     btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
@@ -130,34 +141,48 @@ def create_epic_form(
 
 
 @component
-def list_epics(submitted_name):
-    api = f"{base_url}/api/epics/active"
-    response = requests.get(api)
-
-    rows = []
-    for item in response.json():
-        d = {
-            "name": item["name"],
-        }
-        rows.append(d)
+def list_epics(team_id, sponsor_id, submitted_name):
+    rows = epics_by_team_sponsor(team_id, sponsor_id)
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
 @component
-def delete_epic(set_delete_name):
-    name_to_delete, set_name_to_delete = use_state("")
+def deactivate_epic(set_deact_epic):
+    """Deactivate an epic without deleting it."""
+    epic_to_deact, set_epic_to_deact = use_state("")
 
-    def delete_epic(event):
-        api = f"{base_url}/api/epics/?epic_name={name_to_delete}"
-        response = requests.delete(api)
-        set_delete_name(name_to_delete)
+    def handle_deactivation(event):
+        """Set the given epic's is_active column to False."""
+        api = f"{base_url}/api/epics/{epic_to_deact}/deactivate"
+        response = requests.put(api)
+        set_deact_epic(epic_to_deact)
+        return True
 
-    inp_delete_name = Input(set_value=set_name_to_delete, label="delete epic input")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": delete_epic,
-        },
-        "Submit",
+    inp_deact_epic = Input(
+        set_value=set_epic_to_deact, label="epic id to be deactivated"
     )
-    return Column(Row(inp_delete_name), Row(btn))
+    is_disabled = True
+    if epic_to_deact != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+    return Column(Row(inp_deact_epic), Row(btn))
+
+
+@component
+def activate_epic(set_activ_epic):
+    """Activate an inactivated epic"""
+    epic_to_activ, set_epic_to_activ = use_state("")
+
+    def handle_activation(event):
+        """Set the given epic's is_active column to True."""
+        api = f"{base_url}/api/epics/{epic_to_activ}/activate"
+        response = requests.put(api)
+        set_activ_epic(epic_to_activ)
+        return True
+
+    inp_activ_epic = Input(set_value=set_epic_to_activ, label="epic id to be activated")
+    is_disabled = True
+    if epic_to_activ != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+    return Column(Row(inp_activ_epic), Row(btn))

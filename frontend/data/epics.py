@@ -74,6 +74,22 @@ def epics_names() -> List[Select]:
     return epic_name_rows
 
 
+def epics_by_team_sponsor(team_id: int, sponsor_id: int) -> List[Select]:
+    api = f"{base_url}/api/epics/teams/{team_id}/sponsors/{sponsor_id}/"
+    response = requests.get(api)
+    rows = []
+    for item in response.json():
+        d = {
+            "epic id": item["epic_id"],
+            "epic name": item["epic_name"],
+            "start date": item["start_date"],
+            "team name": item["team_name"],
+            "sponsor name": item["sponsor_short_name"],
+        }
+        rows.append(d)
+    return rows
+
+
 def client_name_by_epic_id(epic_id) -> Select:
     api_client_name_id = f"{base_url}/api/epics/{epic_id}/client-name"
     response_client_name_id = requests.get(api_client_name_id)

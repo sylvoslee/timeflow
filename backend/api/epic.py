@@ -4,6 +4,7 @@ from sqlmodel import Session, select, SQLModel, or_
 from ..models.epic import Epic
 from ..models.client import Client
 from ..models.sponsor import Sponsor
+from ..models.team import Team
 from sqlalchemy.exc import NoResultFound
 from datetime import datetime
 
@@ -41,6 +42,28 @@ async def get_epic_list(session: Session = Depends(get_session)):
 async def get_active_epics_list(session: Session = Depends(get_session)):
     """Get list of active epics"""
     statement = select(Epic).where(Epic.is_active == True)
+    results = session.exec(statement).all()
+    return results
+
+
+@router.get("/teams/{team_id}/sponsors/{sponsor_id}/")
+async def get_epic_by_team_sponsor(team_id: int, sponsor_id: int):
+    """Get list of epics by team id and sponsor id"""
+    statement = (
+        select(
+            Epic.id.label("epic_id"),
+            Epic.name.label("epic_name"),
+            Epic.start_date,
+            Team.name.label("team_name"),
+            Sponsor.short_name.label("sponsor_short_name"),
+        )
+        .select_from(Epic)
+        .join(Team)
+        .join(Sponsor)
+        .where(Epic.team_id == team_id)
+        .where(Epic.sponsor_id == sponsor_id)
+        .where(Epic.is_active == True)
+    )
     results = session.exec(statement).all()
     return results
 
