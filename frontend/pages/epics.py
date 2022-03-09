@@ -16,6 +16,7 @@ from config import base_url
 
 from data.teams import teams_id_name
 from data.sponsors import sponsors_id_name
+from data.epics import to_epic
 from data.common import year_month_dict_list, days_in_month
 
 
@@ -25,11 +26,9 @@ def page():
     name, set_name = use_state("")
     team_id, set_team_id = use_state("")
     sponsor_id, set_sponsor_id = use_state("")
-
     year_month, set_year_month = use_state("")
     day, set_day = use_state("")
-
-    # submitted_name, set_submitted_name = use_state("")
+    submitted_name, set_submitted_name = use_state("")
     # is_changed, set_is_changed = use_state(False)
     # delete_name, set_delete_name = use_state("")
 
@@ -46,8 +45,8 @@ def page():
             year_month,
             set_year_month,
             day,
-            set_day
-            # set_submitted_name,
+            set_day,
+            set_submitted_name,
         ),
         # Column(
         #     Row(list_epics(submitted_name)),
@@ -69,30 +68,38 @@ def create_epic_form(
     year_month,
     set_year_month,
     day,
-    set_day
-    # set_submitted_name,
+    set_day,
+    set_submitted_name,
 ):
     """
     post endpoint: /api/epics
     schema: {
-    "name": "string",
-    "active": True
-    "created_at": "2022-02-17T15:31:39.103Z",
-    "updated_at": "2022-02-17T15:31:39.103Z"
+      "id": 0,
+      "short_name": "string",
+      "name": "string",
+      "team_id": 0,
+      "sponsor_id": 0,
+      "start_date": "2022-03-09",
+      "is_active": true,
+      "created_at": "2022-03-09T12:44:58.203Z",
+      "updated_at": "2022-03-09T12:44:58.203Z"
     }"""
 
     @event(prevent_default=True)
     async def handle_submit(event):
-        data = {
-            "name": name,
-            "active": True,
-            "created_at": str(datetime.now()),
-            "updated_at": str(datetime.now()),
-        }
-        response = requests.post(
-            f"{base_url}/api/epics",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
+        ym = year_month
+        year = ym[:4]
+        month = ym[5:7]
+        start_date = year + "-" + month + "-" + day
+        to_epic(
+            short_name=short_name,
+            name=name,
+            team_id=team_id,
+            sponsor_id=sponsor_id,
+            start_date=start_date,
+            is_active=True,
+            created_at=str(datetime.now()),
+            updated_at=str(datetime.now()),
         )
         set_submitted_name(name)
 

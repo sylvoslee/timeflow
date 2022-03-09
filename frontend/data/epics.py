@@ -1,4 +1,5 @@
 import requests
+import json
 from typing import List, TypedDict
 from datetime import datetime, date
 
@@ -12,10 +13,38 @@ class Epic(TypedDict):
     name: str
     team_id: int
     sponsor_id: int
-    start_date: date
+    start_date: str
     is_active: bool
-    created_at: datetime
-    updated_at: datetime
+    created_at: str
+    updated_at: str
+
+
+def to_epic(
+    short_name: str,
+    name: str,
+    team_id: int,
+    sponsor_id: int,
+    start_date: str,
+    is_active: bool,
+    created_at: str,
+    updated_at: str,
+):
+    data = Epic(
+        short_name=short_name,
+        name=name,
+        team_id=team_id,
+        sponsor_id=sponsor_id,
+        start_date=start_date,
+        is_active=is_active,
+        created_at=created_at,
+        updated_at=updated_at,
+    )
+    respone = requests.post(
+        f"{base_url}/api/epics",
+        data=json.dumps(dict(data)),
+        headers={"accept": "application/json", "Content-Type": "application/json"},
+    )
+    return True
 
 
 def epic_dropdown(set_epic_id):
