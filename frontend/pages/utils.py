@@ -30,10 +30,10 @@ forecast_days_nr = range(1, 30)
 for n in forecast_days_nr:
     forecast_days_list.append(n)
 
-timelog_days_list = []
-timelog_days_nr = range(1, 32)
-for n in timelog_days_nr:
-    timelog_days_list.append(n)
+days_in_month_list = []
+days_in_month_nr = range(1, 32)
+for n in days_in_month_nr:
+    days_in_month_list.append(n)
 
 
 hours_list = []

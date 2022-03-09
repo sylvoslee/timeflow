@@ -1,23 +1,10 @@
 import requests
 import json
+from typing import List
+
 from config import base_url
 from datetime import datetime
-
-
-def get_active_team_rows():
-    """Get all active teams and store them in a list."""
-    api = f"{base_url}/api/teams/active"
-    response = requests.get(api)
-
-    rows = []
-    for item in response.json():
-        d = {
-            "Team name": item["team_name"],
-            "Team short name": item["team_short_name"],
-            "User lead": item["user_name"],
-        }
-        rows.append(d)
-    return rows
+from data.common import Select
 
 
 def post_team(name: str, short_name: str, user_id: int):
@@ -36,6 +23,39 @@ def post_team(name: str, short_name: str, user_id: int):
         headers={"accept": "application/json", "Content-Type": "application/json"},
     )
     return True
+
+
+def get_active_team_rows():
+    """Get all active teams and store them in a list."""
+    api = f"{base_url}/api/teams/active"
+    response = requests.get(api)
+
+    rows = []
+    for item in response.json():
+        d = {
+            "Team name": item["team_name"],
+            "Team short name": item["team_short_name"],
+            "User lead": item["user_name"],
+        }
+        rows.append(d)
+    return rows
+
+
+def teams_id_name() -> List[Select]:
+    """Gets list of teams by short_name and id
+
+    api get: /api/teams/active
+    Returns:
+        List[Select]: list of dictionaries
+    """
+
+    api = f"{base_url}/api/teams/active"
+    response = requests.get(api)
+    rows = [Select(value="", display_value="select team")]
+    for item in response.json():
+        d = Select(value=item["id"], display_value=item["team_short_name"])
+        rows.append(d)
+    return rows
 
 
 def team_activation(name_to_activ) -> bool:
