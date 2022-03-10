@@ -1,6 +1,5 @@
 from datetime import datetime
-from sqlmodel import Session, select, SQLModel, create_engine, text, insert
-from backend.models.user import User
+from sqlmodel import Session, SQLModel, create_engine, text
 import sqlite3
 
 database_loc = "backend/database.sqlite"
