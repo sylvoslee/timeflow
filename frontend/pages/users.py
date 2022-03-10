@@ -6,35 +6,51 @@ from idom import html, run, use_state, component, event, vdom
 from idom.server.sanic import PerClientStateServer
 import requests
 from sanic import Sanic, response
-
-from components.input import Input
+from datetime import datetime
+from components.input import Input, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
 from components.controls import Button
 from config import base_url
 
+from data.users import to_user
+from data.roles import roles_id_name
+from data.teams import teams_id_name
+from data.common import year_month_dict_list, days_in_month
+
 
 @component
 def page():
-    username, set_username = use_state("")
-    name, set_name = use_state("")
-    surname, set_surname = use_state("")
+    short_name, set_short_name = use_state("")
+    first_name, set_first_name = use_state("")
+    last_name, set_last_name = use_state("")
     email, set_email = use_state("")
-    submitted_surname, set_submitted_surname = use_state("")
-    deleted_user, set_deleted_user = use_state("")
+    role_id, set_role_id = use_state("")
+    team_id, set_team_id = use_state("")
+    year_month, set_year_month = use_state("")
+    submitted_name, set_submitted_name = use_state("")
+    print("year month is", year_month)
     return Container(
         Row(
             create_user_form(
-                username,
-                set_username,
-                name,
-                set_name,
-                surname,
-                set_surname,
+                short_name,
+                set_short_name,
+                first_name,
+                set_first_name,
+                last_name,
+                set_last_name,
                 email,
                 set_email,
-                set_submitted_surname,
+                role_id,
+                set_role_id,
+                team_id,
+                set_team_id,
+                year_month,
+                set_year_month,
+                # day,
+                # set_day,
+                set_submitted_name,
             )
         ),
         # Column(
@@ -46,52 +62,83 @@ def page():
 
 @component
 def create_user_form(
-    username,
-    set_username,
-    name,
-    set_name,
-    surname,
-    set_surname,
+    short_name,
+    set_short_name,
+    first_name,
+    set_first_name,
+    year_month,
+    set_year_month,
+    last_name,
+    set_last_name,
     email,
     set_email,
-    set_submitted_surname,
+    role_id,
+    set_role_id,
+    team_id,
+    set_team_id,
+    # day,
+    # set_day,
+    set_submitted_name,
 ):
     """
-    endpoint: /api/users
-    schema: {
-      "username": "string",
-      "name": "string",
-      "surname": "string",
-      "email": "string"
+        endpoint: /api/users
+        schema: {
+      "short_name": "string",
+      "first_name": "string",
+      "last_name": "string",
+      "email": "string",
+      "role_id": 0,
+      "team_id": 0,
+      "start_date": "2022-03-10",
+      "created_at": "2022-03-10T13:11:49.625Z",
+      "updated_at": "2022-03-10T13:11:49.625Z",
+      "is_active": true
     }"""
+    day, set_day = use_state("")
 
     @event(prevent_default=True)
     async def handle_submit(event):
-        data = {"username": username, "name": name, "surname": surname, "email": email}
-        print("here", data)
-        response = requests.post(
-            f"{base_url}/api/users",
-            data=json.dumps(data),
-            headers={"accept": "application/json", "Content-Type": "application/json"},
+
+        to_user(
+            short_name=short_name,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            role_id=role_id,
+            team_id=team_id,
+            year_month=year_month,
+            day=day,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
         )
-        set_submitted_surname(surname)
+        set_submitted_name(short_name)
 
-    inp_username = Input(set_value=set_username, label="username")
-    inp_name = Input(set_value=set_name, label="name")
-    inp_surname = Input(set_value=set_surname, label="surname")
+    print("year month", year_month)
+    print("day is", day)
+
+    inp_short_name = Input(set_value=set_short_name, label="short name")
+    inp_first_name = Input(set_value=set_first_name, label="first name")
+    inp_last_name = Input(set_value=set_last_name, label="last name")
     inp_email = Input(set_value=set_email, label="email")
+    selector_role = Selector2(set_role_id, roles_id_name())
+    selector_team = Selector2(set_team_id, teams_id_name())
+    selector_start_month = Selector2(
+        set_year_month, year_month_dict_list(label="select start month")
+    )
+    selector_start_day = Selector2(set_day, days_in_month(label="select start day"))
 
-    is_disabled = True
-    if username != "" and name != "" and surname != "" and email != "":
-        is_disabled = False
+    # is_disabled = True
+    # if username != "" and name != "" and surname != "" and email != "":
+    is_disabled = False
     btn = Button(is_disabled, handle_submit, label="Submit")
 
     return Column(
+        Row(inp_short_name, inp_first_name, inp_last_name, inp_email),
         Row(
-            inp_username,
-            inp_name,
-            inp_surname,
-            inp_email,
+            selector_role,
+            selector_team,
+            selector_start_month,
+            selector_start_day,
         ),
         Row(btn),
     )
