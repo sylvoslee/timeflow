@@ -37,10 +37,10 @@ def page():
                 set_submitted_surname,
             )
         ),
-        Column(
-            Row(list_users(submitted_surname)),
-        ),
-        Row(delete_user(set_deleted_user)),
+        # Column(
+        #     Row(list_users(submitted_surname)),
+        # ),
+        # Row(delete_user(set_deleted_user)),
     )
 
 

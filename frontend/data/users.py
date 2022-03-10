@@ -1,21 +1,21 @@
 import requests
 from config import base_url
-from components.input import Selector, SelectorDropdownKeyValue
+from components.input import Selector2, SelectorDropdownKeyValue
+from data.common import Select
 
 
 def user_dropdown(set_user_id):
     """Return a dropdown list that allows for the selection of a single user"""
 
     # Connect to active users list endpoint
-    api_user_name = f"{base_url}/api/users"
-    response_user_name = requests.get(api_user_name)
+    api = f"{base_url}/api/users"
+    response_user_name = requests.get(api)
 
     # Create a dropdown of users which can then be selected
-    user_name_rows = [{item["name"]: item["id"]} for item in response_user_name.json()]
-    user_name_dropdown_list = SelectorDropdownKeyValue(rows=user_name_rows)
-    selector_user_name = Selector(
-        set_value=set_user_id,
-        placeholder="Select Leader (User)",
-        dropdown_list=user_name_dropdown_list,
-    )
+    rows = [Select(display_value=" Select owner (user)", value="")]
+    for item in response_user_name.json():
+        d = Select(display_value=item["short_name"], value=item["id"])
+        rows.append(d)
+    print("rows are", rows)
+    selector_user_name = Selector2(set_value=set_user_id, data=rows)
     return selector_user_name

@@ -46,7 +46,7 @@ async def get_active_team_list(session: Session = Depends(get_session)):
             Team.name.label("team_name"),
             Team.short_name.label("team_short_name"),
             User.id,
-            User.name.label("user_name"),
+            User.short_name.label("user_name"),
         )
         .join(User)
         .where(Team.is_active == True)
