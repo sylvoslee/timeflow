@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlmodel import Session, select, SQLModel, create_engine
+from sqlmodel import Session, select, SQLModel, create_engine, text, insert
 from backend.models.user import User
 import sqlite3
 
@@ -17,6 +17,21 @@ def get_session():
 
 def create_db():
     SQLModel.metadata.create_all(engine)
+
+
+def execute_sample_sql(session):
+    """Read sample sql database and import it."""
+    with open("backend/tests/sample.sql") as f:
+        content = f.read()
+
+    queries = filter(None, content.split(";\n"))
+    queries = [text(query) for query in queries]
+
+    for query in queries:
+        session.exec(query)
+
+    session.commit()
+    session.expire_all()
 
 
 session = Session(engine)

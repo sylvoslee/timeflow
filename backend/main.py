@@ -3,7 +3,13 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
 from backend.models.timelog import TimeLog
 from backend.models.calendar import Calendar
-from backend.utils import engine, sqlite3_engine, create_db, tags_metadata
+from backend.utils import (
+    engine,
+    sqlite3_engine,
+    create_db,
+    tags_metadata,
+    execute_sample_sql,
+)
 from backend.api import (
     user,
     timelog,
@@ -40,6 +46,7 @@ def on_startup():
         results = session.exec(statement)
     except OperationalError:
         create_db()
+        execute_sample_sql(session)
 
 
 @app.on_event("startup")
