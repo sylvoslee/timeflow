@@ -21,9 +21,10 @@ from data.common import (
     year_month_dict_list,
     username,
     hours,
+    days_in_month,
 )
 
-from data.timelogs import Timelog, timelog_days, to_timelog
+from data.timelogs import Timelog, to_timelog
 from data.epics import epics_names
 
 from config import base_url
@@ -133,7 +134,7 @@ def create_timelog_form(
     )
     selector_days = Selector2(
         set_value=set_day,
-        data=timelog_days(),
+        data=days_in_month(),
     )
 
     selector_start_time = Selector2(

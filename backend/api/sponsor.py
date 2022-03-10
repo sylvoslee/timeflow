@@ -61,7 +61,7 @@ async def read_teams(sponsor_name: str = None, session: Session = Depends(get_se
     """Read the contents of a given sponsor"""
     statement = select(Sponsor).where(Sponsor.name == sponsor_name)
     try:
-        result = session.exec(statement).one()
+        result = session.exec(statement).ones()
         return result
     except NoResultFound:
         msg = f"""There is no sponsor named {sponsor_name}"""
@@ -76,7 +76,7 @@ async def get_client_name_by_sponsor_id(
         select(Sponsor.id, Client.id, Client.name)
         .join(Client)
         .where(Sponsor.id == sponsor_id)
-        .where(Client.active == True)
+        .where(Client.is_active == True)
     )
     result = session.exec(statement).one()
     return result

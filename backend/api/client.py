@@ -35,7 +35,7 @@ async def read_clients(session: Session = Depends(get_session)):
 @router.get("/active")
 async def read_clients(session: Session = Depends(get_session)):
     """Get a list of all active clients"""
-    statement = select(Client).where(Client.active == True)
+    statement = select(Client).where(Client.is_active == True)
     results = session.exec(statement).all()
     return results
 
@@ -108,7 +108,7 @@ async def activate_clients(
     """Activate a client"""
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
-    client_to_update.active = True
+    client_to_update.is_active = True
     client_to_update.updated_at = datetime.now()
     session.add(client_to_update)
     session.commit()
@@ -125,7 +125,7 @@ async def deactivate_clients(
     """Deactivate a client"""
     statement = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement).one()
-    client_to_update.active = False
+    client_to_update.is_active = False
     client_to_update.updated_at = datetime.now()
     session.add(client_to_update)
 
@@ -143,13 +143,13 @@ async def update_clients_and_epics(
     """Deactivate a client and its epics"""
     statement1 = select(Client).where(Client.id == client_id)
     client_to_update = session.exec(statement1).one()
-    client_to_update.active = False
+    client_to_update.is_active = False
     client_to_update.updated_at = datetime.now()
     session.add(client_to_update)
     statement2 = select(Epic).where(Epic.client_id == client_id)
     epics_to_update = session.exec(statement2).all()
     for epic in epics_to_update:
-        epic.active = False
+        epic.is_active = False
         session.add(epic)
     session.commit()
     return True

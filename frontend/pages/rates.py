@@ -93,7 +93,7 @@ def create_rates_form(
         to_rate(
             user_id=user_id,
             client_id=client_id,
-            valid_from=str(selected_date),
+            valid_from=ms_str,
             valid_to=str(far_date),
             amount=amount,
             created_at=str(datetime.now()),

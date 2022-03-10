@@ -52,7 +52,7 @@ def create_client_form(name, set_name, set_submitted_name):
     async def handle_submit(event):
         data = {
             "name": name,
-            "active": True,
+            "is_active": True,
             "created_at": str(datetime.now()),
             "updated_at": str(datetime.now()),
         }

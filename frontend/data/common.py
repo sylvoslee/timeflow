@@ -6,6 +6,7 @@ from pages.utils import (
     year_month_list,
     hours_list,
     month_start_list,
+    days_in_month_list,
 )
 from components.controls import Button
 
@@ -51,8 +52,8 @@ def username() -> List[Select]:
     return username_rows
 
 
-def year_month_dict_list() -> List[Dict]:
-    ym_dict_list = [Select(value="", display_value="select month")]
+def year_month_dict_list(label: str = "select month") -> List[Select]:
+    ym_dict_list = [Select(value="", display_value=label)]
     for item in year_month_list:
         d = Select(value=item, display_value=item)
         ym_dict_list.append(d)
@@ -73,3 +74,11 @@ def months_start() -> List[Dict]:
         d = Select(value=item, display_value=item)
         months.append(d)
     return months
+
+
+def days_in_month(label: str = "select days") -> List[Dict]:
+    days = [Select(value="", display_value=label)]
+    for item in days_in_month_list:
+        d = Select(value=item, display_value=item)
+        days.append(d)
+    return days

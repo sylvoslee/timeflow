@@ -1,7 +1,6 @@
 import requests
 import json
 from typing import List, Dict, TypedDict
-from pages.utils import timelog_days_list
 from data.common import Select
 from config import base_url
 
@@ -15,14 +14,6 @@ class Timelog(TypedDict):
     count_days: float
     month: int
     year: int
-
-
-def timelog_days() -> List[Dict]:
-    days = [Select(value="", display_value="select days")]
-    for item in timelog_days_list:
-        d = Select(value=item, display_value=item)
-        days.append(d)
-    return days
 
 
 def to_timelog(
