@@ -16,7 +16,14 @@ from components.table import SimpleTable
 from components.controls import Button
 from config import base_url
 
-from data.users import to_user, users_active, update_user
+from data.users import (
+    to_user,
+    users_active,
+    update_user,
+    users_names,
+    activate_user,
+    deactivate_user,
+)
 from data.roles import roles_id_name
 from data.teams import teams_id_name
 from data.common import year_month_dict_list, days_in_month
@@ -30,8 +37,8 @@ def page():
     email, set_email = use_state("")
     role_id, set_role_id = use_state("")
     team_id, set_team_id = use_state(None)
-    on_submit, set_on_submit = use_state(True)
-    on_update, set_on_update = use_state(True)
+    # Used for refreshing page on event
+    is_event, set_is_event = use_state(True)
     return Container(
         Row(
             create_user_form(
@@ -47,12 +54,17 @@ def page():
                 set_role_id,
                 team_id,
                 set_team_id,
-                on_submit,
-                set_on_submit,
+                is_event,
+                set_is_event,
             )
         ),
+        Column(list_users(is_event)),
         Column(
-            Row(update_user(on_update, set_on_update)),
+            Row(update_users(is_event, set_is_event)),
+        ),
+        Row(
+            Column(deactivate_users(is_event, set_is_event)),
+            Column(activate_users(is_event, set_is_event)),
         ),
     )
 
@@ -71,8 +83,8 @@ def create_user_form(
     set_role_id,
     team_id,
     set_team_id,
-    on_submit,
-    set_on_submit,
+    is_event,
+    set_is_event,
 ):
     """
         endpoint: /api/users
@@ -110,7 +122,8 @@ def create_user_form(
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
-        switch_state(on_submit, set_on_submit)
+        # switches state triggering page refresh
+        switch_state(is_event, set_is_event)
 
     inp_short_name = Input(set_value=set_short_name, label="short name")
     inp_first_name = Input(set_value=set_first_name, label="first name")
@@ -141,23 +154,75 @@ def create_user_form(
 
 
 @component
-def list_users(submitted_name):
+def list_users(is_event):
     """Calls a list of active users"""
     rows = users_active()
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 
 @component
-def update_user(on_update):
+def update_users(is_event, set_is_event):
     new_team_id, set_new_team_id = use_state("")
     update_user_id, set_update_user_id = use_state("")
 
     @event(prevent_default=True)
     def handle_update(event):
-        update_user(user_id=user_id, new_team_id=new_team_id)
-        # Changes state triggering refresh on update
-        switch_state(on_update)
+        update_user(user_id=update_user_id, new_team_id=new_team_id)
+        # Changes state triggering refresh on update event
+        switch_state(value=is_event, set_value=set_is_event)
 
-    # selector_update_user = Selector2(
-    #     set_update_user_id,
-    # )
+    selector_user = Selector2(
+        set_update_user_id, data=users_names(label="select user to update")
+    )
+    selector_team = Selector2(
+        set_new_team_id, data=teams_id_name(label="select new team")
+    )
+    is_disabled = False
+    btn = Button(is_disabled, handle_update, label="Update")
+    return Column(Row(selector_user, selector_team), Row(btn))
+
+
+@component
+def deactivate_users(is_event, set_is_event):
+    """Deactivate an user without deleting it."""
+    deactiv_user_id, set_deactiv_user_id = use_state("")
+    print("deactiv iser id is", deactiv_user_id)
+
+    def handle_deactivation(event):
+        """Set the given user's is_active column to False."""
+        deactivate_user(deactiv_user_id)
+        switch_state(value=is_event, set_value=set_is_event)
+
+        return True
+
+    selector_user = Selector2(
+        set_deactiv_user_id, data=users_names(label="select user to deactivate")
+    )
+    is_disabled = True
+    if deactiv_user_id != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_deactivation, label="Deactivate")
+    return Column(Row(selector_user), Row(btn))
+
+
+@component
+def activate_users(is_event, set_is_event):
+    """Activate an user without deleting it."""
+    activ_user_id, set_activ_user_id = use_state("")
+    print("activ iser id is", activ_user_id)
+
+    def handle_activation(event):
+        """Set the given user's is_active column to False."""
+        activate_user(activ_user_id)
+        switch_state(value=is_event, set_value=set_is_event)
+
+        return True
+
+    selector_user = Selector2(
+        set_activ_user_id, data=users_names(label="select user to activate")
+    )
+    is_disabled = True
+    if activ_user_id != "":
+        is_disabled = False
+    btn = Button(is_disabled, handle_submit=handle_activation, label="Activate")
+    return Column(Row(selector_user), Row(btn))

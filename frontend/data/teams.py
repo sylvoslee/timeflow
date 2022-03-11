@@ -40,7 +40,7 @@ def get_active_team_rows():
     return rows
 
 
-def teams_id_name() -> List[Select]:
+def teams_id_name(label="select team") -> List[Select]:
     """Gets list of teams by short_name and id
 
     get endpoint: /api/teams/active
@@ -51,13 +51,12 @@ def teams_id_name() -> List[Select]:
     api = f"{base_url}/api/teams/active"
     response = requests.get(api)
     rows = [
-        Select(value="", display_value="select team"),
+        Select(value="", display_value=label),
         Select(value="", display_value="no team"),
     ]
     for item in response.json():
         d = Select(value=item["id"], display_value=item["team_short_name"])
         rows.append(d)
-    print(rows)
     return rows
 
 

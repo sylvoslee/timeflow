@@ -49,7 +49,6 @@ def to_user(
         updated_at=str(updated_at),
         is_active=True,
     )
-    print("data is", data)
     response = requests.post(
         f"{base_url}/api/users",
         data=json.dumps(dict(data)),
@@ -75,9 +74,8 @@ def user_dropdown(set_user_id):
 
 def users_active():
     api = f"{base_url}/api/users/"
-    params = {"is_active": "True"}
+    params = {"is_active": True}
     response = requests.get(api, params=params)
-    print("response is", response.json())
     rows = []
     for item in response.json():
         d = {
@@ -93,18 +91,32 @@ def users_active():
 
 
 def update_user(user_id: int, new_team_id: int):
-    api = f"{base_url}/api/users/update"
-    params = {"id": user_id, "new_team_id": new_team_id}
+    api = f"{base_url}/api/users/{user_id}/"
+    params = {"new_team_id": new_team_id}
     response = requests.put(api, params=params)
     return True
 
 
-def users_names() -> List[Select]:
+def activate_user(user_id: int):
+    api = f"{base_url}/api/users/{user_id}/"
+    params = {"is_active": True}
+    response = requests.put(api, params=params)
+    return True
+
+
+def deactivate_user(user_id: int):
+    api = f"{base_url}/api/users/{user_id}/"
+    params = {"is_active": False}
+    response = requests.put(api, params=params)
+    return True
+
+
+def users_names(label="select user") -> List[Select]:
     # Connect to users list endpoint
     api_user_name = f"{base_url}/api/users"
     response_user_name = requests.get(api_user_name)
-    user_name_rows = [Select(value="", display_value="select user")]
+    user_name_rows = [Select(value="", display_value=label)]
     for item in response_user_name.json():
-        d = Select(value=item["id"], display_value=item["name"])
+        d = Select(value=item["id"], display_value=item["short_name"])
         user_name_rows.append(d)
     return user_name_rows

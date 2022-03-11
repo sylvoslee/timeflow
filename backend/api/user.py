@@ -61,6 +61,7 @@ async def update_user(
     new_first_name: Optional[str] = None,
     new_last_name: Optional[str] = None,
     new_email: Optional[str] = None,
+    new_team_id: Optional[str] = None,
     session: Session = Depends(get_session),
 ):
     """Update user email"""
@@ -76,6 +77,9 @@ async def update_user(
         user_to_update.last_name = new_last_name
     if new_email != None:
         user_to_update.email = new_email
+    if new_team_id != None:
+        user_to_update.team_id = new_team_id
+    user_to_update.updated_at = datetime.now()
     session.add(user_to_update)
     session.commit()
     session.refresh(user_to_update)
