@@ -14,7 +14,7 @@ from components.table import SimpleTable
 from components.controls import Button
 from config import base_url
 
-from data.users import to_user
+from data.users import to_user, users_active
 from data.roles import roles_id_name
 from data.teams import teams_id_name
 from data.common import year_month_dict_list, days_in_month
@@ -27,10 +27,8 @@ def page():
     last_name, set_last_name = use_state("")
     email, set_email = use_state("")
     role_id, set_role_id = use_state("")
-    team_id, set_team_id = use_state("")
-    year_month, set_year_month = use_state("")
-    submitted_name, set_submitted_name = use_state("")
-    print("year month is", year_month)
+    team_id, set_team_id = use_state(None)
+    on_submit, set_on_submit = use_state(True)
     return Container(
         Row(
             create_user_form(
@@ -46,16 +44,13 @@ def page():
                 set_role_id,
                 team_id,
                 set_team_id,
-                year_month,
-                set_year_month,
-                # day,
-                # set_day,
-                set_submitted_name,
+                on_submit,
+                set_on_submit,
             )
         ),
-        # Column(
-        #     Row(list_users(submitted_surname)),
-        # ),
+        Column(
+            Row(list_users(short_name)),
+        ),
         # Row(delete_user(set_deleted_user)),
     )
 
@@ -66,8 +61,6 @@ def create_user_form(
     set_short_name,
     first_name,
     set_first_name,
-    year_month,
-    set_year_month,
     last_name,
     set_last_name,
     email,
@@ -76,9 +69,8 @@ def create_user_form(
     set_role_id,
     team_id,
     set_team_id,
-    # day,
-    # set_day,
-    set_submitted_name,
+    on_submit,
+    set_on_submit,
 ):
     """
         endpoint: /api/users
@@ -94,11 +86,16 @@ def create_user_form(
       "updated_at": "2022-03-10T13:11:49.625Z",
       "is_active": true
     }"""
+    # Initializes day state, should be in parent(?), here due to a bug
     day, set_day = use_state("")
+    year_month, set_year_month = use_state("")
 
     @event(prevent_default=True)
     async def handle_submit(event):
-
+        print("post select team is", team_id)
+        # Bypass of a bug, selector not able to set a value=None
+        if team_id is "":
+            set_team_id(None)
         to_user(
             short_name=short_name,
             first_name=first_name,
@@ -111,11 +108,12 @@ def create_user_form(
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
-        set_submitted_name(short_name)
+        if on_submit:
+            set_on_submit(False)
+        else:
+            set_on_submit(True)
 
-    print("year month", year_month)
-    print("day is", day)
-
+    print("child team id is", team_id)
     inp_short_name = Input(set_value=set_short_name, label="short name")
     inp_first_name = Input(set_value=set_first_name, label="first name")
     inp_last_name = Input(set_value=set_last_name, label="last name")
@@ -145,18 +143,9 @@ def create_user_form(
 
 
 @component
-def list_users(submitted_surname):
-    api = f"{base_url}/api/users"
-    response = requests.get(api)
-    rows = []
-    for item in response.json():
-        d = {
-            "name": item["name"],
-            "surname": item["surname"],
-            "username": item["username"],
-            "email": item["email"],
-        }
-        rows.append(d)
+def list_users(submitted_name):
+    """Calls a list of active users"""
+    rows = users_active()
     return html.div({"class": "flex w-full"}, SimpleTable(rows=rows))
 
 

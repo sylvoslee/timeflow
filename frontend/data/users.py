@@ -26,11 +26,11 @@ def to_user(
     last_name: str,
     email: str,
     role_id: str,
-    team_id: str,
     year_month: str,
     day: int,
     created_at: datetime,
     updated_at: datetime,
+    team_id: str,
 ):
     ym = year_month
     year = ym[:4]
@@ -49,6 +49,7 @@ def to_user(
         updated_at=str(updated_at),
         is_active=True,
     )
+    print("data is", data)
     response = requests.post(
         f"{base_url}/api/users",
         data=json.dumps(dict(data)),
@@ -70,3 +71,22 @@ def user_dropdown(set_user_id):
         rows.append(d)
     selector_user_name = Selector2(set_value=set_user_id, data=rows)
     return selector_user_name
+
+
+def users_active():
+    api = f"{base_url}/api/users/"
+    params = {"is_active": "True"}
+    response = requests.get(api, params=params)
+    print("response is", response.json())
+    rows = []
+    for item in response.json():
+        d = {
+            "short name": item["short_name"],
+            "first name": item["first_name"],
+            "last name": item["last_name"],
+            "role id": item["role_id"],
+            "main team id": item["team_id"],
+            "start date": item["start_date"],
+        }
+        rows.append(d)
+    return rows

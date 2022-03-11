@@ -12,7 +12,7 @@ class User(SQLModel, table=True):
     last_name: str
     email: str
     role_id: int
-    team_id: int
+    team_id: Optional[int] = None
     start_date: date
     created_at: datetime
     updated_at: datetime
