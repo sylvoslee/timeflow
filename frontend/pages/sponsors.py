@@ -3,7 +3,7 @@ from sanic import response
 from black import click
 
 from components.controls import activation_button, deactivation_button, submit_button
-from components.input import Input
+from components.input import Input, Selector2
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 
@@ -13,7 +13,7 @@ from data.sponsors import (
     sponsor_activation,
     sponsor_deactivation,
 )
-from data.clients import client_dropdown
+from data.clients import clients_names
 
 
 @component
@@ -86,7 +86,7 @@ def create_sponsor_form(
     inp_short_name = Input(set_value=set_short_name, label="short name of the sponsor")
 
     # Create a dropdown of clients which can then be selected
-    selector_client_name = client_dropdown(set_client_id)
+    selector_client_id = Selector2(set_value=set_client_id, data=clients_names())
 
     # Create submit button
     btn = submit_button(handle_submit, name, short_name, client_id)
@@ -95,7 +95,7 @@ def create_sponsor_form(
         Row(
             inp_name,
             inp_short_name,
-            selector_client_name,
+            selector_client_id,
         ),
         Row(btn),
     )

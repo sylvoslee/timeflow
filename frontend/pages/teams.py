@@ -3,7 +3,7 @@ from sanic import response
 from black import click
 
 from components.controls import activation_button, deactivation_button, submit_button
-from components.input import Input
+from components.input import Input, Selector2
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 
@@ -13,7 +13,7 @@ from data.teams import (
     post_team,
     get_active_team_rows,
 )
-from data.users import user_dropdown
+from data.users import users_names, user_dropdown
 
 
 @component
@@ -85,7 +85,10 @@ def create_team_form(
     inp_short_name = Input(set_value=set_short_name, label="short name of the team")
 
     # Create a dropdown of users which can then be selected
-    selector_user_name = user_dropdown(set_user_id)
+    selector_user_id = Selector2(
+        set_value=set_user_id,
+        data=users_names(),
+    )
 
     # Create submit button
     btn = submit_button(handle_submit, name, short_name, user_id)
@@ -94,7 +97,7 @@ def create_team_form(
         Row(
             inp_name,
             inp_short_name,
-            selector_user_name,
+            selector_user_id,
         ),
         Row(btn),
     )
