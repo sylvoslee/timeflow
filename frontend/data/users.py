@@ -1,6 +1,5 @@
 import requests
 from config import base_url
-from components.input import Selector, SelectorDropdownKeyValue
 from data.common import Select
 from typing import List
 
