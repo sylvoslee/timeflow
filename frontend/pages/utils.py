@@ -61,10 +61,9 @@ def date_str_to_date(date: str):
 far_date = date_str_to_date("9999-12-31")
 
 
-@component
 def switch_state(value: bool, set_value: Callable):
-    if value:
+    if value == True:
         set_value(False)
-    else:
+    elif value == False:
         set_value(True)
     return True
