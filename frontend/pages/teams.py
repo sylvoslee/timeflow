@@ -13,7 +13,7 @@ from data.teams import (
     post_team,
     get_active_team_rows,
 )
-from data.users import users_names, user_dropdown
+from data.users import users_names
 
 
 @component
