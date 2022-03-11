@@ -4,6 +4,7 @@ import requests
 from config import base_url
 from typing import TypedDict
 from datetime import datetime
+from idom import component
 
 
 class Select(TypedDict):
@@ -58,3 +59,12 @@ def date_str_to_date(date: str):
 
 
 far_date = date_str_to_date("9999-12-31")
+
+
+@component
+def switch_state(value: bool, set_value: Callable):
+    if value:
+        set_value(False)
+    else:
+        set_value(True)
+    return True

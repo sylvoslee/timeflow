@@ -7,6 +7,8 @@ from idom.server.sanic import PerClientStateServer
 import requests
 from sanic import Sanic, response
 from datetime import datetime
+
+from pages.utils import switch_state
 from components.input import Input, Selector2
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
@@ -14,7 +16,7 @@ from components.table import SimpleTable
 from components.controls import Button
 from config import base_url
 
-from data.users import to_user, users_active
+from data.users import to_user, users_active, update_user
 from data.roles import roles_id_name
 from data.teams import teams_id_name
 from data.common import year_month_dict_list, days_in_month
@@ -29,6 +31,7 @@ def page():
     role_id, set_role_id = use_state("")
     team_id, set_team_id = use_state(None)
     on_submit, set_on_submit = use_state(True)
+    on_update, set_on_update = use_state(True)
     return Container(
         Row(
             create_user_form(
@@ -46,12 +49,13 @@ def page():
                 set_team_id,
                 on_submit,
                 set_on_submit,
+                on_update,
+                set_on_update,
             )
         ),
         Column(
-            Row(list_users(short_name)),
+            Row(update_user(on_update)),
         ),
-        # Row(delete_user(set_deleted_user)),
     )
 
 
@@ -108,12 +112,8 @@ def create_user_form(
             created_at=datetime.now(),
             updated_at=datetime.now(),
         )
-        if on_submit:
-            set_on_submit(False)
-        else:
-            set_on_submit(True)
+        switch_state(on_submit, set_on_submit)
 
-    print("child team id is", team_id)
     inp_short_name = Input(set_value=set_short_name, label="short name")
     inp_first_name = Input(set_value=set_first_name, label="first name")
     inp_last_name = Input(set_value=set_last_name, label="last name")
@@ -150,20 +150,16 @@ def list_users(submitted_name):
 
 
 @component
-def delete_user(set_delete_user):
-    delete_user, set_delete_user = use_state("")
+def update_user(on_update):
+    new_team_id, set_new_team_id = use_state("")
+    update_user_id, set_update_user_id = use_state("")
 
-    def delete_user(event):
-        api = f"{base_url}/api/users?username={delete_user}"
-        response = requests.delete(api)
-        set_deleted_user(delete_user)
+    @event(prevent_default=True)
+    def handle_update(event):
+        update_user(user_id=user_id, new_team_id=new_team_id)
+        # Changes state triggering refresh on update
+        switch_state(on_update)
 
-    inp_username = Input(set_value=set_delete_user, label="delete user (username)")
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": delete_user,
-        },
-        "Submit",
-    )
-    return Column(Row(inp_username), Row(btn))
+    # selector_update_user = Selector2(
+    #     set_update_user_id,
+    # )

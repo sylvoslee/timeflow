@@ -90,3 +90,10 @@ def users_active():
         }
         rows.append(d)
     return rows
+
+
+def update_user(new_team_id: int):
+    api = f"{base_url}/api/users/update"
+    params = {"new_team_id": new_team_id}
+    response = requests.put(api, params=params)
+    return True
