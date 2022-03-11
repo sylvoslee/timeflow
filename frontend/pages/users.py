@@ -49,12 +49,10 @@ def page():
                 set_team_id,
                 on_submit,
                 set_on_submit,
-                on_update,
-                set_on_update,
             )
         ),
         Column(
-            Row(update_user(on_update)),
+            Row(update_user(on_update, set_on_update)),
         ),
     )
 

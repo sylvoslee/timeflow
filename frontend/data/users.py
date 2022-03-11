@@ -1,6 +1,6 @@
 import requests
 import json
-from typing import TypedDict
+from typing import TypedDict, List
 from datetime import datetime
 from config import base_url
 from components.input import Selector2, SelectorDropdownKeyValue

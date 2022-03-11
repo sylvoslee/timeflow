@@ -2,7 +2,7 @@
 
 import requests
 from config import base_url
-from typing import TypedDict
+from typing import TypedDict, Callable
 from datetime import datetime
 from idom import component
 
