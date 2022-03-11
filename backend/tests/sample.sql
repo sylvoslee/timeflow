@@ -8,16 +8,16 @@ VALUES
     ('mwoodmansee', 'Mathew', 'Woodmansee', 'MathewKWoodmansee@rhyta.com'),
     ('mtaylor', 'Michael', 'Taylor', 'MichaelJTaylor@teleworm.us');
 
-INSERT INTO client (name, active, created_at, updated_at)
+INSERT INTO client (name, is_active, created_at, updated_at)
 VALUES
     ('dyvenia', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('google', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('neuralink', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO epic (name, work_area, client_id, active, created_at, updated_at)
+INSERT INTO epic (short_name, name, team_id, sponsor_id, start_date, is_active, created_at, updated_at)
 VALUES
-    ('Mobile app', "", 1, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('Payment gateway', "", 2, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+    ('App', 'Mobile app', 1, 2, CURRENT_TIMESTAMP, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('Pay', 'Payment gateway', 2, 1, CURRENT_TIMESTAMP, TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO epicarea (epic_id, name, is_active, created_at, updated_at)
 VALUES

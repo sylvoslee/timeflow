@@ -97,3 +97,14 @@ def update_user(user_id: int, new_team_id: int):
     params = {"id": user_id, "new_team_id": new_team_id}
     response = requests.put(api, params=params)
     return True
+
+
+def users_names() -> List[Select]:
+    # Connect to users list endpoint
+    api_user_name = f"{base_url}/api/users"
+    response_user_name = requests.get(api_user_name)
+    user_name_rows = [Select(value="", display_value="select user")]
+    for item in response_user_name.json():
+        d = Select(value=item["id"], display_value=item["name"])
+        user_name_rows.append(d)
+    return user_name_rows
