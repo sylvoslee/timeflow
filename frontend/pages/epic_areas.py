@@ -2,12 +2,12 @@ from idom import html, use_state, component, event
 from sanic import response
 from black import click
 
-from components.input import Input
+from components.controls import activation_button, deactivation_button, submit_button
+from components.input import Input, Selector2
 from components.layout import Row, Column, Container
 from components.table import SimpleTable
 
-from data.common import activation_button, deactivation_button, submit_button
-from data.epics import epic_dropdown
+from data.epics import epics_names
 from data.epic_areas import (
     epic_area_activation,
     epic_area_deactivation,
@@ -71,7 +71,10 @@ def create_epic_area_form(
         set_submitted_name(name)
 
     # Create dropdown of active epics which can then be selected
-    selector_epic_name = epic_dropdown(set_epic_id)
+    selector_epic_id = Selector2(
+        set_value=set_epic_id,
+        data=epics_names(),
+    )
 
     # Create input field for the name of the epic area
     inp_name = Input(set_value=set_name, label="name")
@@ -81,7 +84,7 @@ def create_epic_area_form(
 
     return Column(
         Row(
-            selector_epic_name,
+            selector_epic_id,
             inp_name,
         ),
         Row(btn),
