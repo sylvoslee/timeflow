@@ -3,6 +3,8 @@ from ..utils import engine, get_session
 from sqlmodel import Session, select, SQLModel, or_
 from sqlalchemy.exc import NoResultFound
 from ..models.user import User
+from typing import Optional
+from datetime import datetime
 
 router = APIRouter(prefix="/api/users", tags=["user"])
 session = Session(engine)
@@ -14,9 +16,7 @@ async def post_user(
     session: Session = Depends(get_session),
 ):
     """Post new user"""
-    statement = select(User).where(
-        or_(User.username == user.username, User.id == user.id)
-    )
+    statement = select(User).where(User.short_name == user.short_name)
     try:
         result = session.exec(statement).one()
         return False
@@ -28,43 +28,59 @@ async def post_user(
 
 
 @router.get("/")
-async def get_users(session: Session = Depends(get_session)):
+async def get_users(
+    session: Session = Depends(get_session),
+    is_active: bool = None,
+    short_name: str = None,
+    user_name: str = None,
+    user_surname: str = None,
+    email: str = None,
+    role_id: str = None,
+    start_date: str = None,
+    team_id: int = None,
+):
     """Get list of all users"""
     statement = select(User)
+    if is_active != None:
+        statement = select(User).where(User.is_active == is_active)
+        if short_name != None:
+            statement = (
+                select(User)
+                .where(User.is_active == is_active)
+                .where(User.short_name == short_name)
+            )
     result = session.exec(statement).all()
     return result
 
 
-@router.get("/{user_id}")
-async def get_users(user_id, session: Session = Depends(get_session)):
-    """Get user by id"""
-    statement = select(User).where(User.id == user_id)
-    result = session.exec(statement).one()
-    return result
-
-
-@router.put("/")
+@router.put("/{user_id}/")
 async def update_user(
-    username: str = None,
-    email: str = None,
+    user_id: int,
+    is_active: Optional[bool] = None,
+    new_short_name: Optional[str] = None,
+    new_first_name: Optional[str] = None,
+    new_last_name: Optional[str] = None,
+    new_email: Optional[str] = None,
+    new_team_id: Optional[str] = None,
     session: Session = Depends(get_session),
 ):
     """Update user email"""
-    statement = select(User).where(User.username == username)
+    statement = select(User).where(User.id == user_id)
     user_to_update = session.exec(statement).one()
-    user_to_update.email = email
+    if is_active != None:
+        user_to_update.is_active = is_active
+    if new_short_name != None:
+        user_to_update.short_name = new_short_name
+    if new_first_name != None:
+        user_to_update.first_name = new_first_name
+    if new_last_name != None:
+        user_to_update.last_name = new_last_name
+    if new_email != None:
+        user_to_update.email = new_email
+    if new_team_id != None:
+        user_to_update.team_id = new_team_id
+    user_to_update.updated_at = datetime.now()
     session.add(user_to_update)
     session.commit()
     session.refresh(user_to_update)
     return user_to_update
-
-
-@router.delete("/")
-async def delete_user(username: str = None, session: Session = Depends(get_session)):
-    """Delete users"""
-    statement = select(User).where(User.username == username)
-    results = session.exec(statement)
-    user_to_delete = results.one()
-    session.delete(user_to_delete)
-    session.commit()
-    return True

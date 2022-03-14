@@ -3,6 +3,7 @@ import json
 from config import base_url
 from typing import List, Dict, TypedDict
 from datetime import datetime
+from data.common import Select
 
 
 class Role(TypedDict):
@@ -59,3 +60,19 @@ def role_update(id: int, new_name: str = None, new_short_name: str = None) -> bo
         api = f"{base_url}/api/roles/?id={id}&new_short_name={new_short_name}"
     response = requests.put(api)
     return True
+
+
+def roles_id_name() -> List[Select]:
+    """Gets list of roles by short_name and id
+
+    api get: /api/roles/active
+    Returns:
+        List[Select]: list of dictionaries
+    """
+    api = f"{base_url}/api/roles/active"
+    response = requests.get(api)
+    rows = [Select(value="", display_value="select role")]
+    for item in response.json():
+        d = Select(value=item["id"], display_value=item["short_name"])
+        rows.append(d)
+    return rows

@@ -21,7 +21,7 @@ def username() -> List[Select]:
     response_username = requests.get(api_username)
     username_rows = [Select(value="", display_value="select username")]
     for item in response_username.json():
-        d = Select(value=item["id"], display_value=item["username"])
+        d = Select(value=item["id"], display_value=item["short_name"])
         username_rows.append(d)
     return username_rows
 
