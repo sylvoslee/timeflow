@@ -36,6 +36,10 @@ days_in_month_nr = range(1, 32)
 for n in days_in_month_nr:
     days_in_month_list.append(n)
 
+capacity_days_list = []
+capacity_days_nr = range(1, 21)
+for n in capacity_days_nr:
+    capacity_days_list.append(n)
 
 hours_list = []
 for h in hours:
