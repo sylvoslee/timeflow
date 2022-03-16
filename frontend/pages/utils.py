@@ -2,7 +2,7 @@
 
 import requests
 from config import base_url
-from typing import TypedDict, Callable
+from typing import TypedDict, Callable, List
 from datetime import datetime
 from idom import component
 
@@ -36,10 +36,20 @@ days_in_month_nr = range(1, 32)
 for n in days_in_month_nr:
     days_in_month_list.append(n)
 
+
 capacity_days_list = []
 capacity_days_nr = range(1, 21)
 for n in capacity_days_nr:
     capacity_days_list.append(n)
+
+
+def days_list(days: int) -> List:
+    days_list = []
+    days_nr = range(1, (days + 1))
+    for n in days_nr:
+        days_list.append(n)
+    return days_list
+
 
 hours_list = []
 for h in hours:
