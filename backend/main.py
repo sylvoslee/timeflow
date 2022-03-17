@@ -3,13 +3,28 @@ from sqlmodel import Session, select, SQLModel
 from sqlalchemy.exc import OperationalError
 from backend.models.timelog import TimeLog
 from backend.models.calendar import Calendar
-from backend.utils import engine, sqlite3_engine, create_db, tags_metadata
-from datetime import datetime
-from backend.api import user, timelog, forecast, epic, client, rate
-import pandas as pd
-from pandas import Timestamp
+from backend.utils import (
+    engine,
+    sqlite3_engine,
+    create_db,
+    tags_metadata,
+    execute_sample_sql,
+)
+from backend.api import (
+    user,
+    timelog,
+    forecast,
+    epic,
+    epic_area,
+    client,
+    rate,
+    team,
+    role,
+    sponsor,
+    capacity,
+    demand,
+)
 import csv
-import sqlite3
 
 app = FastAPI(title="timeflow app API", openapi_tags=tags_metadata)
 
@@ -18,8 +33,14 @@ app.include_router(timelog.router)
 app.include_router(forecast.router)
 app.include_router(user.router)
 app.include_router(epic.router)
+app.include_router(epic_area.router)
 app.include_router(client.router)
 app.include_router(rate.router)
+app.include_router(team.router)
+app.include_router(role.router)
+app.include_router(sponsor.router)
+app.include_router(capacity.router)
+app.include_router(demand.router)
 
 
 @app.on_event("startup")
@@ -29,6 +50,7 @@ def on_startup():
         results = session.exec(statement)
     except OperationalError:
         create_db()
+        execute_sample_sql(session)
 
 
 @app.on_event("startup")

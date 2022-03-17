@@ -42,9 +42,31 @@ def Dropdown(current_page, set_current_page):
                     focus:outline-none focus:shadow-outline
                 """
         anchors = []
-        for item in ["Users", "Epics", "Clients"]:
+        for item in [
+            "Users",
+            "Roles",
+            "Epics",
+            "Epic Areas",
+            "Teams",
+            "Sponsors",
+            "Clients",
+            "Rates",
+            "Capacities",
+            "Demands",
+        ]:
             anchors.append(html.a({"class": aclass}, item))
-        pages = ["Users", "Epics", "Clients"]
+        pages = [
+            "Users",
+            "Roles",
+            "Epics",
+            "Epic Areas",
+            "Teams",
+            "Sponsors",
+            "Clients",
+            "Rates",
+            "Capacities",
+            "Demands",
+        ]
         return html.div(
             {"class": "relative"},
             btn,
@@ -64,23 +86,29 @@ def Dropdown(current_page, set_current_page):
 
 @component
 def ListPages(current_page, set_current_page, pages: List[str], title: str = ""):
-    @event(prevent_default=True)
-    def handle_click(event):
-        set_current_page(event["target"]["value"])
-
-    aclass = """block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-transparent rounded-lg 
+    def btn_class(btn_bg: str):
+        btn_class = f"""block px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-{btn_bg} rounded-lg 
                 dark-mode:bg-transparent dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 
                 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 
                 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 
                 focus:outline-none focus:shadow-outline
                 """
+        return btn_class
+
+    @event(prevent_default=True)
+    def handle_click(event):
+        set_current_page(event["target"]["value"])
+
     anchors = []
     for page in pages:
+        if page == current_page:
+            btn_bg = "gray-200"
+        else:
+            btn_bg = "transparent"
         anchors.append(
-            vdom(
-                "button",
+            html.button(
                 {
-                    "class": aclass,
+                    "class": btn_class(btn_bg),
                     "href": f"#{page}",
                     "value": page,
                     "onClick": handle_click,
@@ -88,6 +116,7 @@ def ListPages(current_page, set_current_page, pages: List[str], title: str = "")
                 page,
             )
         )
+
     return html.div(anchors)
 
 

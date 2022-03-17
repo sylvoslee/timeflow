@@ -15,16 +15,17 @@ from components.input import (
 from components.layout import Row, Column, Container
 from components.lists import ListSimple
 from components.table import SimpleTable
+from components.controls import Button
 
-from pages.data import (
-    Timelog,
-    to_timelog,
+from data.common import (
     year_month_dict_list,
     username,
-    epics_names,
-    timelog_days,
     hours,
+    days_in_month,
 )
+
+from data.timelogs import Timelog, to_timelog
+from data.epics import epics_names
 
 from config import base_url
 
@@ -133,7 +134,7 @@ def create_timelog_form(
     )
     selector_days = Selector2(
         set_value=set_day,
-        data=timelog_days(),
+        data=days_in_month(),
     )
 
     selector_start_time = Selector2(
@@ -144,14 +145,18 @@ def create_timelog_form(
         set_value=set_end_time,
         data=hours(),
     )
+    is_disabled = True
+    if (
+        user != ""
+        and epic_id != ""
+        and year_month != ""
+        and day != ""
+        and start_time != ""
+        and end_time != ""
+    ):
+        is_disabled = False
 
-    btn = html.button(
-        {
-            "class": "relative w-fit h-fit px-2 py-1 text-lg border text-gray-50  border-secondary-200",
-            "onClick": handle_submit,
-        },
-        "Submit",
-    )
+    btn = Button(is_disabled, handle_submit, label="Submit")
     return Column(
         Row(
             selector_user,
