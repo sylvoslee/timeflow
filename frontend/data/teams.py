@@ -7,11 +7,11 @@ from datetime import datetime
 from data.common import Select
 
 
-def post_team(name: str, short_name: str, user_id: int):
+def post_team(name: str, short_name: str, lead_user_id: int):
     data = {
         "name": name,
         "short_name": short_name,
-        "user_id": user_id,
+        "lead_user_id": lead_user_id,
         "is_active": True,
         "created_at": str(datetime.now()),
         "updated_at": str(datetime.now()),

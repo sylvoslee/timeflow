@@ -42,7 +42,7 @@ async def get_active_team_list(session: Session = Depends(get_session)):
     statement = (
         select(
             Team.id,
-            Team.user_id,
+            Team.lead_user_id,
             Team.name.label("team_name"),
             Team.short_name.label("team_short_name"),
             User.id,
@@ -117,7 +117,7 @@ async def deactivate_team(
 @router.put("/")
 async def update_team(
     id: str = None,
-    user_id: str = None,
+    lead_user_id: str = None,
     name: str = None,
     is_active: bool = None,
     session: Session = Depends(get_session),
@@ -125,7 +125,7 @@ async def update_team(
     """Update team"""
     statement = select(Team).where(or_(Team.name == name, Team.id == id))
     team_to_update = session.exec(statement).one()
-    team_to_update.user_id = user_id
+    team_to_update.lead_user_id = lead_user_id
     team_to_update.name = name
     team_to_update.is_active = is_active
     session.add(team_to_update)

@@ -22,7 +22,7 @@ def page():
     submitted_name, set_submitted_name = use_state("")
     short_name, set_short_name = use_state("")
     submitted_short_name, set_submitted_short_name = use_state("")
-    user_id, set_user_id = use_state("")
+    lead_user_id, set_lead_user_id = use_state("")
     _, set_deact_name = use_state("")
     _, set_activ_name = use_state("")
 
@@ -32,8 +32,8 @@ def page():
             set_name,
             short_name,
             set_short_name,
-            user_id,
-            set_user_id,
+            lead_user_id,
+            set_lead_user_id,
             set_submitted_name,
             set_submitted_short_name,
         ),
@@ -51,8 +51,8 @@ def create_team_form(
     set_name,
     short_name,
     set_short_name,
-    user_id,
-    set_user_id,
+    lead_user_id,
+    set_lead_user_id,
     set_submitted_name,
     set_submitted_short_name,
 ):
@@ -72,7 +72,7 @@ def create_team_form(
     @event(prevent_default=True)
     async def handle_submit(event):
         """Call a post request for the given team when given event is triggered."""
-        post_team(name, short_name, user_id)
+        post_team(name, short_name, lead_user_id)
 
         # Change the states
         set_submitted_name(name)
@@ -85,19 +85,19 @@ def create_team_form(
     inp_short_name = Input(set_value=set_short_name, label="short name of the team")
 
     # Create a dropdown of users which can then be selected
-    selector_user_id = Selector2(
-        set_value=set_user_id,
-        data=users_names(),
+    selector_lead_user_id = Selector2(
+        set_value=set_lead_user_id,
+        data=users_names(label="select user lead"),
     )
 
     # Create submit button
-    btn = submit_button(handle_submit, name, short_name, user_id)
+    btn = submit_button(handle_submit, name, short_name, lead_user_id)
 
     return Column(
         Row(
             inp_name,
             inp_short_name,
-            selector_user_id,
+            selector_lead_user_id,
         ),
         Row(btn),
     )
