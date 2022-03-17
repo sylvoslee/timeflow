@@ -21,6 +21,7 @@ from backend.api import (
     team,
     role,
     sponsor,
+    capacity,
 )
 import csv
 
@@ -37,6 +38,7 @@ app.include_router(rate.router)
 app.include_router(team.router)
 app.include_router(role.router)
 app.include_router(sponsor.router)
+app.include_router(capacity.router)
 
 
 @app.on_event("startup")

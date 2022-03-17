@@ -130,7 +130,7 @@ def create_user_form(
     inp_last_name = Input(set_value=set_last_name, label="last name")
     inp_email = Input(set_value=set_email, label="email")
     selector_role = Selector2(set_role_id, roles_id_name())
-    selector_team = Selector2(set_team_id, teams_id_name())
+    selector_team = Selector2(set_team_id, teams_id_name(no_team=True))
     selector_start_month = Selector2(
         set_year_month, year_month_dict_list(label="select start month")
     )
