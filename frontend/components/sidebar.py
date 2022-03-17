@@ -52,6 +52,7 @@ def Dropdown(current_page, set_current_page):
             "Clients",
             "Rates",
             "Capacities",
+            "Demands",
         ]:
             anchors.append(html.a({"class": aclass}, item))
         pages = [
@@ -64,6 +65,7 @@ def Dropdown(current_page, set_current_page):
             "Clients",
             "Rates",
             "Capacities",
+            "Demands",
         ]
         return html.div(
             {"class": "relative"},
