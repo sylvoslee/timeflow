@@ -26,7 +26,7 @@ VALUES
     (1, 'Night mode', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (2, 'Crypto', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
-INSERT INTO team (user_id, name, short_name, is_active, created_at, updated_at)
+INSERT INTO team (lead_user_id, name, short_name, is_active, created_at, updated_at)
 VALUES
     (1, 'Seniors', 'Snrs', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (2, 'Mid-levels', 'Mids', TRUE, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
